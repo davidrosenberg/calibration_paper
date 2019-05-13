@@ -1,0 +1,98 @@
+\section{Verifying calibration}
+\label{sec:verifying_calibration}
+
+We show that if a model outputs values from some finite set $S$,\footnote{The model can choose the set $S$.} and the probability of outputting each value $s \in S$ is not too small (Definition~\ref{dfn:low-bal}), then we can estimate its calibration error. Further, we propose a new estimator and show that it has better sample complexity than previous approaches.
+
+We focus our analysis on the $\ell_2^2$ calibration error, which is commonly used in the literature. The plugin estimator, which is used in prior work, requires samples proportional to the number of model outputs $|S|$. Instead, we give an alternative estimator that requires samples proportional to $\sqrt{|S|}$. We prove these finite sample guarantees, and show experimental evidence that our estimators approximate the calibration error better, especially when $|S|$ is large.
+
+As we show in the next section, using a better estimator allows us to pick out better models. It turns out that evaluating the calibration error can often require more samples than calibrating a model. 
+
+We begin by defining the plugin estimator -- where we directly estimate each term in the calibration error from samples. Suppose we wish to measure the calibration error of a model $f : \mathcal{X} \to S$ where $S \subseteq [0, 1]$. Order the elements in $S$: $s_1 < s_2 < \dots < s_B$, where $B = |S|$ denotes the number of model outputs. Suppose we get an evaluation set $T_n = \{(x_1, y_1), \dots, (x_n, y_n)\}$ sampled i.i.d. from $P(X, Y)$.
+
+\begin{definition}
+Let $R_i = \{ y_j \; | \; (x_j, y_j) \in T_n\wedge f(x_j) = s_i \}$ denote the label values where the model outputs $s_i$.
+
+We estimate $E[Y | f(X) = s_i]$ as:
+\[ \hat{y_i} = \sum_{y \in R_i} \frac{y}{|R_i|} \] 
+We estimate $P(f(X) = s_i)$ by:
+\[ \hat{p_i} = \frac{|R_i|}{n} \]
+Then the plugin estimator for the $\ell_2^2$ error is:
+\[ \hat{E}_{\mbox{pl}}^2 = \sum_{i=1}^b \hat{p_i} (s_i - \hat{y_i})^2 \]
+We can similarly define the plugin estimator for the $\ell_p$-calibration error using $\hat{p}_i$ and $\hat{y}_i$.
+\end{definition}
+
+We now define our improved estimator, which debiases the plugin estimator.
+
+\begin{definition}
+Our estimator for the $\ell_2^2$ error is:
+\[ \hat{E}^2 = \sum_{i=1}^b \hat{p_i} \Big[ (s_i - \hat{y_i})^2 - \frac{\hat{y_i}(1 - \hat{y_i})}{n-1} \Big] \]
+\end{definition}
+
+An important condition for verifying calibration is $p_i$ cannot be too small.
+
+\begin{definition}
+\label{dfn:low-bal}
+We say a model is $k$-lower-balanced if $p(X = s_i) \geq \frac{1}{kB}$ for all $i$.
+\end{definition}
+ 
+We now analyze the two estimators. The main results are that to check if the $\ell_2^2$ calibration error of a model is $\leq \epsilon^2$, the plugin estimator requires $\Theta(\frac{b}{\epsilon^2})$ samples while our estimator requires $\theta(\frac{\sqrt{b}}{\epsilon^2})$ samples. See Theorem~\ref{thm:final-plugin} and Theorem~\ref{thm:final-ours} for these main results.
+
+\textbf{We use the following notation simplification} to simplify the theorem statements and proofs:
+\[ p_i = P(f(X) = s_i) \]
+\[ y_i^* = \mathbb{E}[Y \; | \; f(X) = s_i] \]
+\[ e_i = (s_i - y_i^*) \]
+
+Then, if we let ${E^*}^2$ denote the actual $\ell_2^2$ calibration error, we have:
+\[ {E^*}^2 = \sum_{i=1}^b p_i e_i^2 \]
+\subsection{Analysis of plugin estimator}
+\begin{lemma}
+\label{lemma:c_n_lemma}
+For some $k > 1$, suppose $p_i \geq \frac{1}{kb}$ for all $i$. Then if $n \geq 3kb \log{\frac{2b}{\delta}}$, we have $P(\forall i . \; |p_i - \hat{p_i}| \leq c(n) p_i) \geq 1 - \delta$ where
+\[ c(n) = \sqrt{\frac{3kb \log{\frac{2b}{\delta}}}{n}} \]
+\end{lemma}
+
+% \begin{lemma}
+% The plugin estimator satisfies the following decomposition:
+% \[ \hat{E}^2 = \underbrace{\sum_{i=1}^b \hat{p_i}e_i^2}_{(1)}  - \underbrace{2\sum_{i=1}^b \hat{p_i}e_i(\hat{y_i} - y_i^*)}_{(2)} + \underbrace{\sum_{i=1}^b \hat{p_i}(\hat{y_i} - y_i^*)^2}_{(3)} \]
+% \end{lemma}
+
+\begin{theorem}
+\label{thm:plugin-bound}
+For some $k > 1$, suppose $p_i \geq \frac{1}{kb}$ for all $i$. Then for the plugin estimator, if $n \geq 3kb \log{\frac{2b}{\delta}}$, with probability at least $1 - 3\delta$:
+\[ | \hat{E_{\mbox{pl}}}^2 - {E^*}^2 | \leq c(n){E^*}^2 + \sqrt{\frac{2(1+c(n)){E^*}^2}{n} \log{\frac{2}{\delta}}} + \frac{b}{2n} \log{\frac{2b}{\delta}} \]
+Where $c(n)$ is defined in Lemma~\ref{lemma:c_n_lemma}
+\end{theorem}
+
+% Theorem~\ref{thm:plugin-bound} gives a sample complexity bound for the estimation error. In many cases we are interested in checking if our model has calibration error $\leq \epsilon$. In other words, we are given $\epsilon$. If the calibration error is $> \epsilon$, then with probability at least $1 - \delta$ we should output that it is not calibrated. $1-\delta$ is the significance of the test. If the calibration error is $< r\epsilon$, then with probability at least $1 - \delta'$, we should output that the model is calibrated. $1 - \delta'$ is the power at effect size $r < 1$. Typically, we will choose $\delta = \delta'$.
+Typically, we are interested in checking if our model has calibration error $\leq \epsilon$. In other words, we are given $\epsilon, \delta > 0$ and effect size $r < 1$. If the calibration error is $> \epsilon$, then with probability at least $1 - \delta$ we should output that it is not calibrated. If the calibration error is $< r\epsilon$, then with probability at least $1 - \delta$, we should output that the model is calibrated. Another way of thinking about this is that we want to estimate the calibration error within a constant multiplicative factor.
+
+\begin{theorem}
+\label{thm:final-plugin}
+Using the plugin estimator $\hat{E}_{\mbox{pl}}$, if $n = \Theta(kb + \frac{b}{\epsilon^2})$ ignoring $\log$ factors, we can check if ${E^*}^2 \leq \epsilon^2$ with failure probability $\delta$, and constant effect size $r$. 
+\end{theorem}
+
+% \begin{corollary}
+% \label{cor:final-plugin}
+% Using the plugin estimator $\hat{E}_{\mbox{pl}}$, if $n = \Theta(kb + \frac{b}{\epsilon^2})$ ignoring $\log$ factors, we can check if $|{E^*} | \leq \epsilon$ with significance and power $\delta$, and constant effect size $r$. 
+% \end{corollary}
+
+\subsection{Analysis of our estimator}
+
+\begin{theorem}
+\label{thm:our-bound}
+For some $k > 1$, suppose $p_i \geq \frac{1}{kb}$ for all $i$. Then for the plugin estimator, if $n \geq 3kb \log{\frac{2b}{\delta}}$, with probability at least $1 - 4\delta$:
+\[ | \hat{E}^2 - {E^*}^2 | \leq c(n){E^*}^2 + \sqrt{\frac{2(1+c(n)){E^*}^2}{n} \log{\frac{2}{\delta}}} + \frac{1}{n} + \frac{\sqrt{b}}{n}\log{\frac{4n}{\delta}} \log{\frac{2}{\delta}}\]
+Where $c(n)$ is defined in Lemma~\ref{lemma:c_n_lemma}
+\end{theorem}
+
+\begin{theorem}
+\label{thm:final-ours}
+Using our estimator $\hat{E}$, if $n = \Theta(kb + \frac{\sqrt{b}}{\epsilon^2})$ ignoring $\log$ factors, we can check if ${E^*}^2  \leq \epsilon^2$ with failure probability $\delta$, and constant effect size $r$. 
+\end{theorem}
+
+% This means that our estimator has a substantially better dependency on the number of outputs of the model.
+
+% \begin{corollary}
+% \label{cor:final-ours}
+% Using our estimator $\hat{E}$, if $n = \Theta(kb + \frac{\sqrt{b}}{\epsilon^2})$ ignoring $\log$ factors, we can check if $|{E^*} | \leq \epsilon$ with significance and power $\delta$, and constant effect size $r$. 
+% \end{corollary}

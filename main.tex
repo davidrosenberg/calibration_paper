@@ -1,0 +1,134 @@
+\documentclass{article}
+
+% if you need to pass options to natbib, use, e.g.:
+%     \PassOptionsToPackage{numbers, compress}{natbib}
+% before loading neurips_2019
+
+% ready for submission
+\usepackage{neurips_2019}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{xcolor}
+\usepackage{thmtools, thm-restate}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+
+
+% \newcommand{\pl}[1]{}
+% \newcommand{\tm}[1]{}
+% \newcommand{\ak}[1]{}
+
+\newcommand{\pl}[1]{\textcolor{red}{[PL: #1]}}
+\newcommand{\tm}[1]{\textcolor{red}{[TM: #1]}}
+\newcommand{\ak}[1]{\textcolor{red}{[AK: #1]}}
+
+
+\graphicspath{ {images/} }
+
+% to compile a preprint version, e.g., for submission to arXiv, add add the
+% [preprint] option:
+%     \usepackage[preprint]{neurips_2019}
+
+% to compile a camera-ready version, add the [final] option, e.g.:
+    %  \usepackage[final]{neurips_2019}
+
+% to avoid loading the natbib package, add option nonatbib:
+%     \usepackage[nonatbib]{neurips_2019}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+
+\newcommand{\argmax}{\mathop{\mbox{argmax}}}
+\newcommand{\argmin}{\mathop{\mbox{argmin}}}
+\newcommand{\argsup}{\mathop{\mbox{argsup}}}
+\newcommand{\bins}{\mathcal{B}}
+
+\title{Variance Reduced Uncertainty Calibration}
+
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to LaTeX to determine where to break the
+% lines. Using \AND forces a line break at that point. So, if LaTeX puts 3 of 4
+% authors names on the first line, and the last on the second line, try using
+% \AND instead of \And before the third author name.
+
+\author{%
+  David S.~Hippocampus\thanks{Use footnote for providing further information
+    about author (webpage, alternative address)---\emph{not} for acknowledging
+    funding agencies.} \\
+  Department of Computer Science\\
+  Cranberry-Lemon University\\
+  Pittsburgh, PA 15213 \\
+  \texttt{hippo@cs.cranberry-lemon.edu} \\
+  % examples of more authors
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Hi. In applications like weather forecasting and personalized medicine we require that models output calibrated probability estimates - estimates representative of the true likelihood of an event. We discover that previous calibration methods like Platt scaling and temperature scaling are (i) less calibrated than reported and (ii) we do not know how miscalibrated they are, because prior work only gives lower bounds for their calibration error. Other methods like histogram binning are sample inefficient -- the number of samples required scales linearly with the number of model outputs. To solve these problems, we introduce the variance-reduced calibrator. The variance-reduced calibrator first fits a parametric function -- which acts like a baseline for variance reduction -- and then bins the function values to actually ensure calibration. We then turn to an important question: how do we verify calibration? We introduce a new estimator for the calibration error that requires fewer samples. We prove finite sample guarantees for all our results, and validate our theory with multi-class calibration experiments on CIFAR-10, where we get an X\% lower calibration error than histogram binning.
+
+% In many applications, outputting calibrated probability estimates -- probability estimates representative of the true frequency of an event happening -- is as important as obtaining high accuracy. We show, both in theory and practice, that past work on calibration underestimates the calibration error of models, for example by over $50\%$ on CIFAR-10. We introduce a verified-calibration wrapper -- given an uncalibrated model and a small amount of data, our method will return a calibrated model and an upper bound on its calibration error. The overarching approach is simple -- \pl{use parallel structure: do a, do b, do c} we post-process with methods like Platt Scaling, then discretize the outputs of the model in a way that ensures the calibration error is measurable, and we introduce a more sample-efficient estimator to measure the calibration error. \pl{somehow figure out how to put the core intuition in} We prove theorems showing that discretization incurs minimal overhead in sample complexity, and has little impact on model quality given by the Brier score. These are backed by experiments on calibrating neural networks on vision and text datasets \pl{what's result?}. Finally, we show issues with past work \pl{careful of tone} on multi-class calibration, and conclude that multi-class calibration is a major open problem. Anonymized code is available on GitHub%
+\end{abstract}
+
+\input{intro}
+
+\input{setup}
+
+\input{platt_not_calibrated}
+
+\input{calibrating_models}
+
+\input{verifying_calibration}
+
+\input{experiments}
+
+\bibliographystyle{unsrt}
+\bibliography{all}
+
+\appendix
+
+\input{appendix}
+% , the $\ell_p$ calibration error is difficult to measure. Previous work 
+
+% The $\ell_p$ calibration error is given by:
+
+% \begin{definition}
+% Let $f^* : \mathcal{X} \to [0, 1]$ be the sharpest calibrator, defined as $f^*(x) = \mathbb{E}_P[Y | X = x]$. 
+% \end{definition}
+
+% \begin{definition}
+% Given $f : \mathcal{X} \to [0, 1]$, we define $\omega(f) : \mathcal{X} \to [0, 1]$ by $\omega(f)(x) = \mathbb{E}_P[Y | f(X) = x]$. That is, $\omega(f)$ is the calibrated version of $f$. If $f$ is injective, then $\omega(f) = f^*$, but otherwise $\omega(f) \neq f^*$. 
+% \end{definition}
+
+% We focus on the $\ell_2$ calibration error metric, which is the most commonly used metric.
+
+% \begin{definition}
+% Given $f, g : \mathcal{X} \to [0, 1]$, we define $||f - g||_2^2 = \mathbb{E}_P[(f(X) - g(X))^2]$ and $||f- g||_2 = \sqrt{||f - g||_2^2}$. We then define the calibration error as $\ell_2\mbox{-CE}(f) = ||f - \omega(f))||_2$.
+% \end{definition}
+
+
+\end{document}
