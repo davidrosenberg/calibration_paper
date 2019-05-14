@@ -6,13 +6,12 @@
 Let $\mathcal{X} \subseteq \mathbb{R}^d$ and $\mathcal{Y} = \{0, 1\}$. Let $X \in \mathcal{X}$ and $Y \in \mathcal{Y}$ be random variables denoting the input and label, given by an unknown joint distribution $P(X, Y)$.
 Suppose we have a model $f : \mathcal{X} \to [0, 1]$ where the output of the model represents the model's confidence that the label is 1.
 
-\begin{definition}(Perfect calibration) \tm{sometimes it's good to add a short phrase in bracket or parenthesis to indicate what the definition is about}
+\begin{definition}[Perfect calibration]
 $f : \mathcal{X} \to [0, 1]$ is perfectly calibrated if $p = E[Y \; | \; f(X) = p]$ for all $p \in [0, 1]$.
 \end{definition}
 
-\begin{definition}(Calibration error) \tm{the same rationale as above, consider doing the same for other definitions as well}
-\label{def:l2_calib_error}
-For $p \geq 1$, the $\ell_p$ calibration error of a model $f : \mathcal{X} \to [0, 1]$ is given by:
+\begin{definition}[Calibration error]
+For $p \geq 1$, the $\ell_p$ calibration error of $f : \mathcal{X} \to [0, 1]$ is given by:
 \[ \ell_p\mbox{-CE}(f) = \Big(E\big[ (f(X) - E[Y \; | \; f(X)])^p \big] \Big)^{1/p} \]
 \end{definition}
 
@@ -24,22 +23,22 @@ We typically want our model to be a predictive as possible, subject to a calibra
 For example, we may wish to maximize the Brier score -- also known as the mean-squared error -- as defined below.
 
 \begin{definition}
-$\mbox{MSE}(f) = \mathbb{E}[(f(X) - Y)^2]$.\tm{always need some texts to explain the context. If we wanted to save space, then can consider merge some of the definitions with simpler contexts/notations}
+The mean-squared error of $f : \mathcal{X} \to [0, 1]$ is given by $\mbox{MSE}(f) = \mathbb{E}[(f(X) - Y)^2]$.
 \end{definition}
 
 \subsection{Multi-class classification}
 
 In the multi-class setting, $\mathcal{Y} = [k]$ and we have a model $f : \mathcal{X} \to [0, 1]^k$.
 
-\begin{definition}
-We say $f$ is perfectly top-label calibrated if the top prediction is calibrated:
+\begin{definition}[Top-label calibration]
+$f$ is perfectly top-label calibrated if the top prediction is calibrated:
 \[ P\Big(Y = \argmax_{j \in [k]} M(X)_j \; | \; \max_{j \in [k]} M(X)_j = p\Big) \quad \forall p \in [0, 1] \]
 \end{definition}
 
 We would often like the model to be calibrated on less likely predictions as well -- imagine that a medical diagnosis system says there is a $50\%$ chance a patient has a benign tumor, a $10\%$ chance she has an aggressive form of cancer, and a $40\%$ chance she has one of a long list of other conditions.
 
-\begin{definition}
-We say $f$ is perfectly marginal-calibrated if the prediction for each label is calibrated:
+\begin{definition}[Marginal calibration]
+$f$ is perfectly marginal-calibrated if the prediction for each label is calibrated:
 \[ P\Big(y = j \; | \; f_j(x) = p\Big) = p \quad \forall p \in [0, 1], j \in [k] \]
 \end{definition}
 
@@ -49,7 +48,7 @@ In the Appendix we discuss other notions of multi-class calibration.
 For each of these notions of calibration, we can define associated calibration errors.
 Let $P(j)$ denote the probability of class $j$ -- if there is no class balance $P(j) = \frac{1}{k}$ for all $j$.
 
-\begin{definition}
+\begin{definition}[Marginal calibration error]
 The $\ell_2^2$ marginal calibration error is:
 \[ \ell_2^2(f) = \sum_{j = 1}^k P(j) \mathbb{E}\big[ (M(X)_j - E[Y = j \; | \; M(X)_j])^2 \big] \]
 \end{definition}

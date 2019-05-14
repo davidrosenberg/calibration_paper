@@ -1,15 +1,11 @@
 \section{Verifying calibration}
 \label{sec:verifying_calibration}
 
-We show that if a model outputs values from some finite set $S$,\footnote{The model can choose the set $S$.} and the probability of outputting each value $s \in S$ is not too small (Definition~\ref{dfn:low-bal}), then we can estimate its calibration error. Further, we propose a new estimator and show that it has better sample complexity than previous approaches.
+If a model outputs values from some finite set $S$,\footnote{The model can choose the set $S$.} and the probability of outputting each value $s \in S$ is not too small, then we can estimate its calibration error. The plugin estimator requires samples proportional to the number of model outputs $|S|$. Instead, we introduce the \emph{cancelling} estimator that requires samples proportional to $\sqrt{|S|}$. We prove these finite sample guarantees (Theorem~\ref{thm:final-ours}), and show experimental evidence that our estimators approximate the calibration error better. We show, experimentally, that using a better estimator allows us to pick out better models.
 
-We focus our analysis on the $\ell_2^2$ calibration error, which is commonly used in the literature. The plugin estimator, which is used in prior work, requires samples proportional to the number of model outputs $|S|$. Instead, we give an alternative estimator that requires samples proportional to $\sqrt{|S|}$. We prove these finite sample guarantees, and show experimental evidence that our estimators approximate the calibration error better, especially when $|S|$ is large.
+The plugin estimator directly estimates each term in the $\ell_2^2$ calibration error from samples. Suppose we wish to measure the calibration error of a model $f : \mathcal{X} \to S$ where $S \subseteq [0, 1]$. Order the elements in $S$: $s_1 < s_2 < \dots < s_B$, where $B = |S|$ denotes the number of model outputs. Suppose we get an evaluation set $T_n = \{(x_1, y_1), \dots, (x_n, y_n)\}$ sampled i.i.d. from $P(X, Y)$.
 
-As we show in the next section, using a better estimator allows us to pick out better models. It turns out that evaluating the calibration error can often require more samples than calibrating a model. 
-
-We begin by defining the plugin estimator -- where we directly estimate each term in the calibration error from samples. Suppose we wish to measure the calibration error of a model $f : \mathcal{X} \to S$ where $S \subseteq [0, 1]$. Order the elements in $S$: $s_1 < s_2 < \dots < s_B$, where $B = |S|$ denotes the number of model outputs. Suppose we get an evaluation set $T_n = \{(x_1, y_1), \dots, (x_n, y_n)\}$ sampled i.i.d. from $P(X, Y)$.
-
-\begin{definition}
+\begin{definition}[Plugin estimator]
 Let $R_i = \{ y_j \; | \; (x_j, y_j) \in T_n\wedge f(x_j) = s_i \}$ denote the label values where the model outputs $s_i$.
 
 We estimate $E[Y | f(X) = s_i]$ as:
@@ -18,14 +14,13 @@ We estimate $P(f(X) = s_i)$ by:
 \[ \hat{p_i} = \frac{|R_i|}{n} \]
 Then the plugin estimator for the $\ell_2^2$ error is:
 \[ \hat{E}_{\mbox{pl}}^2 = \sum_{i=1}^b \hat{p_i} (s_i - \hat{y_i})^2 \]
-We can similarly define the plugin estimator for the $\ell_p$-calibration error using $\hat{p}_i$ and $\hat{y}_i$.
 \end{definition}
 
 We now define our improved estimator, which debiases the plugin estimator.
 
-\begin{definition}
-Our estimator for the $\ell_2^2$ error is:
-\[ \hat{E}^2 = \sum_{i=1}^b \hat{p_i} \Big[ (s_i - \hat{y_i})^2 - \frac{\hat{y_i}(1 - \hat{y_i})}{n-1} \Big] \]
+\begin{definition}[Cancelling estimator]
+The cancelling estimator for the $\ell_2^2$ error is:
+\[ \hat{E}^2 = \sum_{i=1}^b \hat{p_i} \Big[ (s_i - \hat{y_i})^2 - \frac{\hat{y_i}(1 - \hat{y_i})}{\hat{p_i}n-1} \Big] \]
 \end{definition}
 
 An important condition for verifying calibration is $p_i$ cannot be too small.
