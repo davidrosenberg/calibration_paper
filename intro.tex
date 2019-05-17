@@ -24,7 +24,7 @@ Popular recalibration approaches include Platt scaling~\cite{platt1999probabilis
 % methods try to calibrate, but do they actually achieve it?
 % }
 
-\emph{We discover that many of these methods are less calibrated than reported.} Estimating the calibration of models can be very challenging, so past work approximates a model's calibration error using a finite set of bins. We show that by using more bins, we can uncover a higher calibration error for models on CIFAR-10 and ImageNet (Figure~\ref{fig:ce_vs_bins}). This is a fundamental limitation with approaches that output a continuous range of probabilities -- we show that their true calibration error may never be measurable with a finite number of bins (Example~\ref{ex:continuous-not-calibrated}).
+\emph{We discover that these methods are less calibrated than reported.} Estimating the calibration of models can be very challenging, so past work approximates a model's calibration error using a finite set of bins. We show that by using more bins, we can uncover a higher calibration error for models on CIFAR-10 and ImageNet (Figure~\ref{fig:lower_bounds}). This is a fundamental limitation with approaches that output a continuous range of probabilities -- we show that their true calibration error may never be measurable with a finite number of bins (Example~\ref{ex:continuous-not-calibrated}).
 
 An alternative approach, histogram binning~\cite{zadrozny2001calibrated}, outputs probabilities from a finite set.
 Histogram binning can produce a model that is calibrated, and verifiably so, but it can be sample inefficient.
@@ -34,13 +34,13 @@ Recalibration sample efficiency is crucial -- we often want to recalibrate our m
 To get the sample efficiency of Platt scaling and the verification guarantees of histogram binning, \emph{we propose the variance-reduced calibrator} (Figure~\ref{fig:var_red_binning}).
 As with other recalibration methods, we begin with a recalibration dataset $\{(z_1, y_1), ..., (z_n, y_n)\}$, where $z_i$ represents the uncalibrated model output and $y_i$ the ground truth label.
 In the binary classification setting, $z_i \in [0, 1]$ and $y_i \in \{0, 1\}$.
-We fit a simple function $f \in \mathcal{F}$ to the recalibration dataset.
-We then bin the input space so that an equal number of $f(z_i)$ land in each bin.
-In each bin, we output the average of the $f(z_i)$ values in that bin -- these are the gray circles in Figure~\ref{fig:var_red_binning}.
+We fit a simple function $g \in \mathcal{G}$ to the recalibration dataset.
+We then bin the input space so that an equal number of $g(z_i)$ land in each bin.
+In each bin, we output the average of the $g(z_i)$ values in that bin -- these are the gray circles in Figure~\ref{fig:var_red_binning}.
 Binning ensures that the output probabilities are from a finite set, so we can check if it is calibrated.
 In contrast, histogram binning takes the average of the $y_i$ values in each bin (Figure~\ref{fig:hist_binning}).
-The motivation behind our method is that the $f(z_i)$ values in each bin are in a narrower range than the $y_i$ values -- when we take the average we incur less of an estimation error.
-If $\mathcal{F}$ is well chosen, our method requires $O(\frac{1}{\epsilon^2})$ samples to achieve calibration error $\epsilon$ instead of $O(\frac{B}{\epsilon^2})$ samples for histogram binning, where $B$ is the number of model outputs (Theorem~\ref{thm:final-calib}).
+The motivation behind our method is that the $g(z_i)$ values in each bin are in a narrower range than the $y_i$ values -- when we take the average we incur less of an estimation error.
+If $\mathcal{G}$ is well chosen, our method requires $O(\frac{1}{\epsilon^2})$ samples to achieve calibration error $\epsilon$ instead of $O(\frac{B}{\epsilon^2})$ samples for histogram binning, where $B$ is the number of model outputs (Theorem~\ref{thm:final-calib}).
 
 
 \begin{figure}
@@ -70,14 +70,14 @@ If $\mathcal{F}$ is well chosen, our method requires $O(\frac{1}{\epsilon^2})$ s
         The black crosses are the ground truth labels, and the red lines are the output of the recalibration methods.
         Platt Scaling (Figure~\ref{fig:platt_scaling}) fits a function to the recalibration data, but its calibration error is not measurable.
         Histogram binning (Figure~\ref{fig:hist_binning}) outputs the average label in each bin.
-        Our variance-reduced binning (Figure~\ref{fig:var_red_binning}) fits a function $f \in \mathcal{F}$ to the recalibration data and then \emph{takes the average of the function values (the gray circles)} in each bin.
+        Our variance-reduced binning (Figure~\ref{fig:var_red_binning}) fits a function $g \in \mathcal{G}$ to the recalibration data and then \emph{takes the average of the function values (the gray circles)} in each bin.
         The function values have lower variance than the labels, as visualized by the blue dotted lines, which is why our approach has lower variance. 
         }
         \label{fig:variance_reduced_illustration}
 \end{figure}
 
 Next, we turn to the important question of efficiently measuring the calibration error of a model.
-Prior work uses the plugin estimator for the calibration error (Definition~\ref{def:l2_calib_error})~\cite{nguyen2015posterior, guo2017calibration, hendrycks2019anomaly, kuleshov2015calibrated, hendrycks2019pretraining}.
+Prior work~\cite{nguyen2015posterior, guo2017calibration, hendrycks2019anomaly, kuleshov2015calibrated, hendrycks2019pretraining} uses the plugin estimator for the calibration error (Definition~\ref{dfn:plugin-estimator}).
 Here, again, the sample complexity of the plugin estimator scales linearly with the number of model outputs $B$.
 By taking advantage of error cancellations across bins, \emph{we introduce the cancelling estimator}.
 We show that the sample complexity of our estimator scales with $\sqrt{B}$ (Theorem~\ref{thm:final-ours}).

@@ -95,4 +95,10 @@ M.~H. DeGroot and S.~E. Fienberg.
 \newblock {\em Journal of the Royal Statistical Society. Series D (The
   Statistician)}, 32:12--22, 1983.
 
+\bibitem{kull2017sigmoids}
+M.~Kull, T.~M.~S. Filho, and P.~Flach.
+\newblock Beyond sigmoids: How to obtain well-calibrated probabilities from
+  binary classifiers with beta calibration.
+\newblock {\em Electronic Journal of Statistics}, 11:5052--5080, 2017.
+
 \end{thebibliography}
