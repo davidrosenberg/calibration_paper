@@ -1,0 +1,9 @@
+\section{Comparison to related work}
+
+Calibration, including the $\ell_2^2$ calibration error and its connection to the Brier score, has been explored extensively in the statistics literature. Its importance has been emphasized in medicine, natural language processing~\cite{jiang2012calibrating}, speech recognition, meteorology, econometrics, and psychology.
+
+Our work is inspired in part by recent work on calibration. In these papers, binning is used to \emph{evaluate} the calibration error of models. As we show, binning underestimates the calibration error. This is inspired by the classical data processing inequality in information theory, which tells us that binning gives us a lower bound for the mutual information between two continuous random variables. A key difference in our variance-reduced calibration method is that binning is part of the calibration procedure. The way we choose bins is also different from (cite) and crucial for our theoretical guarantees and practical performance.
+
+Our variance reduced calibration approach is also inspired by classical variance reduction techniques like control variates. Add stuff here.
+
+Add stuff about estimators. Debiasing. James Stein.

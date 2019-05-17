@@ -49,6 +49,7 @@ For each of these notions of calibration, we can define associated calibration e
 Let $P(j)$ denote the probability of class $j$ -- if there is no class balance $P(j) = \frac{1}{k}$ for all $j$.
 
 \begin{definition}[Marginal calibration error]
+\label{dfn:marginal-ce}
 The $\ell_2^2$ marginal calibration error is:
 \[ \ell_2^2(f) = \sum_{j = 1}^k P(j) \mathbb{E}\big[ (M(X)_j - E[Y = j \; | \; M(X)_j])^2 \big] \]
 \end{definition}
