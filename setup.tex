@@ -3,21 +3,37 @@
 
 \subsection{Binary classification}
 
-Let $\mathcal{X} \subseteq \mathbb{R}^d$ and $\mathcal{Y} = \{0, 1\}$. Let $X \in \mathcal{X}$ and $Y \in \mathcal{Y}$ be random variables denoting the input and label, given by an unknown joint distribution $P(X, Y)$.
+Let $\mathcal{X} \subseteq \mathbb{R}^d$ and $\mathcal{Y} = \{0, 1\}$.
+\pl{if we don't depend on the concrete choices, then make it clear these are examples; if we do depend on them, then don't introduce the abstraction}
+\pl{I suspect you want $\mathcal{X}$ always and here you want to take $\mathcal{Y}$ to be $\{0, 1\}$ at least for this section}
+Let $X \in \mathcal{X}$ and $Y \in \mathcal{Y}$ be random variables denoting the input and label, given by an unknown joint distribution $P(X, Y)$.
 Suppose we have a model $f : \mathcal{X} \to [0, 1]$ where the output of the model represents the model's confidence that the label is 1.
+\pl{make clear not necessarily calibrated}
 
 \begin{definition}[Perfect calibration]
-$f : \mathcal{X} \to [0, 1]$ is perfectly calibrated if $p = E[Y \; | \; f(X) = p]$ for all $p \in [0, 1]$.
+$f : \mathcal{X} \to [0, 1]$ is perfectly calibrated if $E[Y \; | \; f(X) = p] = p$ for all $p \in [0, 1]$.
 \end{definition}
+\pl{we don't ever need this definition, so in the interest of streamlining things,
+I'd introduce calibration error first, and then say if calibration is zero, it is perfectly calibrated, and give that definition}
 
+\pl{use $\mathbb P$ and $\mathbb E$ for probabiltiy and expectation (define
+macros for these); in general, you can define more macros for things you're
+going to use over and over again}
+
+\pl{in general, before introducing a formula, I always try to give the informal English description that conveys the core essence;
+here it'd be: something like 'calibration error, which examines the difference between the model's probability and true probability given the model's output'}
 \begin{definition}[Calibration error]
 For $p \geq 1$, the $\ell_p$ calibration error of $f : \mathcal{X} \to [0, 1]$ is given by:
 \[ \ell_p\mbox{-CE}(f) = \Big(E\big[ (f(X) - E[Y \; | \; f(X)])^p \big] \Big)^{1/p} \]
 \end{definition}
+\pl{I like to use align for everything so equations be referencable}
+\pl{$\ell_p\mbox{-CE}$ - is this standard? looks super awkward; can we do $\text{CE}_p$ or something? in any case, put it behind a macro}
 
-We primarily focus on the $\ell_2^2$ calibration error, defined as $\ell_2^2\mbox{-CE}(f) = (\ell_2\mbox{-CE}(f))^2$, because of its popularity in the literature~\cite{nguyen2015posterior, hendrycks2019anomaly, kuleshov2015calibrated, hendrycks2019pretraining} and its intimate connection to the Brier score~\cite{murphy1973vector,degroot1983forecasters}.
+\pl{also say what $p$'s are interesting - or else, why have the generality? we mostly care about $p = 2$, right?}
 
-Calibration alone is not sufficient -- consider an image dataset containing $50\%$ dogs and $50\%$ cats.
+We primarily focus on the $\ell_2^2$ calibration error, defined as $\ell_2^2\mbox{-CE}(f) = (\ell_2\mbox{-CE}(f))^2$ \pl{don't need this}, because of its popularity in the literature~\cite{nguyen2015posterior, hendrycks2019anomaly, kuleshov2015calibrated, hendrycks2019pretraining} and its intimate \pl{what's intimate about this - that it's squared? weird that it's just mentioned in passing and then explained later} connection to the Brier score~\cite{murphy1973vector,degroot1983forecasters}.
+
+Calibration alone is not sufficient: consider an image dataset containing $50\%$ dogs and $50\%$ cats.
 If $f$ outputs $0.5$ on all inputs, $f$ is calibrated but not very useful.
 We typically want our model to be a predictive as possible, subject to a calibration constraint.
 For example, we may wish to maximize the Brier score -- also known as the mean-squared error -- as defined below.
@@ -25,37 +41,51 @@ For example, we may wish to maximize the Brier score -- also known as the mean-s
 \begin{definition}
 The mean-squared error of $f : \mathcal{X} \to [0, 1]$ is given by $\mbox{MSE}(f) = \mathbb{E}[(f(X) - Y)^2]$.
 \end{definition}
+\pl{summarize: want calibration to be small but also MSE (of course these are not orthogonal because MSE = 0 also means calibrated)}
 
 \subsection{Multi-class classification}
 
-In the multi-class setting, $\mathcal{Y} = [k]$ and we have a model $f : \mathcal{X} \to [0, 1]^k$.
+\pl{need more commentary; here's a great place to say: while calibration in binary classification is well-studied,
+it's less clear what you do for multi-class, where multiple definitions abound, differing in their strength}
+In the multi-class setting, $\mathcal{Y} = [k]$ \pl{explain this is $\{1, \dots, k\}$ since might not be completely standard notation}
+and we have a model $f : \mathcal{X} \to [0, 1]^k$.
+\pl{emphasize that $f$ must output a probability distribution over $[k]$}
+\pl{nit: I generally like using $K$ for number of labels because $k$ is often an index}
 
 \begin{definition}[Top-label calibration]
-$f$ is perfectly top-label calibrated if the top prediction is calibrated:
+$f$ is perfectly top-label calibrated if the top prediction is calibrated \pl{sounds like a tautology; can explain more}:
 \[ P\Big(Y = \argmax_{j \in [k]} M(X)_j \; | \; \max_{j \in [k]} M(X)_j = p\Big) \quad \forall p \in [0, 1] \]
 \end{definition}
+\pl{can we define the calibration error version}
 
 We would often like the model to be calibrated on less likely predictions as well -- imagine that a medical diagnosis system says there is a $50\%$ chance a patient has a benign tumor, a $10\%$ chance she has an aggressive form of cancer, and a $40\%$ chance she has one of a long list of other conditions.
+\pl{yes, I'm imagining - so what?}
 
 \begin{definition}[Marginal calibration]
 $f$ is perfectly marginal-calibrated if the prediction for each label is calibrated:
 \[ P\Big(y = j \; | \; f_j(x) = p\Big) = p \quad \forall p \in [0, 1], j \in [k] \]
 \end{definition}
+\pl{again, don't need perfect calibration, define the calibration error directly}
 
 Note that prior works~\cite{guo2017calibration, hendrycks2019anomaly, hendrycks2019pretraining} often claim to perform multi-class calibration but only measure top-label calibration.
 % In the Appendix we discuss other notions of multi-class calibration.
 
 For each of these notions of calibration, we can define associated calibration errors.
-Let $P(j)$ denote the probability of class $j$ -- if there is no class balance $P(j) = \frac{1}{k}$ for all $j$.
+Let $P(j)$ denote the probability of class $j$ -- if there is no class \pl{im}balance $P(j) = \frac{1}{k}$ for all $j$. \pl{not sure you need this}
 
+\pl{English description, and explain how this is stronger than top-label calibration}
 \begin{definition}[Marginal calibration error]
 \label{dfn:marginal-ce}
 The $\ell_2^2$ marginal calibration error is:
 \[ \ell_2^2(f) = \sum_{j = 1}^k P(j) \mathbb{E}\big[ (M(X)_j - E[Y = j \; | \; M(X)_j])^2 \big] \]
 \end{definition}
+\pl{you're changing notation here and dropping the CE; use the macro}
+
+\pl{is marginal calibration standard terminology? makes sense when compared with joint, but sounds a bit strange in relation to top-label}
 
 For notational simplicity, our theory focuses on binary classification.
 The methods extend trivially to top-label and marginal calibration, so our experiments focus on multi-class calibration.
+\pl{don't say trivial; if it's so trivial, explain it}
 
 % We say $M$ is pooled-calibrated (Kuleshov et al) if $J$ is sampled uniformly at random from $[k]$ and:
 % \[ P\Big(Y = J | f_J(x) = p) \Big) \quad \forall p \]
