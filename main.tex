@@ -7,8 +7,8 @@
 % ready for submission
 \usepackage{neurips_2019}
 \usepackage{amsfonts}
-\usepackage{amsthm}
 \usepackage{amsmath}
+\usepackage{amsthm}
 \usepackage{graphicx}
 \usepackage{caption}
 \usepackage{subcaption}
@@ -89,10 +89,17 @@
 \maketitle
 
 \begin{abstract}
-In applications like weather forecasting and personalized medicine we require that models output calibrated probability estimates - estimates representative of the true likelihood of an event. We discover that previous calibration methods like Platt scaling and temperature scaling are (i) less calibrated than reported and (ii) we do not know how miscalibrated they are, because prior work only gives lower bounds for their calibration error. Other methods like histogram binning are sample inefficient -- they require $O(\frac{B}{\epsilon^2})$ samples to reach calibration error $\epsilon$, where $B$ is the number of model outputs. To solve these problems, we introduce the variance-reduced calibrator. The variance-reduced calibrator first fits a parametric function -- which acts like a baseline for variance reduction -- and then bins the function values to actually ensure calibration. This requires only $O(B + \frac{1}{\epsilon^2})$ samples. We then turn to the question of how to verify calibration. We introduce a new estimator for the calibration error that requires fewer samples -- samples proportional to $\sqrt{B}$ instead of $B$. We prove finite sample guarantees for all our results, and validate our theory with multi-class calibration experiments on CIFAR-10 and ImageNet, where we get a 2x lower calibration error than histogram binning.
-
-% In many applications, outputting calibrated probability estimates -- probability estimates representative of the true frequency of an event happening -- is as important as obtaining high accuracy. We show, both in theory and practice, that past work on calibration underestimates the calibration error of models, for example by over $50\%$ on CIFAR-10. We introduce a verified-calibration wrapper -- given an uncalibrated model and a small amount of data, our method will return a calibrated model and an upper bound on its calibration error. The overarching approach is simple -- \pl{use parallel structure: do a, do b, do c} we post-process with methods like Platt Scaling, then discretize the outputs of the model in a way that ensures the calibration error is measurable, and we introduce a more sample-efficient estimator to measure the calibration error. \pl{somehow figure out how to put the core intuition in} We prove theorems showing that discretization incurs minimal overhead in sample complexity, and has little impact on model quality given by the Brier score. These are backed by experiments on calibrating neural networks on vision and text datasets \pl{what's result?}. Finally, we show issues with past work \pl{careful of tone} on multi-class calibration, and conclude that multi-class calibration is a major open problem. Anonymized code is available on GitHub%
+Applications such as weather forecasting and personalized medicine demand models that output calibrated probability estimates---those representative of the true likelihood of a prediction.
+  \pl{say: Scaling methods fit a parametric model are great, because requires $O(1/\epsilon^2)$ samples, but we find in this work that...}
+In this paper, we first show that previous calibration methods like Platt scaling and temperature scaling are (i) less calibrated than reported and (ii) we do not know how miscalibrated they are, because prior work only gives lower bounds for their calibration error \pl{reframe this: previous work (possibly some of our reviewers) did not think they were giving lower bounds; should say instead that methods used by previous work to assess calibration underestimate the true calibration error}.
+  Other methods \pl{what other methods?} like histogram binning are sample inefficient -- they require $O(\frac{B}{\epsilon^2})$ samples to reach calibration error $\epsilon$, where $B$ is the number of model outputs \pl{be clear: which model? this looks like you're talking about number of classes; which is coincidentally what you want, I guess!}. To solve these problems, we introduce the variance-reduced calibrator.
+  The variance-reduced calibrator first fits a parametric function -- which acts like a baseline for variance reduction -- and then bins the function values to actually ensure calibration. This requires only $O(B + \frac{1}{\epsilon^2})$ samples. \pl{we can join some sentences to make it flow better}
+  \pl{compress: We also introduce a new estimator for verifying...}
+  We then turn to the question of how to verify calibration. We introduce a new estimator for the calibration error that requires fewer samples -- samples proportional to $\sqrt{B}$ instead of $B$. We prove finite sample guarantees for all our results, and validate our theory with multi-class calibration experiments on CIFAR-10 and ImageNet, where we get a 2x lower calibration error than histogram binning. \pl{and guarantees on true calibration unlike scaling methods}
 \end{abstract}
+
+\pl{Writing tip: find ways to group statements into single sentences so that you get some hierarchical structure:
+each sentence should express a set of related ideas, and important ideas are at the beginning of sentences}
 
 \input{intro}
 
