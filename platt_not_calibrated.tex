@@ -33,7 +33,7 @@ Given a model $f : \mathcal{X} \to [0, 1]$ and a binning scheme $\mathcal{B}$, f
 Then the binned $\ell_p$ calibration error is given by:
 \[ \ell_p\mbox{-CE}(f, B) = \Big( \sum_{j=1}^B P(f(X) \in I_j) \left|\bar{f}(I_j) - \bar{Y}(I_j) \right|^p  \Big)^{1/p} \]
 \end{definition}
-% \tm{I am not sure we need this definition. does it suffice to talk about the calibration error of the binned function, and say that's what people are doing? Or at least it seems that the notion above should be defined through the calibration error of the binned function}
+\tm{I am not sure we need this definition. does it suffice to talk about the calibration error of the binned function, and say that's what people are doing? Or at least it seems that the notion above should be defined through the calibration error of the binned function}
 
 A simple example shows that the binned $\ell_p$ calibration error can severely underestimate the true $\ell_p$ calibration error, even for $p=1$, the average calibration error.
 
