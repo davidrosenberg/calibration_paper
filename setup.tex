@@ -29,6 +29,8 @@ For $p \geq 1$, the $\ell_p$ calibration error of $f : \mathcal{X} \to [0, 1]$ i
 \pl{I like to use align for everything so equations be referencable}
 \pl{$\ell_p\mbox{-CE}$ - is this standard? looks super awkward; can we do $\text{CE}_p$ or something? in any case, put it behind a macro}
 
+\pl{also say what $p$'s are interesting - or else, why have the generality? we mostly care about $p = 2$, right?}
+
 We primarily focus on the $\ell_2^2$ calibration error, defined as $\ell_2^2\mbox{-CE}(f) = (\ell_2\mbox{-CE}(f))^2$ \pl{don't need this}, because of its popularity in the literature~\cite{nguyen2015posterior, hendrycks2019anomaly, kuleshov2015calibrated, hendrycks2019pretraining} and its intimate \pl{what's intimate about this - that it's squared? weird that it's just mentioned in passing and then explained later} connection to the Brier score~\cite{murphy1973vector,degroot1983forecasters}.
 
 Calibration alone is not sufficient: consider an image dataset containing $50\%$ dogs and $50\%$ cats.
