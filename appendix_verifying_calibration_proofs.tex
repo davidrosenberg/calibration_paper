@@ -1,1 +1,225 @@
+\newpage
+
+\section{Proofs for section~\ref{sec:verifying_calibration}}
+
 \pl{I hope these exist somewhere :-)}
+
+In this section we prove the finite sample bounds for the plugin and canceling estimators. We follow a very similar structure for both the plugin estimator and the canceling estimators.
+
+We first give a proof for the plugin estimator. At a high level, we decompose the plugin estimator into three terms (Lemma~\ref{lem:plugin_decomp}), and then bound each of these terms. Most of these terms simply involve algebraic manipulation and standard concentration results, except Lemma~\ref{lem:p2_bound} which requires some tricky conditioning.
+
+The canceling estimator decomposes into three terms as well, two of these terms are the same as those in the plugin estimator. Bounding the third term (Lemma~\ref{lem:c3_bound}) is the key to the improved sample complexity of the plugin estimator. The canceling estimator is not unbiased. However, with high probability if we condition on the $x_i$s in the evaluation set, each of these error terms is unbiased. We can then use Hoeffding's to concentrate each term near 0. The errors in each bin are then independent which leads to some cancelations of the error terms when we sum them up.
+
+\textbf{We use the following notation simplification} to simplify the theorem statements and proofs:
+\[ p_i = P(f(X) = s_i) \]
+\[ y_i^* = \mathbb{E}[Y \; | \; f(X) = s_i] \]
+\[ e_i = (s_i - y_i^*) \]
+
+Then, if we let ${E^*}^2$ denote the actual $\ell_2^2$ calibration error, we have:
+\[ {E^*}^2 = \sum_{i=1}^b p_i e_i^2 \]
+
+% \begin{lemma}
+% Suppose $p_i > \piSmallBound{}$ for all $i$. Then except with probability $\delta$ for all $i$ we have:
+% \[ |\hat{p_i} - p_i| < \sqrt{\frac{3}{np_i} \log{\frac{2B}{\delta}}} \]
+% % For some $k > 1$, suppose $p_i \geq \frac{1}{kb}$ for all $i$. Then if $n \geq 3kb \log{\frac{2b}{\delta}}$, we have $P(\forall i . \; |p_i - \hat{p_i}| \leq c(n) p_i) \geq 1 - \delta$ where
+% \end{lemma}
+
+We begin by noting that $\hat{p_i}$ is close to $p_i$ for all $i$. This is a standard application of either Bernstein's inequality or the multiplicative Chernoff bound.
+
+\begin{lemma}
+\label{lem:pi_bound}
+Suppose $p_i > \piSmallBound{}$ for all $i$. Then we have $c(n) < 0.5$ and except with probability $\delta$ for all $i$ we have:
+\[ |\hat{p_i} - p_i| < c(n)p_i = \sqrt{\frac{3}{n \min p_i} \log{\frac{2B}{\delta}}} p_i \]
+\end{lemma}
+
+\subsection{Analysis of plugin estimator}
+
+The following lemma is crucial -- we decompose the plugin estimator into three terms that we can bound separately.
+
+\begin{lemma}[Plugin decomposition]
+\label{lem:plugin_decomp}
+The plugin estimator satisfies the following decomposition:
+\[ \pluginEst{} = \underbrace{\sum_{i=1}^b \hat{p_i}e_i^2}_{(P1)}  - \underbrace{2\sum_{i=1}^b \hat{p_i}e_i(\hat{y_i} - y_i^*)}_{(P2)} + \underbrace{\sum_{i=1}^b \hat{p_i}(\hat{y_i} - y_i^*)^2}_{(P3)} \]
+\end{lemma}
+
+\begin{proof}
+The proof is by algebra:
+\begin{align*}
+\pluginEst{} &= \sum_{i=1}^b \hat{p_i}(s_i - \hat{y_i})^2 \\
+&= \sum_{i=1}^b \hat{p_i}[e_i - (\hat{y_i} - y_i^*)]^2 \\
+&= \underbrace{\sum_{i=1}^b \hat{p_i}e_i^2}_{(P1)}  - \underbrace{2\sum_{i=1}^b \hat{p_i}e_i(\hat{y_i} - y_i^*)}_{(P2)} + \underbrace{\sum_{i=1}^b \hat{p_i}(\hat{y_i} - y_i^*)^2}_{(P3)}
+\end{align*}
+\end{proof}
+
+We now bound each of these three terms with the following three lemmas. We condition on $|\hat{p_i} - p_i| < c(n)p_i < 0.5p_i$ for all $i$, which holds with high probability from Lemma~\ref{lem:pi_bound}.
+
+\begin{lemma}[P1]
+\label{lem:p1_bound}
+Suppose $|\hat{p_i} - p_i| < c(n) p_i$ for all $i$. Then
+\[ |(P1) - {E^*}^2| \leq c(n) {E^*}^2 \]
+\end{lemma}
+
+\begin{proof}
+The proof is by algebra. 
+\begin{align*}
+|(P1) - {E^*}^2| &= | \sum_{i=1}^b \hat{p_i}e_i^2 - \sum_{i=1}^b p_i e_i^2 | \\
+&= | \sum_{i=1}^b (\hat{p_i} - p_i) e_i^2 | \\
+&\leq \sum_{i=1}^b |(\hat{p_i} - p_i)| e_i^2 \\
+&\leq \sum_{i=1}^b c(n) p_i e_i^2 \\
+&\leq c(n) \sum_{i=1}^b p_i e_i^2 \\
+&\leq c(n) {E^*}^2
+\end{align*}
+\end{proof}
+
+\begin{lemma}[P2]
+\label{lem:p2_bound}
+Suppose $|\hat{p_i} - p_i| < c(n)p_i < 0.5p_i$ for all $i$. Then with probability $\geq 1 - \delta$:
+\[ |(P2)| \leq \sqrt{\frac{2(1+c(n)){E^*}^2}{n} \log{\frac{2}{\delta}}} \]
+\end{lemma}
+
+\begin{proof}
+Recall that we evaluated our estimators on an independent and identically distributed evaluation set $T_n = \{(x_1, y_1), \dots, (x_n, y_n)\}$. Also, note that since $|\hat{p_i} - p_i| < p_i$, $\hat{p_i} > 0$. Let $Z = (f(x_1), \cdots, f(x_n))$ be a random variable. 
+
+$\hat{y_i}$ simply takes the empirical average of the label values, and is therefore an unbiased estimator of $y_i^*$ even if we condition on $Z$:
+\[ \expect[\hat{y_i} - y_i^* \mid Z] = 0 \]
+
+Next we look at the distribution of $\hat{y_i} - y_i^* \mid Z$. For all $(x_j, y_j) \in T_n$, $y_j \in \{0, 1\}$. Additionally, $\{y_j \mid (x_j, y_j) \in T_n\} \mid Z$ is also independently (but not identically) distributed. So by Hoeffding's lemma, $\hat{y_i} - y_i^* \mid Z$ is sub-Gaussian with parameter $\frac{1}{4 \hat{p_i} n}$.
+
+Here, we note that $\hat{p_i}$ is a constant given $Z$.
+Then, we get that $\hat{p_i}e_i(\hat{y_i} - y_i^*) \mid Z$ has expected value $0$ and is sub-Gaussian with parameter:
+\[ \sigma_i^2 = \hat{p_i}^2 e_i^2 \frac{1}{4 \hat{p_i} n} = \frac{\hat{p_i} e_i^2}{4n} \]
+This means that the sum, $(P2)$ has expected value $0$ and is sub-Gaussian with  parameter:
+\[ \sigma^2 = 2^2 \sum_{i=1}^B \sigma_i^2 = 4 \sum_{i=1}^B \frac{\hat{p_i} e_i^2}{4n} \leq \frac{(1+c(n)){E^*}^2}{n} \]
+By applying the sub-Gaussian tail inequality, we get that with probability at least $1-\delta$,
+\[ |(P2)| \leq \sqrt{\frac{2(1+c(n)){E^*}^2}{n} \log{\frac{2}{\delta}}} \]
+Since this was true for all $Z$, this is true if we marginalize over $Z$ as well, which completes the proof.
+\end{proof}
+
+\begin{lemma}[P3]
+\label{lem:p3_bound}
+Suppose $|\hat{p_i} - p_i| < c(n)p_i < 0.5p_i$ for all $i$. Then with probability $\geq 1 - \delta$:
+\[ |(P3)| \leq \frac{B}{2n} \log{\frac{2B}{\delta}} \]
+\end{lemma}
+
+\begin{proof}
+Fix arbitrary $\hat{p_i}$s satisfying $|\hat{p_i} - p_i| < c(n) p_i < 0.5p_i$. Note that this gives us $\hat{p_i} > 0$.
+
+By Hoeffding's bound, for any fixed $i$, with probability at least $1-\frac{\delta}{b}$:
+\[ |\hat{y_i} - y_i^*| \leq \sqrt{\frac{1}{2\hat{p_i}n} \log{\frac{2B}{\delta}}} \]
+Applying union bound over $i = 1, \cdots, B$, we get that the above holds \emph{for all $i$} with probability at least $1 - \delta$. Then with probability at least $1 - \delta$, for all $i$:
+\[ | \hat{p_i} (\hat{y_i} - y_i^*)^2 | \leq \frac{1}{2n} \log{\frac{2B}{\delta}} \]
+Summing over the bins $i = 1, \cdots, B$, we get:
+\[ 0 \leq (P3) \leq \frac{B}{2n} \log{\frac{2B}{\delta}}  \]
+\end{proof}
+
+
+Bounding the error of the plugin estimator simply involves combining the bounds for each of the terms, $P1$, $P2$, $P3$.
+
+\pluginBound*
+
+\begin{proof}
+We have:
+\[ |\pluginEst{} - {E^*}^2| \leq |P1 - {E^*}^2| + |P2| + |P3| \]
+From Lemma~\ref{lem:pi_bound} we have $|\hat{p_i} - p_i| < c(n)p_i < 0.5p_i$ with probability $\geq 1 - \delta$. Conditioning on this, we combine Lemmas~\ref{lem:p1_bound},~\ref{lem:p2_bound},~\ref{lem:p3_bound} with union bound to get the desired result.
+\end{proof}
+
+We then prove the final bound for the plugin estimator.
+
+\finalPlugin*
+
+\begin{proof}
+We first provide an intuitive argument, and then a formal proof. When $r = 0.5$, we intuitively want to distinguish between when ${E^*}^2$ is $\epsilon^2$ and $0.5\epsilon^2$. So we want to bound the confidence interval by a constant factor of $\epsilon^2$ in the regime where ${E^*}^2 \approx \epsilon^2$. Substitute ${E^*}^2 = \epsilon^2$ into the bound in Theorem~\ref{thm:plugin-bound}, and write out the condition that $| \pluginEst{} - {E^*}^2 | \leq \frac{\epsilon^2}{4}$. With some simple algebra, we get $n = \Theta(B + \frac{B}{\epsilon})$.
+
+Now we give the formal proof, which formalizes the above intuition. First, we note that if $n \geq 6B \log{\frac{B}{\delta}}$ then $p_i > \piSmallBound{}$ so this satisfies the requirements to apply Theorem~\ref{thm:plugin-bound}.
+
+Let $\omega = \frac{1-r}{2}$. Note that $r + \omega = 1 - \omega$. We split into two cases. In the first case, we will assume that ${E^*}^2 \leq r \epsilon^2$. We will show that with probability at least $1 - \delta$, $\pluginEst{} \leq (1-\omega) \epsilon^2$. In the second case, we will assume that ${E^*}^2 > \epsilon^2$. We will show that with probability at least $1 - \delta$, $\pluginEst{} > (1-\omega) \epsilon^2$. This then gives us an easy way to hypothesis test between the two cases. That is, we will say the model is probably calibrated iff $\pluginEst{} \leq (1-\omega) \epsilon^2$.
+
+\textbf{Case 1}: Suppose  ${E^*}^2 \leq r \epsilon^2$.
+
+We will show that $| \pluginEst{} - {E^*}^2 | \leq \omega \epsilon^2$ by bounding each of the three term of  $| \pluginEst{} - {E^*}^2 |$ in Theorem~\ref{thm:plugin-bound} by $\frac{\omega}{3}\epsilon^2$.
+
+For the first term, suppose $n \geq (\frac{54r^2}{\omega^2}\log{\frac{2B}{\delta}})B$ . Then $c(n) {E^*}^2 \leq \frac{\omega}{3}\epsilon^2$.
+
+For the second term, we first note that from Lemma~\ref{lem:pi_bound}, $c(n) < 1$. So, we have,
+\[ \sqrt{\frac{2(1+c(n)){E^*}^2}{n} \log{\frac{2}{\delta}}} \leq \sqrt{\frac{4{E^*}^2}{n} \log{\frac{2}{\delta}}} \]
+Then, if $n \geq (\frac{36r^2}{\omega^2} \log{\frac{2}{\delta}})\frac{1}{\epsilon^2}$, we have,
+\[ \sqrt{\frac{4{E^*}^2}{n} \log{\frac{2}{\delta}}} \leq \sqrt{\frac{4r^2\epsilon^2}{n} \log{\frac{2}{\delta}}} \leq \frac{\omega}{3}\epsilon^2 \]
+
+Finally, for the third term, if $n \geq (\frac{3}{2\omega} \log{\frac{2B}{\delta}}) \frac{B}{\epsilon^2}$, then,
+\[ \frac{B}{2n} \log{\frac{2B}{\delta}} \leq \frac{\omega}{3}\epsilon^2 \]
+In total, for constant $\omega$ and ignoring $\log$ factors, this means if $n = \Theta(B + \frac{B}{\epsilon^2})$, then $\hat{E}^2 \leq (1-\omega) \epsilon^2$.
+
+\textbf{Case 2}: Suppose ${E^*}^2 > \epsilon^2$.
+
+It suffices to show that $| \pluginEst{} - {E^*}^2 | \leq \omega {E^*}^2$, because then $\pluginEst{} > (1 - \omega) {E^*}^2 \geq (1 - \omega) \epsilon^2$. As in the previous case, we show this by bounding each of the three terms of  $| \pluginEst{} - {E^*}^2 |$ in Theorem~\ref{thm:plugin-bound} by $\frac{\omega}{3}{E^*}^2$. The proof of this case is nearly identical to the previous case and using the fact that $\epsilon^2 \leq {E^*}^2$.
+
+\end{proof}
+
+\subsection{Analysis of canceling estimator}
+
+Next, we bound the error of our canceling estimator. The proof follows along the lines of the plugin estimator. We begin with a decomposition (Lemma~\ref{lem:canceling_decomp}), similar to the decomposition of the plugin estimator. However, one of the terms in the decomposition, $C3$, is different. Lemma~\ref{lem:c3_bound} bounds this term $C3$. The rest of the proof is the same as for the plugin estimator, so we omit the other proofs.
+
+As with the plugin estimator, we have a decomposition for the canceling estimator.
+
+\begin{lemma}[Canceling decomposition]
+\label{lem:canceling_decomp}
+The canceling estimator satisfies the following decomposition:
+\[ \cancelEst{} = \underbrace{\sum_{i=1}^b \hat{p_i}e_i^2}_{(C1)}  - \underbrace{2\sum_{i=1}^b \hat{p_i}e_i(\hat{y_i} - y_i^*)}_{(C2)} + \underbrace{\sum_{i=1}^b \hat{p_i}\Big[ (\hat{y_i} - y_i^*)^2 - \frac{\hat{y_i}(1 - \hat{y_i})}{\hat{p_i}n-1} \Big]}_{(C3)} \]
+\end{lemma}
+
+As with the plugin estimator, we bound each of the three terms. Notice that $C1$ and $C2$ are the same as terms $P1$ and $P2$ in the plugin estimator decomposition, so the bounds for those carry over. The next lemma bounds the error in $C3$.
+
+\begin{lemma}[C3]
+\label{lem:c3_bound}
+Suppose $|\hat{p_i} - p_i| < c(n) p_i < 0.5 p_i$ for all $i$. Then with probability $\geq 1 - \delta$:
+\[ |(C3)| \leq \frac{3\sqrt{B}}{n} \log{\frac{n}{\delta}} + \frac{\delta}{n} \]
+\end{lemma}
+
+\begin{proof}
+Let $Z = (f(x_1), \cdots, f(x_n))$ be a random variable. We note that for all $i$, $\hat{p_i}$ is a deterministic function of $Z$. For convenience, define $t_i$ as follows:
+\[ t_i = (\hat{y_i} - y_i^*)^2 - \frac{\hat{y_i}(1 - \hat{y_i})}{\hat{p_i}n-1} \]
+
+\textbf{Computing the expectation:} The canceling estimator debiases the plugin estimator. In particular, we briefly explain why $\expect[C3 \mid Z] = 0$. Since $\hat{y_i}$ is the mean of $n\hat{p_i}$ draws of a Bernoulli with parameter $y_i^*$, we have:
+\[ \expect[(\hat{y_i} - y_i^*)^2 \mid Z] = \frac{y_i^*(1 - y_i^*)}{n\hat{p_i}} \] 
+The term we subtracted is the unbiased estimate of the standard deviation of the samples, so from elementary statistics:
+\[ \expect\Big[\frac{\hat{y_i}(1 - \hat{y_i})}{\hat{p_i}n-1} \mid Z\Big] = \frac{y_i^*(1 - y_i^*)}{n\hat{p_i}} \]
+
+% \[ \expect\Big[\frac{\hat{y_i}(1 - \hat{y_i})}{\hat{p_i}n-1} \mid Z\Big] = \frac{\expect[\hat{y_i} \mid Z] - \expect[\hat{y_i}^2 \mid Z]}{\hat{p_i}n-1} \]
+% $\expect[\hat{y_i} \mid Z] = \hat{p_i}$ and $\expect[\hat{y_i}^2 \mid Z] = \frac{\hat{p_i}(1 - \hat{p_i})}{n} + \hat{p_i}^2$. Substituting these in gives us:
+% \[ \expect\Big[\frac{\hat{y_i}(1 - \hat{y_i})}{\hat{p_i}n-1} \mid Z\Big] = \frac{y_i^*(1 - y_i^*)}{n\hat{p_i}} \]
+Which implies that $\expect[C3 \mid Z] = 0$.
+
+\textbf{Bounding each term:} By Hoeffding's bound, for any fixed $i$, we get that with probability at least $1 - \frac{\delta}{n}$: 
+\[ |\hat{y_i} - y_i^*| \leq \sqrt{\frac{1}{2\hat{p_i}n} \log{\frac{2n}{\delta}}} \]
+
+Let $E_i$ be the event that this is indeed the case. Condition on $E_i$ holding for all $i$ -- by union bound this happens with probability at least $1 - \delta$.
+With some algebra, we then get:
+\[ \lvert \hat{p_i}t_i \rvert = \Big\lvert \hat{p_i}\Big[ (\hat{y_i} - y_i^*)^2 - \frac{\hat{y_i}(1 - \hat{y_i})}{\hat{p_i}n-1} \Big] \Big\rvert \leq \frac{3}{2n} \log{\frac{B}{\delta}} \]
+
+\textbf{Concentration:} Next, we analyze the concentration of $T = \big[(C3) \mid Z, \forall i. E_i\big]$ around its mean $\mu$. $|\lvert \hat{p_i}t_i \rvert|$ is bounded so is sub-Gaussian with parameter:
+\[ \sigma_i^2 = \frac{9}{4n^2}\log{\frac{B}{\delta}} \]
+Each term $\hat{p_i}t_i$ in the sum is independent, even when conditioned on $Z$.
+So $T$ is sub-Gaussian with parameter:
+\[ \sigma^2 = \sum_{i=1}^B \sigma_i^2 = \frac{9B}{4n^2}\log{\frac{B}{\delta}} \]
+So by the sub-Gaussian tail bound, we have:
+\[ \lvert T - \mu \rvert \leq \sqrt{2\sigma^2\log{\frac{1}{\delta}}} \leq \frac{3\sqrt{2}}{2} \frac{\sqrt{B}}{n} \sqrt{\log{\frac{n}{\delta}} \log{\frac{1}{\delta}}} \]
+This can be simplified to:
+\[ \lvert T - \mu \rvert \leq \frac{3\sqrt{B}}{n} \log{\frac{n}{\delta}} \]
+
+\textbf{Bounding the bias:} Although $\expect[C3 \mid Z] = 0$, conditioning on $E_i$ introduces some bias.
+However, we can show this bias is small. First, notice that $|t_i| \leq 1$. The event $E_i$ holds with probability at least $1 - \frac{\delta}{n}$. So conditioning on $E_i$ shifts the mean by at most $\frac{\delta}{n}$ -- in other words $|\expect[t_i \mid E_i, Z]| \leq \frac{\delta}{n}$.
+Summing over $t_i$s, we get:
+\[ \lvert \expect[(C3) \mid Z, \forall i. E_i] \rvert \leq \sum_{i=1}^B \hat{p_i} \lvert \expect[t_i \mid E_i, Z] \rvert \leq \frac{\delta}{n} \]
+
+\textbf{Finishing up:} Combining the bias and concentration, we get that with probability at least $1 - 2\delta$:
+\[ |(C3)| \leq \frac{3\sqrt{B}}{n} \log{\frac{n}{\delta}} + \frac{\delta}{n}\]
+
+\end{proof}
+
+We combine the bounds for $(C1)$, $(C2)$, $(C3)$, as in Theorem~\ref{thm:plugin-bound}, to bound the estimation error of the canceling estimator.
+
+\cancelingBound{}
+
+The proof of the final bound closely parallels that of Theorem~\ref{thm:final-plugin}.
+
+\finalCanceling{}

@@ -1,6 +1,11 @@
 \section{Verifying calibration}
 \label{sec:verifying_calibration}
 
+\newcommand{\pluginEst}[0]{\ensuremath{\hat{E}_{pl}^2}}
+\newcommand{\cancelEst}[0]{\ensuremath{\hat{E}^2}}
+\newcommand{\ltwoerror}[0]{\ensuremath{{\hat{E}^*}^2}}
+\newcommand{\piSmallBound}[0]{\ensuremath{\frac{12}{n}\log{\frac{2B}{\delta}}}}
+
 \pl{isn't a easier way of saying this, we can only estimate the calibration error of binned calibrators? as we showed in previous section}
 If a model outputs values from some finite set $S$,\footnote{The model can choose the set $S$.} and the probability of outputting each value $s \in S$ is not too small, then we can estimate its calibration error. The plugin estimator \pl{explain this (make simple things simple)} used in past work requires samples proportional to the number of model outputs $|S|$. Instead, we introduce the \emph{cancelling} estimator that requires samples proportional to $\sqrt{|S|}$. At a high level, the cancelling estimator leverages cancellation of error terms across different bins.
 
@@ -12,7 +17,8 @@ If a model outputs values from some finite set $S$,\footnote{The model can choos
 The plugin estimator directly estimates each term in the $\ell_2^2$ calibration error from samples~\cite{nguyen2015posterior, hendrycks2019anomaly, kuleshov2015calibrated, hendrycks2019pretraining}. Suppose we wish to measure the calibration error of a model $f : \mathcal{X} \to S$ where $S \subseteq [0, 1]$. Order the elements in $S$: $s_1 < s_2 < \dots < s_B$, where $B = |S|$ denotes the number of model outputs. Suppose we get an evaluation set $T_n = \{(x_1, y_1), \dots, (x_n, y_n)\}$ sampled i.i.d. from $P(X, Y)$.
 
 \pl{notationally, you can index directly using $s$ instead of $i$ to save one level of indirection}
-\begin{definition}[Plugin estimator]
+
+\begin{restatable}[Plugin estimator]{definition}{pluginDfn}
 \label{dfn:plugin-estimator}
 \pl{English: define $\hat y_i$ to be the empirical average for the $i$-th score}
   Let $L_i = \{ y_j \; | \; (x_j, y_j) \in T_n\wedge f(x_j) = s_i \}$ \pl{background this} denote the label values where the model outputs $s_i$.
@@ -27,94 +33,53 @@ We estimate $P(f(X) = s_i)$ by:
   \pl{but if you use the notation, then you have
   \[ \mathcal{E}_\text{plugin} = \sum_{s \in S} \hat{p_s} (s - \hat{y_s})^2 \]
   }
-\[ \hat{E}_{pl}^2 = \sum_{i=1}^b \hat{p_i} (s_i - \hat{y_i})^2 \]
-\end{definition}
+\[ \pluginEst{} = \sum_{i=1}^B \hat{p_i} (s_i - \hat{y_i})^2 \]
+\end{restatable}
 \pl{can we just use $L^2$ for this whole paper?}
 
 We now define our improved cancelling estimator. The key insight is that the plugin estimate of the error in each bin, $(s_i - \hat{y_i})^2$ is biased. By debiasing these estimates we get cancellations across bins.
+
 \pl{this formula is a bit out of nowhere; saying 'debiasing' is helpful, but can you actually say the criteria more formally and declaratively?}
-\begin{definition}[Cancelling estimator]
+\begin{restatable}[Cancelling estimator]{definition}{cancelingDfn}
 The cancelling estimator for the $\ell_2^2$ error is:
 \[ \hat{E}^2 = \sum_{i=1}^b \hat{p_i} \Big[ (s_i - \hat{y_i})^2 - \frac{\hat{y_i}(1 - \hat{y_i})}{\hat{p_i}n-1} \Big] \]
-\end{definition}
+\end{restatable}
 
 The main results are that to check if the $\ell_2^2$ calibration error of a model is $\leq \epsilon^2$, the plugin estimator requires $\Theta(\frac{B}{\epsilon^2})$ samples (Theorem~\ref{thm:final-plugin}) while our estimator requires $\theta(\frac{\sqrt{B}}{\epsilon^2})$ samples (Theorem~\ref{thm:final-ours}). We begin by giving a bound on the error of the plugin estimator.
 
-% An important condition for verifying calibration is $p_i$ cannot be too small.
-
-% \begin{definition}
-% \label{dfn:low-bal}
-% We say a model is $k$-lower-balanced if $p(X = s_i) \geq \frac{1}{kB}$ for all $i$.
-% \end{definition}
- 
-% We now analyze the two estimators. 
-
-% \textbf{We use the following notation simplification} to simplify the theorem statements and proofs:
-% \[ p_i = P(f(X) = s_i) \]
-% \[ y_i^* = \mathbb{E}[Y \; | \; f(X) = s_i] \]
-% \[ e_i = (s_i - y_i^*) \]
-
-% Then, if we let ${E^*}^2$ denote the actual $\ell_2^2$ calibration error, we have:
-% \[ {E^*}^2 = \sum_{i=1}^b p_i e_i^2 \]
-% \subsection{Analysis of plugin estimator}
-% \begin{lemma}
-% \label{lemma:c_n_lemma}
-% For some $k > 1$, suppose $p_i \geq \frac{1}{kb}$ for all $i$. Then if $n \geq 3kb \log{\frac{2b}{\delta}}$, we have $P(\forall i . \; |p_i - \hat{p_i}| \leq c(n) p_i) \geq 1 - \delta$ where
-% \[ c(n) = \sqrt{\frac{3kb \log{\frac{2b}{\delta}}}{n}} \]
-% \end{lemma}
-
-% \begin{lemma}
-% The plugin estimator satisfies the following decomposition:
-% \[ \hat{E}^2 = \underbrace{\sum_{i=1}^b \hat{p_i}e_i^2}_{(1)}  - \underbrace{2\sum_{i=1}^b \hat{p_i}e_i(\hat{y_i} - y_i^*)}_{(2)} + \underbrace{\sum_{i=1}^b \hat{p_i}(\hat{y_i} - y_i^*)^2}_{(3)} \]
-% \end{lemma}
-
-\begin{theorem}
+\begin{restatable}{theorem}{pluginBound}
 \label{thm:plugin-bound}
-Let $p_i = P(f(X) = s_i)$ and suppose $p_i \geq \frac{1}{n}$ for all $i$. Let $c(n)$ be defined as:
-\[ c(n) = \sqrt{\frac{1}{n \min p_i} \log{\frac{B}{\delta}}} \]
+Let $p_i = P(f(X) = s_i)$ and suppose $p_i > \piSmallBound{}$ for all $i$. Let $c(n)$ be defined as:
+\[ c(n) = \sqrt{\frac{3}{n \min p_i} \log{\frac{2B}{\delta}}} \]
 Then for the plugin estimator, with probability at least $1 - 3\delta$,
 \[ | \hat{E_{pl}}^2 - {E^*}^2 | \leq c(n){E^*}^2 + \sqrt{\frac{2(1+c(n)){E^*}^2}{n} \log{\frac{2}{\delta}}} + \frac{B}{2n} \log{\frac{2B}{\delta}} \]
-% For some $k > 1$, suppose $p_i \geq \frac{1}{kb}$ for all $i$. Then for the plugin estimator, if $n \geq 3kb \log{\frac{2b}{\delta}}$, with probability at least $1 - 3\delta$:
-% \[ | \hat{E_{pl}}^2 - {E^*}^2 | \leq c(n){E^*}^2 + \sqrt{\frac{2(1+c(n)){E^*}^2}{n} \log{\frac{2}{\delta}}} + \frac{b}{2n} \log{\frac{2b}{\delta}} \]
-% Where $c(n)$ is defined in Lemma~\ref{lemma:c_n_lemma}
-\end{theorem}
-
-% Theorem~\ref{thm:plugin-bound} gives a sample complexity bound for the estimation error. In many cases we are interested in checking if our model has calibration error $\leq \epsilon$. In other words, we are given $\epsilon$. If the calibration error is $> \epsilon$, then with probability at least $1 - \delta$ we should output that it is not calibrated. $1-\delta$ is the significance of the test. If the calibration error is $< r\epsilon$, then with probability at least $1 - \delta'$, we should output that the model is calibrated. $1 - \delta'$ is the power at effect size $r < 1$. Typically, we will choose $\delta = \delta'$.
-
-% Theorem~\ref{thm:final-plugin} presents an easier way to think about this bound. Given constant $0 < r < 1$, suppose we want to estimate ${E^*}^2$ within a constant multiplicative factor. That is, we want $r {E^*}^2 \leq \hat{E_{pl}}^2 \leq (1+r) {E^*}^2$.
-
-% Another way to think about this is we are given $\epsilon$, and if the model's calibration error is $> (1+r)\epsilon$ we should say the model is not calibrated. If the calibration error is $< r\epsilon$
+\end{restatable}
 
 Typically, we are interested in checking if our model has calibration error $\leq \epsilon$ \pl{but this is not what we actually show due to $r$}. \pl{say that the next theorem studies this} In other words, we are given $\epsilon, \delta > 0$ and effect size $0 < r < 1$ \pl{where did effect size come from? I think all of this should be set up as what we want before doing the analysis}. If the calibration error is $> \epsilon$, then with probability at least $1 - \delta$ we should output that it is not calibrated \pl{be more precise}. If the calibration error is $< r\epsilon$, then with probability at least $1 - \delta$, we should output that the model is calibrated.
 
-\begin{theorem}[Plugin bound]
+\begin{restatable}[Plugin bound]{theorem}{finalPlugin}
 \label{thm:final-plugin}
-  Suppose \pl{use English} $\forall i.\;p_i \geq \frac{1}{2B}$ and $n = \Theta(\frac{B}{\epsilon^2})$ ignoring $\log$ factors. Then the plugin estimator can check if ${E^*}^2 \leq \epsilon^2$ with failure probability $\delta$, and constant effect size $r$. 
-\end{theorem}
+  Suppose \pl{use English} $\forall i.\;p_i \geq \frac{1}{2B}$ and $n = \Theta(\frac{B}{\epsilon^2})$ ignoring $\log$ factors. Then the plugin estimator can check if ${E^*}^2 \leq \epsilon^2$ with failure probability $\delta$, and constant effect size $0 < r < 1$. 
+\end{restatable}
 
 Another way of thinking about this is that if $n = \Theta(\frac{B}{{E^*}^2})$ then \pl{English} $r {E^*}^2 \leq \hat{E_{pl}}^2 \leq (1+r){E^*}^2$.
 
 \pl{should be separate subsection}
 Next we bound the error of the cancelling estimator.
 
-% \begin{corollary}
-% \label{cor:final-plugin}
-% Using the plugin estimator $\hat{E}_{pl}$, if $n = \Theta(kb + \frac{b}{\epsilon^2})$ ignoring $\log$ factors, we can check if $|{E^*} | \leq \epsilon$ with significance and power $\delta$, and constant effect size $r$. 
-% \end{corollary}
-
 % \subsection{Analysis of our estimator}
 
-\begin{theorem}
+\begin{restatable}{theorem}{cancelingBound}
 \label{thm:our-bound}
-Let $p_i = P(f(X) = s_i)$ and suppose $p_i \geq \frac{1}{n}$ for all $i$. Let $c(n)$ be as defined in Theorem~\ref{thm:plugin-bound}.
+Let $p_i = P(f(X) = s_i)$ and suppose $p_i > \piSmallBound{}$ for all $i$. Let $c(n)$ be as defined in Theorem~\ref{thm:plugin-bound}.
 Then for the cancelling estimator, with probability at least $1 - 4\delta$,
-\[ | \hat{E}^2 - {E^*}^2 | \leq c(n){E^*}^2 + \sqrt{\frac{2(1+c(n)){E^*}^2}{n} \log{\frac{2}{\delta}}} + \frac{\sqrt{B}}{n}\log{\frac{4n}{\delta}} \log{\frac{2}{\delta}} + \frac{1}{n}\]
-\end{theorem}
+\[ | \hat{E}^2 - {E^*}^2 | \leq c(n){E^*}^2 + \sqrt{\frac{2(1+c(n)){E^*}^2}{n} \log{\frac{2}{\delta}}} + \frac{3\sqrt{B}}{n} \log{\frac{n}{\delta}} + \frac{\delta}{n}\]
+\end{restatable}
 
-\begin{theorem}[Cancelling bound]
+\begin{restatable}[Cancelling bound]{theorem}{finalCanceling}
 \label{thm:final-ours}
 Suppose $\forall i.\;p_i \geq \frac{1}{2B}$ and $n = \Theta(B+\frac{\sqrt{B}}{\epsilon^2})$ ignoring $\log$ factors. Then the cancelling estimator can check if ${E^*}^2 \leq \epsilon^2$ with failure probability $\delta$ and constant effect size $r$. 
-\end{theorem}
+\end{restatable}
 
 \pl{provide a few sentences for proof sketch - at least the highlights - standard concentration or anything new? what's the hard part?}
 
