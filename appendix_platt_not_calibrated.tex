@@ -1,4 +1,5 @@
 \section{Proofs for section~\ref{sec:challenges-measuring}}
+\label{sec:appendix-platt-not-calibrated}
 
 % \begin{example}
 % For any binning scheme $\mathcal{B}$ and $p \in \mathbb{Z}^+$, there exists a distribution $P$ over $X, Y$ and a function f s.t. $\ell_p\mbox{-CE}(f, B) = 0$ but $\ell_p\mbox{-CE}(f, B) = 0.5$. Note that the $\ell_p\mbox{-CE}$ is always between 0 and 1.
@@ -7,8 +8,6 @@
 \continuousNotCalibrated*
 
 \begin{proof}
-The intuition is that in each interval $I_j$ in the binning scheme $\mathcal{B}$, the model could underestimate the true probability $E[Y | f(X)]$ half the time, and overestimate the probability half the time. So if we average over the entire bin the model appears to be correct, even though it is very uncalibrated.
-
 Converting the intuition into a concrete example is fairly straightforward. Since $f$ is continuous and surjective we can select data distribution $P$ s.t. $f(X)$ is uniformly distributed.
 For each interval $I_j = [a, b]$ we set $E[Y | f(X) = s] = 0$ for all $a \leq s \leq \frac{a+b}{2}$ and we set $E[Y | f(X) = s] = 1$ for all $\frac{a+b}{2} \leq x \leq b$.
 We can verify that $\ell_p\mbox{-CE}(f, B) = 0$ but $\ell_p\mbox{-CE}(f, B) = 0.5$ for all $p$.

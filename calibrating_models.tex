@@ -1,5 +1,6 @@
 \section{Efficiently calibrating a model}
 
+Our experiments suggest that the binned calibration error gives us a poor sense of a model's calibration error if the model outputs a continuous range of values.
 We now turn to the question of how to produce models that we can \emph{verify} are calibrated.
 We describe \pl{propose} the \pl{the 'the' is bothering me a bit now that I keep on seeing it; strikes me as a bit presumptuous
 because it's like you're implicitly claiming that your estimator is the only one that reduces variance} variance-reduced calibrator (Figure~\ref{fig:variance_reduced_illustration}), and prove bounds on its sample complexity.
@@ -36,7 +37,7 @@ here is the time to use Figure 1 too explain your method
 
 % There are two general approaches to recalibration. The first is histogram binning, where we output the average label value observed in each bin. The advantage of histogram binning is that in the limit of infinite data it will be perfectly calibrated. However, to achieve $\ell_2$ calibration error $\epsilon$ with $B$ bins it requires $O(\frac{B}{\epsilon^2})$ samples.\footnote{This analysis is standard, so we omit it from our paper.} The second is to fit a function, like a sigmoid function in the case of Platt scaling, and then discretize the model outputs. If this approach can calibrate to within error $\epsilon$,\footnote{Depending on the function family, this approach may, or may not, ever achieve good calibration.} it requires only $O(\frac{1}{\epsilon^2})$ samples to do so. In particular, estimating the calibration error ($O(\frac{B}{\epsilon^2})$ with prior approaches, and $O(\frac{\sqrt{B}}{\epsilon^2})$ with our estimator) is then the bottleneck. This is the focus of our analysis which concludes with Theorem~\ref{thm:final-calib} and Theorem~\ref{thm:sharpness-bound}. In practice, we would try multiple re-calibration approaches, estimate the calibration error using our estimator, and choose the best one.
 
-\subsection{Variance-reduced calibration algorithm}
+\subsection{Variance-reduced recalibration algorithm}
 
 Suppose we are given a trained model $f: \mathcal{X} \to \mathcal{Z}$ that we wish to calibrate. As before, $X \in \mathcal{X}$ and $Y \in \{0, 1\}$ are random variables denoting the input and label, given by an unknown joint distribution $P(X, Y)$. \pl{don't need to repeat again} We wish to learn $\hat{g_{\mathcal{B}}} : \mathcal{Z} \to [0, 1]$ such that $\hat{g_{\mathcal{B}}} \circ f$ is well-calibrated. \pl{if you want this, this should have gone in the setup} Let $Z = f(X)$.
 
@@ -46,7 +47,7 @@ Let $\mathcal{G}$ be a family of functions from $\mathcal{Z} \to [0, 1]$, and $B
 A binning scheme $\mathcal{B}$ of size $B$ partitions $[0, 1]$ into $B$ disjoint intervals or bins, defined by bin boundaries $0 = b_0 < b_1 < ... < b_B = 1$. For $1 \leq j \leq B$, the $j$-th bin is the interval $I_j$ where $I_1 = [b_0, b_1]$ and $I_j = (b_{j-1}, b_j]$ for $j > 1$. Given an input $x \in [0, 1]$ we might want to know what bin it falls in -- if $x \in I_j$ let $\beta(x) = j$.
 \end{definition}
 
-Now we describe the variance-reduced calibration algorithm, illustrated in Figure~\ref{fig:variance_reduced_illustration}.
+Now we describe the variance-reduced recalibration algorithm, illustrated in Figure~\ref{fig:variance_reduced_illustration}, which outputs $\hat{g_{\mathcal{B}}}$ such that $\hat{g_{\mathcal{B}}} \circ f$ has low calibration error.
 
 % \footnote{The optimal way to select $T$ depends on $F$, and our analysis in the next subsection.}
 

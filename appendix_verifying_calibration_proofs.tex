@@ -196,7 +196,7 @@ Let $E_i$ be the event that this is indeed the case. Condition on $E_i$ holding 
 With some algebra, we then get:
 \[ \lvert \hat{p_i}t_i \rvert = \Big\lvert \hat{p_i}\Big[ (\hat{y_i} - y_i^*)^2 - \frac{\hat{y_i}(1 - \hat{y_i})}{\hat{p_i}n-1} \Big] \Big\rvert \leq \frac{3}{2n} \log{\frac{B}{\delta}} \]
 
-\textbf{Concentration:} Next, we analyze the concentration of $T = \big[(C3) \mid Z, \forall i. E_i\big]$ around its mean $\mu$. $|\lvert \hat{p_i}t_i \rvert|$ is bounded so is sub-Gaussian with parameter:
+\textbf{Concentration:} Next, we analyze the concentration of $T = \big[(C3) \mid Z, \forall i. E_i\big]$ around its mean $\mu$. $\lvert \hat{p_i}t_i \rvert$ is bounded so is sub-Gaussian with parameter:
 \[ \sigma_i^2 = \frac{9}{4n^2}\log{\frac{B}{\delta}} \]
 Each term $\hat{p_i}t_i$ in the sum is independent, even when conditioned on $Z$.
 So $T$ is sub-Gaussian with parameter:
@@ -207,7 +207,7 @@ This can be simplified to:
 \[ \lvert T - \mu \rvert \leq \frac{3\sqrt{B}}{n} \log{\frac{n}{\delta}} \]
 
 \textbf{Bounding the bias:} Although $\expect[C3 \mid Z] = 0$, conditioning on $E_i$ introduces some bias.
-However, we can show this bias is small. First, notice that $|t_i| \leq 1$. The event $E_i$ holds with probability at least $1 - \frac{\delta}{n}$. So conditioning on $E_i$ shifts the mean by at most $\frac{\delta}{n}$ -- in other words $|\expect[t_i \mid E_i, Z]| \leq \frac{\delta}{n}$.
+However, we can show this bias is small. First, notice that $|t_i| \leq 1$. The event $E_i$ holds with probability at least $1 - \frac{\delta}{n}$. Then by the law of total expectation, conditioning on $E_i$ shifts the mean by at most $\frac{\delta}{n}$ -- in other words $|\expect[t_i \mid E_i, Z]| \leq \frac{\delta}{n}$.
 Summing over $t_i$s, we get:
 \[ \lvert \expect[(C3) \mid Z, \forall i. E_i] \rvert \leq \sum_{i=1}^B \hat{p_i} \lvert \expect[t_i \mid E_i, Z] \rvert \leq \frac{\delta}{n} \]
 
