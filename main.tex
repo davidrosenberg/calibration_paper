@@ -95,7 +95,7 @@ Applications such as weather forecasting and personalized medicine demand models
 Scaling recalibration methods that fit a parametric model are great, because they require $O(1/\epsilon^2)$ samples to achieve calibration error $\epsilon$, but we find in this work that they are (i) less calibrated than reported and (ii) current techniques cannot estimate how miscalibrated they are.
 An alternative method, histogram binning, is sample inefficient -- it requires $O(B/\epsilon^2)$ samples where $B$ is the number of distinct probabilities the model can output.
 To solve these problems, we introduce the variance-reduced calibrator, which first fits a parametric function that acts like a baseline for variance reduction and then bins the function values to actually ensure calibration.
-This requires only $O(B + 1/\epsilon^2)$ samples.
+This requires only $O(1/\epsilon^2 + B)$ samples.\tm{changed the order of two summands}
 We also show that the methods used in the machine learning literature to estimate calibration error are suboptimal -- we prove that an alternative estimator introduced in the meteorological community requires fewer samples -- samples proportional to $\sqrt{B}$ instead of $B$.
 We validate our approach with multi-class calibration experiments on CIFAR-10 and ImageNet, where we get a 2x lower calibration error than histogram binning and guarantees on true calibration unlike scaling methods.
 
