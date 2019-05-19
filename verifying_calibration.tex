@@ -1,11 +1,12 @@
 \section{Verifying calibration}
 \label{sec:verifying_calibration}
 
-\newcommand{\pluginEst}[0]{\ensuremath{\hat{E}_{pl}^2}}
+\newcommand{\pluginEst}[0]{\ensuremath{\hat{E}_{\textup{pl}}^2}}
 \newcommand{\cancelEst}[0]{\ensuremath{\hat{E}^2}}
 \newcommand{\ltwoerror}[0]{\ensuremath{{\hat{E}^*}^2}}
 \newcommand{\piSmallBound}[0]{\ensuremath{\frac{12}{n}\log{\frac{2B}{\delta}}}}
 
+\tm{I wonder we should have subscript for $\cancelEst$. $\ensuremath{\hat{E}_{\textup{cxl}}^2}$? Sounds a bit verbose..}
 \pl{isn't a easier way of saying this, we can only estimate the calibration error of binned calibrators? as we showed in previous section}
 If a model outputs values from some finite set $S$,\footnote{The model can choose the set $S$.} and the probability of outputting each value $s \in S$ is not too small, then we can estimate its calibration error. The plugin estimator \pl{explain this (make simple things simple)} used in past work requires samples proportional to the number of model outputs $|S|$. Instead, we introduce the \emph{cancelling} estimator that requires samples proportional to $\sqrt{|S|}$. At a high level, the cancelling estimator leverages cancellation of error terms across different bins.
 
@@ -28,7 +29,7 @@ We estimate $E[Y | f(X) = s_i]$ as:
   \pl{English: define $\hat p_i$ to be the actual average for the $i$-th score}
 We estimate $P(f(X) = s_i)$ by:
 \[ \hat{p_i} = \frac{|L_i|}{n} \]
-  Then the plugin estimator for the $\ell_2^2$ error is \pl{the weighted squared difference between the two}:
+  Then the plugin estimator for the $\ell_2^2$ error is \tm{$\ell^2$ calibration error sounds clearer}\pl{the weighted squared difference between the two}:
   \pl{$b$ should be upper case (see throughout)}
   \pl{but if you use the notation, then you have
   \[ \mathcal{E}_\text{plugin} = \sum_{s \in S} \hat{p_s} (s - \hat{y_s})^2 \]
@@ -45,7 +46,7 @@ The cancelling estimator for the $\ell_2^2$ error is:
 \[ \hat{E}^2 = \sum_{i=1}^b \hat{p_i} \Big[ (s_i - \hat{y_i})^2 - \frac{\hat{y_i}(1 - \hat{y_i})}{\hat{p_i}n-1} \Big] \]
 \end{restatable}
 
-The main results are that to check if the $\ell_2^2$ calibration error of a model is $\leq \epsilon^2$, the plugin estimator requires $\Theta(\frac{B}{\epsilon^2})$ samples (Theorem~\ref{thm:final-plugin}) while our estimator requires $\theta(\frac{\sqrt{B}}{\epsilon^2})$ samples (Theorem~\ref{thm:final-ours}). We begin by giving a bound on the error of the plugin estimator.
+The main results are that to check if the $\ell_2^2$ calibration error of a model is $\leq \epsilon^2$, the plugin estimator requires $\Theta(\frac{B}{\epsilon^2})$ samples (Theorem~\ref{thm:final-plugin}) while our estimator requires $\theta(\frac{\sqrt{B}}{\epsilon^2})$ samples (Theorem~\ref{thm:final-ours}\tm{maybe some links issues here? Our theorem shouldn't be in section D, right?}). We begin by giving a bound on the error of the plugin estimator. \tm{$\Theta$ notations --- see comments in the last theorem}
 
 \begin{restatable}{theorem}{pluginBound}
 \label{thm:plugin-bound}
@@ -57,7 +58,7 @@ Then for the plugin estimator, with probability at least $1 - 3\delta$,
 
 Typically, we are interested in checking if our model has calibration error $\leq \epsilon$ \pl{but this is not what we actually show due to $r$}. \pl{say that the next theorem studies this} In other words, we are given $\epsilon, \delta > 0$ and effect size $0 < r < 1$ \pl{where did effect size come from? I think all of this should be set up as what we want before doing the analysis}. If the calibration error is $> \epsilon$, then with probability at least $1 - \delta$ we should output that it is not calibrated \pl{be more precise}. If the calibration error is $< r\epsilon$, then with probability at least $1 - \delta$, we should output that the model is calibrated.
 
-\begin{restatable}[Plugin bound]{theorem}{finalPlugin}
+\begin{restatable}[Plugin bound]{theorem}{finalPlugin}\tm{Should this be a corollary instead of a theorem?}
 \label{thm:final-plugin}
   Suppose \pl{use English} $\forall i.\;p_i \geq \frac{1}{2B}$ and $n = \Theta(\frac{B}{\epsilon^2})$ ignoring $\log$ factors. Then the plugin estimator can check if ${E^*}^2 \leq \epsilon^2$ with failure probability $\delta$, and constant effect size $0 < r < 1$. 
 \end{restatable}
@@ -71,19 +72,20 @@ Next we bound the error of the cancelling estimator.
 
 \begin{restatable}{theorem}{cancelingBound}
 \label{thm:our-bound}
-Let $p_i = P(f(X) = s_i)$ and suppose $p_i > \piSmallBound{}$ for all $i$. Let $c(n)$ be as defined in Theorem~\ref{thm:plugin-bound}.
+Let $p_i = P(f(X) = s_i)$ and suppose $p_i > \piSmallBound{}$ for all $i$. Let $c(n)$ be as defined in Theorem~\ref{thm:plugin-bound}. \tm{maybe an easier way to do it is: In the same setting of Theorem ??. Then you don't have to redefine some of these quantities.}
 Then for the cancelling estimator, with probability at least $1 - 4\delta$,
 \[ | \hat{E}^2 - {E^*}^2 | \leq c(n){E^*}^2 + \sqrt{\frac{2(1+c(n)){E^*}^2}{n} \log{\frac{2}{\delta}}} + \frac{3\sqrt{B}}{n} \log{\frac{n}{\delta}} + \frac{\delta}{n}\]
 \end{restatable}
-
+\tm{may be good to explain what's the dominating term. How to interpret the bound ---}\tm{I guess it's kind of okay if you have a corollary that directly follows}
 
 \begin{restatable}[Cancelling bound]{theorem}{finalCanceling}
 \label{thm:final-ours}
-Suppose $\forall i.\;p_i \geq \frac{1}{2B}$ and $n = \Theta(B+\frac{\sqrt{B}}{\epsilon^2})$ ignoring $\log$ factors. Then the cancelling estimator can check if ${E^*}^2 \leq \epsilon^2$ with failure probability $\delta$ and constant effect size $r$. 
+Suppose $\forall i.\;p_i \geq \frac{1}{2B}$ and $n = \Theta(B+\frac{\sqrt{B}}{\epsilon^2})$ ignoring $\log$ factors.\tm{$\Theta(..)$ ignoring log factors sounds a quite non-standard way to say this .. First, it's unclear at the first sight why you need $\Theta$ but not $\Omega()$, second, I think often people would say $n = \widetilde{\Omega}(...)$ where $\widetilde{\Omega}$ hides log factors. Maybe you can use n gtrsim ... because gtrsim'd precise meaning could be a bit more flexible. (we don't see to have the package to support gtrsim lesssim)} Then the cancelling estimator can check if ${E^*}^2 \leq \epsilon^2$ with failure probability $\delta$ and constant effect size $r$. 
 \end{restatable}
-\tm{may be good to explain what's the dominating term. How to interpret the bound ---}
+
 \pl{provide a few sentences for proof sketch - at least the highlights - standard concentration or anything new? what's the hard part?}
 
+\tm{To address the Percy's comment above, I think one choice would be to mention the canceling effect --- anyway it's in the name of your estimator. So explain the the estimate for each bin is unbiased, and then variance got cancelled. By contrast, the bias accumulates for plug-in estimator.}
 \subsection{Experiments}
 
 We ran experiments on CIFAR-10 and Imagenet to compare the practical performance of the cancelling estimator and the plugin estimator. We split the validation set \pl{how big?} into two chunks $C_1$ \pl{maybe give these more meaningful names with subscripts? anyway, put them behind macros} and $C_2$ \pl{what sizes}. We use $C_1$ to re-calibrate and discretize a trained model using $B = 100$ bins. For varying values of $n$, we sample $n$ points, with replacement, from $C_2$, and estimate the calibration error using the cancelling estimator and the plugin estimator. We then compute the squared deviation of these estimates from the calibration error measured on the entire chunk $C_2$. We repeat this 1,000 times to get the mean squared deviation and confidence intervals. The results are in Figure~\ref{fig:mse_estimators}. \pl{always say what the result is: Figure shows that...}
