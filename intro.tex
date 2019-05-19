@@ -23,7 +23,7 @@ As most machine learning models, including neural networks, do not output calibr
 % methods try to calibrate, but do they actually achieve it?
 % }
 
-\emph{We discover that these methods are less calibrated than reported.} Estimating the calibration of models can be very challenging, so past work approximates a model's calibration error using a finite set of bins. We show that by using more bins, we can uncover a higher calibration error for models on CIFAR-10 and ImageNet (Figure~\ref{fig:lower_bounds}). This is a fundamental limitation with approaches that output a continuous range of probabilities -- we show that their true calibration error may never be measurable with a finite number of bins (Example~\ref{ex:continuous-not-calibrated}).
+\emph{We discover that these methods are less calibrated than reported.} Estimating the calibration of models can be very challenging, \tm{maybe "the calibration of models" -> "the calibration of models with continuous outputs"?}so past work approximates a model's calibration error using a finite set of bins. We show that by using more bins, we can uncover a higher calibration error for models on CIFAR-10 and ImageNet (Figure~\ref{fig:lower_bounds}). This is a fundamental limitation with approaches that output a continuous range of probabilities -- we show that their true calibration error may never be measurable with a finite number of bins (Example~\ref{ex:continuous-not-calibrated}).
 
 An alternative approach, histogram binning~\cite{zadrozny2001calibrated}, outputs probabilities from a finite set.
 Histogram binning can produce a model that is calibrated, and unlike scaling methods we can measure its calibration error, but it can be sample inefficient.
@@ -83,8 +83,9 @@ We find that an alternative estimator introduced in the meteorological literatur
 We show that it achieves this by leveraging error cancellations across bins.
 
 We run multi-class calibration experiments on CIFAR-10~\cite{krizhevsky2009learningmultiple} and ImageNet~\cite{deng2009imagenet}.
-The objective is to maximize the mean-squared error, also known as the Brier score~\cite{brier1950verification}, subject to a calibration constraint.
+The objective is to maximize \tm{maximize?}the mean-squared error, also known as the Brier score~\cite{brier1950verification}, subject to a calibration constraint\tm{'calibration constraint' -> "calibration error budget"?}.
 We show that the variance-reduced calibrator achieves a lower mean-squared error for any given calibration constraint.
 For example, we get a \emph{2x lower mean-squared error on CIFAR-10 if we want a calibration error $\leq 3\%$.}
-We also show that the canceling estimator converges to the true calibration error much faster than the plugin estimator.
+We also show that the canceling estimator \tm{is th term  canceling estimator introduced before? }converges to the true calibration error much faster than the plugin estimator.
 
+\tm{Sometimes I do a summary of contribution paragraph for the reviewers to easily see the contribution. doesn't add anything to the quality of the paper, but sometimes useful for paper acceptance .. (As a rushed reviewer sometimes I wanted the authors to have a simple para with a bit more technical term than abstract....)}
