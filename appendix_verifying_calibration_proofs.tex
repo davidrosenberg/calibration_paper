@@ -34,6 +34,8 @@ Suppose $p_i > \piSmallBound{}$ for all $i$. Then we have $c(n) < 0.5$ and excep
 
 \subsection{Analysis of plugin estimator}
 
+\tm{for appendix, we probably want to maximize clarity. So title could be "Analysis of plugin estimator: proof of Theorem??" }
+
 The following lemma is crucial -- we decompose the plugin estimator into three terms that we can bound separately.
 
 \begin{lemma}[Plugin decomposition]
@@ -53,7 +55,8 @@ The proof is by algebra:
 
 We now bound each of these three terms with the following three lemmas. We condition on $|\hat{p_i} - p_i| < c(n)p_i < 0.5p_i$ for all $i$, which holds with high probability from Lemma~\ref{lem:pi_bound}.
 
-\begin{lemma}[P1]
+\tm{In general, writing proofs is like writing code. lemmas and theorems have type checked inputs and outputs. Inputs are conditiond and definitions, outputs ar conclusions. }
+\begin{lemma}[P1]\tm{a better way to write this is probably: Let P1 be defined in equation~\ref{...}}
 \label{lem:p1_bound}
 Suppose $|\hat{p_i} - p_i| < c(n) p_i$ for all $i$. Then
 \[ |(P1) - {E^*}^2| \leq c(n) {E^*}^2 \]
@@ -71,7 +74,7 @@ The proof is by algebra.
 \end{align*}
 \end{proof}
 
-\begin{lemma}[P2]
+\begin{lemma}[P2]\tm{ah maybe I wasn't clear before --- it's not necessary to have this shorthand for all the lemmas and theorems. }
 \label{lem:p2_bound}
 Suppose $|\hat{p_i} - p_i| < c(n)p_i < 0.5p_i$ for all $i$. Then with probability $\geq 1 - \delta$:
 \[ |(P2)| \leq \sqrt{\frac{2(1+c(n)){E^*}^2}{n} \log{\frac{2}{\delta}}} \]
@@ -117,6 +120,7 @@ Bounding the error of the plugin estimator simply involves combining the bounds 
 
 \pluginBound*
 
+\tm{if you recall a theorem, then need to mark that it's a recall of a previous theorem. e.g., "Restatement of Theorem 5.4"}
 \begin{proof}
 We have:
 \[ |\pluginEst{} - {E^*}^2| \leq |P1 - {E^*}^2| + |P2| + |P3| \]
@@ -216,6 +220,8 @@ Summing over $t_i$s, we get:
 
 \end{proof}
 
+\tm{where the theorem above is used. It sounds atypical to have a theorem in appendix..}
+\tm{it's almost always better to write theorem first and then lemmas.. }
 We combine the bounds for $(C1)$, $(C2)$, $(C3)$, as in Theorem~\ref{thm:plugin-bound}, to bound the estimation error of the canceling estimator.
 
 \cancelingBound{}

@@ -76,11 +76,12 @@ Then for the cancelling estimator, with probability at least $1 - 4\delta$,
 \[ | \hat{E}^2 - {E^*}^2 | \leq c(n){E^*}^2 + \sqrt{\frac{2(1+c(n)){E^*}^2}{n} \log{\frac{2}{\delta}}} + \frac{3\sqrt{B}}{n} \log{\frac{n}{\delta}} + \frac{\delta}{n}\]
 \end{restatable}
 
+
 \begin{restatable}[Cancelling bound]{theorem}{finalCanceling}
 \label{thm:final-ours}
 Suppose $\forall i.\;p_i \geq \frac{1}{2B}$ and $n = \Theta(B+\frac{\sqrt{B}}{\epsilon^2})$ ignoring $\log$ factors. Then the cancelling estimator can check if ${E^*}^2 \leq \epsilon^2$ with failure probability $\delta$ and constant effect size $r$. 
 \end{restatable}
-
+\tm{may be good to explain what's the dominating term. How to interpret the bound ---}
 \pl{provide a few sentences for proof sketch - at least the highlights - standard concentration or anything new? what's the hard part?}
 
 \subsection{Experiments}

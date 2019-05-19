@@ -64,6 +64,7 @@ Note that prior works~\cite{guo2017calibration, hendrycks2019anomaly, hendrycks2
 
 \pl{is marginal calibration standard terminology? makes sense when compared with joint, but sounds a bit strange in relation to top-label}
 
+\tm{by quickly skimming the rest of the paper, I didn't see \margsquaredce and \topsquaredce showing up again. If they are only need for experimetns, we could define there instead of here?}
 For notational simplicity, our theory focuses on the binary classification setting. We can transform top-label calibration into a binary calibration problem -- the model outputs a probability corresponding to its top prediction, and the label represents whether the model gets it correct or not. Marginal calibration can be transformed into $K$ one-vs-all binary calibration problems where for each $k \in [K]$ the model outputs the probability associated with the $k$-th class, and the label represents whether the input belongs to the $k$-th class or not. We look at both top-label calibration and marginal calibration in our experiments.
 
 \subsection{Recalibration}
