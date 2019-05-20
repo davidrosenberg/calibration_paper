@@ -86,47 +86,50 @@ Suppose $\forall i.\;p_i \geq \frac{1}{2B}$ and $n = \Theta(B+\frac{\sqrt{B}}{\e
 \pl{provide a few sentences for proof sketch - at least the highlights - standard concentration or anything new? what's the hard part?}
 
 \tm{To address the Percy's comment above, I think one choice would be to mention the canceling effect --- anyway it's in the name of your estimator. So explain the the estimate for each bin is unbiased, and then variance got cancelled. By contrast, the bias accumulates for plug-in estimator.}
+
 \subsection{Experiments}
 
-We ran experiments on CIFAR-10 and Imagenet to compare the practical performance of the cancelling estimator and the plugin estimator. We split the validation set \pl{how big?} into two chunks $C_1$ \pl{maybe give these more meaningful names with subscripts? anyway, put them behind macros} and $C_2$ \pl{what sizes}. We use $C_1$ to re-calibrate and discretize a trained model using $B = 100$ bins. For varying values of $n$, we sample $n$ points, with replacement, from $C_2$, and estimate the calibration error using the cancelling estimator and the plugin estimator. We then compute the squared deviation of these estimates from the calibration error measured on the entire chunk $C_2$. We repeat this 1,000 times to get the mean squared deviation and confidence intervals. The results are in Figure~\ref{fig:mse_estimators}. \pl{always say what the result is: Figure shows that...}
-In the Appendix, we include results for ImageNet, ablations on $B$, and we visualize the histogram of the deviations.
+Past work in meteorology has shown that the improved estimator performs better in practice -- the main contribution of our work here is to show that the estimator also has an \emph{improved sample complexity}. However, in the Appendix, we run experiments on CIFAR-10 and ImageNet experiments, and show that for any desired calibration error, the cancelling estimator enables us to pick out models with a better Brier score. We recommend that the machine learning community also use this estimator.
 
-\pl{say explicitly that we never say 'not calibrated'; there's a disconnect between the theory, which requires $r$ and $\epsilon$ and what we're doing here}
+% We ran experiments on CIFAR-10 and Imagenet to compare the practical performance of the cancelling estimator and the plugin estimator. We split the validation set \pl{how big?} into two chunks $C_1$ \pl{maybe give these more meaningful names with subscripts? anyway, put them behind macros} and $C_2$ \pl{what sizes}. We use $C_1$ to re-calibrate and discretize a trained model using $B = 100$ bins. For varying values of $n$, we sample $n$ points, with replacement, from $C_2$, and estimate the calibration error using the cancelling estimator and the plugin estimator. We then compute the squared deviation of these estimates from the calibration error measured on the entire chunk $C_2$. We repeat this 1,000 times to get the mean squared deviation and confidence intervals. The results are in Figure~\ref{fig:mse_estimators}. \pl{always say what the result is: Figure shows that...}
+% In the Appendix, we include results for ImageNet, ablations on $B$, and we visualize the histogram of the deviations.
 
-We also run a multi-class calibration experiment on CIFAR-10 to show that our estimator allows us to select models with a better \pl{lower} Brier \pl{should we just say MSE everywhere? just be consistent since you defined MSE at the beginning} score subject to a given calibration constraint. As before, we split the validation set into $C_1$ and $C_2$. On $C_2$, we estimate the calibration error using the plugin and cancelling estimators and use 100 Bootstrap resamples to compute a 90\% upper confidence bound on the estimate. We compute the Brier scores and the upper bounds on the calibration error for $B = 10, 15, \cdots, 100$ and show the Pareto curve in Figure~\ref{fig:mse_vs_ce_estimators}. The results show that for any desired calibration error, the cancelling estimator enables us to pick out models with a better Brier score.
+% \pl{say explicitly that we never say 'not calibrated'; there's a disconnect between the theory, which requires $r$ and $\epsilon$ and what we're doing here}
 
-\begin{figure}
-  \centering
-  \centering
-     \begin{subfigure}[b]{0.45\textwidth}
-         \centering
-         \includegraphics[width=\textwidth]{mse_estimator_100_bins.png}
-         \caption{Mean-squared errors of estimates.
-         \pl{s/ours/canceling}
-         \pl{Number of samples of what - relate to notation in text}
-         \pl{label y-axis}
-         }
-         \label{fig:mse_estimators}
-     \end{subfigure}
-     \hfill
-     \begin{subfigure}[b]{0.45\textwidth}
-         \centering
-         \includegraphics[width=\textwidth]{mse_vs_verified_error_plugin_vs_ours.png}
-         \caption{Brier score vs calibration error.
-         \pl{be consistent with MSE/Brier}
-         \pl{make text larger by reducing the xrange and yrange}
-         }
-         \label{fig:mse_vs_ce_estimators}
-     \end{subfigure}
-  \caption{
-    (\textbf{Left}) Mean-squared errors of cancelling and plugin estimators on a recalibrated VGG-net model on CIFAR-10 with $90\%$ confidence intervals (lower values better). Our estimator is closer to the ground truth \pl{what's ground truth? 0 on the y-axis?}.
-  (\textbf{Right}) Plot of Brier scores against upper bounds \pl{90\% confidence bounds or something?} on the calibration error computed by our estimator and the plugin estimator, when we vary the number of bins $B$. For a given calibration error, our estimator enables us to choose models with a better Brier score. If we want a model with $\ell_2$ calibration error less than 0.015, the cancelling estimator tells us we can confidently use 100 bins, while relying on the plugin estimator only lets us use 15 bins and incurs a 13\% higher Brier score.
-  \pl{I find it awkward that you have MSE (which is squared) plotted against calibration error (non-squared);
-  can we just make it RMSE instead?
-  }
-}
-  \label{fig:mse_estimators_bins}
-\end{figure}
+% We also run a multi-class calibration experiment on CIFAR-10 to show that our estimator allows us to select models with a better \pl{lower} Brier \pl{should we just say MSE everywhere? just be consistent since you defined MSE at the beginning} score subject to a given calibration constraint. As before, we split the validation set into $C_1$ and $C_2$. On $C_2$, we estimate the calibration error using the plugin and cancelling estimators and use 100 Bootstrap resamples to compute a 90\% upper confidence bound on the estimate. We compute the Brier scores and the upper bounds on the calibration error for $B = 10, 15, \cdots, 100$ and show the Pareto curve in Figure~\ref{fig:mse_vs_ce_estimators}. The results show that for any desired calibration error, the cancelling estimator enables us to pick out models with a better Brier score.
+
+% \begin{figure}
+%   \centering
+%   \centering
+%      \begin{subfigure}[b]{0.45\textwidth}
+%          \centering
+%          \includegraphics[width=\textwidth]{mse_estimator_100_bins.png}
+%          \caption{Mean-squared errors of estimates.
+%          \pl{s/ours/canceling}
+%          \pl{Number of samples of what - relate to notation in text}
+%          \pl{label y-axis}
+%          }
+%          \label{fig:mse_estimators}
+%      \end{subfigure}
+%      \hfill
+%      \begin{subfigure}[b]{0.45\textwidth}
+%          \centering
+%          \includegraphics[width=\textwidth]{mse_vs_verified_error_plugin_vs_ours.png}
+%          \caption{Brier score vs calibration error.
+%          \pl{be consistent with MSE/Brier}
+%          \pl{make text larger by reducing the xrange and yrange}
+%          }
+%          \label{fig:mse_vs_ce_estimators}
+%      \end{subfigure}
+%   \caption{
+%     (\textbf{Left}) Mean-squared errors of cancelling and plugin estimators on a recalibrated VGG-net model on CIFAR-10 with $90\%$ confidence intervals (lower values better). Our estimator is closer to the ground truth \pl{what's ground truth? 0 on the y-axis?}.
+%   (\textbf{Right}) Plot of Brier scores against upper bounds \pl{90\% confidence bounds or something?} on the calibration error computed by our estimator and the plugin estimator, when we vary the number of bins $B$. For a given calibration error, our estimator enables us to choose models with a better Brier score. If we want a model with $\ell_2$ calibration error less than 0.015, the cancelling estimator tells us we can confidently use 100 bins, while relying on the plugin estimator only lets us use 15 bins and incurs a 13\% higher Brier score.
+%   \pl{I find it awkward that you have MSE (which is squared) plotted against calibration error (non-squared);
+%   can we just make it RMSE instead?
+%   }
+% }
+%   \label{fig:mse_estimators_bins}
+% \end{figure}
 
 % This means that our estimator has a substantially better dependency on the number of outputs of the model.
 
