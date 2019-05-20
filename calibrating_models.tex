@@ -1,4 +1,5 @@
 \section{Efficiently calibrating a model}
+\label{sec:calibrating_models}
 
 Our experiments suggest that the binned calibration error gives us a poor sense of a model's calibration error if the model outputs a continuous range of values.
 We now turn to the question of how to produce models that we can \emph{verify} are calibrated.
@@ -151,11 +152,11 @@ Given a binning scheme $\mathcal{B}$ of size $B$, and $\alpha \leq 1$. We say $\
 
 We now present the main theorem, which shows that if $\mathcal{G}$ contains $g^*$ with low calibration error, then our method will quickly find $\hat{g}_{\mathcal{B}}$ with low calibration error \pl{I thought we could get an estimate regardless, we will just not be able to verify it later}. Further\pl{more}, the binning scheme $\mathcal{B}$ we produce will be 2-well-balanced, which will allow us to measure the calibration error efficiently, as described in the next section (Theorem~\ref{thm:final-ours}).
 
-\begin{theorem}[Calibration bound]
+\begin{restatable}[Calibration bound]{theorem}{finalCalib}
 \label{thm:final-calib}
 Suppose that $\min_{g \in \mathcal{G}}\ell_2^2\mbox{-CE}(g) \leq \epsilon^2$.
   Ignoring $\log$ factors, with $n = O(B + \frac{L^2 (d')^2}{\epsilon^2})$ \pl{$L^2$ not defined} samples the variance-reduced calibration algorithm produces a 2-well-balanced binning scheme and $\hat{g}_{\mathcal{B}}$ with $\ell_2^2\mbox{-CE}(\hat{f}_{\mathcal{B}}) \leq 2 \epsilon^2$. Note that $d' = 1$ for Platt scaling.
-\end{theorem}
+\end{restatable}
 
 We give a proof of this result in the Appendix. The key steps are to (1) show that by optimizing the mean-squared error we will find a $g \in \mathcal{G}$ with low calibration error, (2) the binning scheme we constructed is 2-well-balanced (on the population), and finally (3) the number of samples required to empirically discretize $g$ to get $\hat{g}_{\mathcal{B}}$ only has logarithmic dependencies on the number of outputs $B$.
 

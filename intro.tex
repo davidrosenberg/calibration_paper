@@ -83,7 +83,7 @@ We find that an alternative estimator introduced in the meteorological literatur
 We show that it achieves this by leveraging error cancellations across bins.
 
 We run multi-class calibration experiments on CIFAR-10~\cite{krizhevsky2009learningmultiple} and ImageNet~\cite{deng2009imagenet}.
-The objective is to maximize \tm{maximize?}the mean-squared error, also known as the Brier score~\cite{brier1950verification}, subject to a calibration constraint\tm{'calibration constraint' -> "calibration error budget"?}.
+The objective is to minimize the mean-squared error, also known as the Brier score~\cite{brier1950verification}, subject to a calibration error budget.
 We show that the variance-reduced calibrator achieves a lower mean-squared error for any given calibration constraint.
 For example, we get a \emph{2x lower mean-squared error on CIFAR-10 if we want a calibration error $\leq 3\%$.}
 We also show that the canceling estimator \tm{is th term  canceling estimator introduced before? }converges to the true calibration error much faster than the plugin estimator.

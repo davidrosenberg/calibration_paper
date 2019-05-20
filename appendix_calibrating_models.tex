@@ -1,0 +1,111 @@
+\newpage
+\section{Proofs for section~\ref{sec:verifying_calibration}}
+\label{sec:calibrating_models}
+
+\newcommand{\G}[0]{\ensuremath{\mathcal{G}}}
+
+Our analysis of the sample complexity of \ourcal{} requires some assumptions on the function family $\G{}$ that hold for standard methods like Platt scaling, beta calibration, and vector scaling:
+
+\begin{enumerate}
+\item (Finite bounded parameters). Let $\G{} = \{ g_{\theta} : \mathcal{Z} \to [0, 1] \; | \; \theta \in \mathbb{R}^{d'} \wedge ||\theta||_{\infty} \leq R \}$
+\item (Injective). For all $g_{\theta} \in \G{}$ we assume $g_{\theta}$ is injective.
+\item (Lipschitz). Suppose that for all $z \in \mbox{supp}(Z)$, $|g_{\theta_1}(z) - g_{\theta_2}(z)| \leq L|\theta_1 - \theta_2|_2$.
+\end{enumerate}
+
+If $\G{}$ satisfies the following assumptions we say $\G{}$ is $(d', L, R)$-compatible. For Platt-scaling $d' = 1$ and $L$ and $R$ are small.
+
+% We first need to introduce the Bayes optimal recalibrator $\omega^*$, which we compare all other recalibrators to. $\omega^* \circ f$ has calibration error $0$, and also has the minimum mean-squared error among all recalibrators.
+
+% \begin{definition}
+% $\omega^* : \mathcal{Z} \to [0, 1]$ is given by $\omega^*(x) = \expect[Y | Z = z]$.
+% \end{definition}
+
+We show that if $\G{}$ is $(L, R)$-compatible and contains $g^* \in \G{}$ with low calibration error, then the empirical risk minimizer $g \in \G{}$ of the mean-squared loss will also quickly converge to low calibration error.
+
+\begin{lemma}
+Let $g^* = \argmin_{g \in \G{}}\ell_2^2\mbox{-CE}(g)$ and suppose $\ltwoce(g^*) \leq \epsilon^2$. Then, there exists a constant $c$, independent of $L$ and $n$ s.t. with high probability over the samples $\ltwoce(g) \leq \epsilon + \frac{cLd' \log{R}}{\sqrt{n}}$, where recall that $g \in \G{}$ was selected as the empirical risk minimizer of the mean-squared error loss.
+\end{lemma}
+
+\begin{proof}
+We use the classic decomposition of the mean-squared error into calibration error (also known as reliability) and refinement\footnote{Note that the refinement term can be further decomposed into resolution (also known as sharpness) and irreducible uncertainty.}. For any $g \in \G{}$ we have:
+\[ \mbox{MSE}(g) = \underbrace{\ltwoce(g)}_{\mbox{calibration}} + \underbrace{\expect[(\expect[Y \mid g(Z)] - Y)^2]}_{\mbox{refinement}} \]
+Note that the refinement term is constant for all injective $g \in \G{}$, since for injective $g$:
+\[ \expect[(\expect[Y \mid g(Z)] - Y)^2] = \expect[(\expect[Y \mid Z] - Y)^2] \]
+This means that the difference in $\mbox{MSE}$ between $g$ and $g^*$ is precisely the difference in the mean-squared error. From a standard $\epsilon$-cover in the parameter space, or PAC-Bayes argument, we can get a generalization bound on the mean-squared error:
+\[ \mbox{MSE}(g) \leq \mbox{MSE}(g^*) + \frac{cLd' \log{R}}{\sqrt{n}} \]
+This gives us the desired result.
+\end{proof}
+
+Our next lemma will require showing convergence in $\ell_2$ and $\ell_1$ norm in function space, which we define below:
+
+\begin{definition}
+Given $f, g : \mathcal{Z} \to [0, 1]$, for the $\ell_2$ norm we define $||f - g||_2^2 = \expect[(f(Z) - g(Z))^2]$ and $||f- g||_2 = \sqrt{||f - g||_2^2}$. For the $\ell_1$ norm we define $||f - g||_1 = \expect[\lvert f(Z) - g(Z)\rvert]$
+\end{definition}
+
+Recall that we showed that in the limit of infinite data the binned version of $g$, $g_{\bins{}}$, has lower calibration error than $g$ (Proposition~\ref{prop:bin_low_bound}). However our method uses $n$ data points to empirically bin $g$, giving us $\hat{g_{\bins{}}}$. We now show the key lemma that allows us to bound the calibration error and later the mean-squared error. That is, we show that the empirically binned function $\hat{g_{\bins{}}}$ quickly converges to $g_{\bins{}}$ in both $\ell_2$ and $\ell_1$ norms.
+
+\begin{lemma}
+\label{thm:empirical-binning}
+There exist constants $c_B, c_1, c_2$ such that the following is true. Given $g : \mathcal{Z} \to [0, 1]$, binning set $T_3 = \{(z_i, y_i)\}_{i=1}^n$ and a 2-well-balanced binning scheme $\bins{}$ of size $B$. Given $0 < \delta < 0.5$, suppose that $n \geq c_B B\log{\frac{B}{\delta}}$. Then with probability at least $1 - \delta$,  $||\hat{g_{\bins{}}} - g_{\bins{}}||_2 \leq \frac{c_2}{\sqrt{n}}\sqrt{\log{\frac{B}{\delta}}}$ and $||\hat{g_{\bins{}}} - g_{\bins{}}||_1 \leq \frac{c_1}{\sqrt{nB}}\sqrt{\log{\frac{B}{\delta}}}$
+\end{lemma}
+
+\begin{proof}
+% Note, for the L2 bound we only need 1 side of 2-well-balanced, P(f(X) \in I_j) \geq 1/2B for all j.
+% For the L1 bound, if we have only 1 side of 2-well-balanced, but b_j - b_{j-1} are equal for all j, then we get the same bound.
+% One question is whether we can relax this theorem, for example if b_j - b_{j-1} are equal for all j. Maybe we don't need well-balancedness in that case.
+% We first discuss high level intuition for the proof. Recall that in the naive binning approach, where we bin the label (that is, $Y$) values, the $\ell_2$ calibration error is $O(\sqrt{\frac{B}{n}})$ ignoring $\log$ factors. That is, the number of samples we need for calibration increases linearly with the number of bins. The intuition is that when we have more bins, we have fewer samples per bin. That is, we have $\frac{n}{B}$ samples of $Y$ in each bin, where $Y \in \{0, 1\}$. Then Hoeffding's bound gives us the above result, which is tight up to constants. However, this theorem shows when we bin $f$ instead of $Y$, our rates have much better dependencies on $B$. The high level idea is that for each bin $j$ we are taking the average of values bounded in $I_j = [b_{j-1}, b_j]$. This is a narrower range than in naive binning where we took the average of values in $\{0, 1\}$. Since the values are bounded in a narrower range, the variance is lower. Of course, the variance of any particular bin could be big. For example we could have $I_7 = [0.1, 0.9]$. But the sum of all the bin sizes is 1, so `most' of the bins have a lower variance. We now give the formal proof.
+
+Define $R_j$ to be the set of points that fall into the $j$-th bin, given by $R_j = \{g(z_i) \mid g(z_i) \in I_j \wedge (z_i, y_i) \in T_3\}$.
+Let $p_j$ be the probability of landing in bin $j$, given by $p_j = \prob(g(Z) \in I_j)$.
+Since $\bins{}$ is 2-well-balanced, $p_j \geq \frac{1}{2B}$.
+Since $n \geq c_B B\log{\frac{B}{\delta}}$ by the multiplicative Chernoff bound, for some large enough $c_B$, with probability at least $1 - \frac{\delta}{2}$, $|R_j| \geq \frac{p_j}{2}$.
+
+Consider each bin $j$. Let $\mu_j$ be the expected output of $g$ in bin $j$, given by $\mu_j = \expect[g(Z) \; | \; g(Z) \in I_j]$. $\mu(R_j)$, the mean of the values in $R_j$, is the empirical average of $|R_j|$ such values, each bounded between $b_{j-1}$ and $b_j$ where $I_j = [b_{j-1}, b_j]$. So $\hat{\mu}(R_j)$ is sub-Gaussian with parameter:
+
+\[ \sigma^2 = \frac{(b_j - b_{j-1})^2}{4|R_j|} \leq \frac{(b_j - b_{j-1})^2}{2p_jn} \]
+
+Then by the sub-Gaussian tail bound, for any $1 \leq j \leq B$, with probability at least $1 - \frac{\delta}{2B}$, we have:
+\[ (\mu_j - \hat{\mu}(R_j))^2 \leq \frac{(b_j - b_{j-1})^2}{p_jn} \log{\frac{4B}{\delta}} \] 
+
+So by union bound with probability at least $1 - \frac{\delta}{2}$ the above holds for all $1 \leq j \leq B$ simultaneously.
+
+We then bound the $\ell_2$-error.
+\begin{align*}
+||\hat{f_{\mathcal{B}}} - f_{\mathcal{B}}||_2 &= \sqrt{\sum_{j =1}^B p_j (\mu_j - \hat{\mu}(R_j))^2} \\
+&\leq \sqrt{\sum_{j =1}^B p_j \frac{(b_j - b_{j-1})^2}{p_jn} \log{\frac{4B}{\delta}}} \\
+&\leq \sqrt{\frac{1}{n} \log{\frac{4B}{\delta}} \sum_{j =1}^B (b_j - b_{j-1})^2 } \\
+&\leq \sqrt{\frac{1}{n} \log{\frac{4B}{\delta}} \sum_{j =1}^B (b_j - b_{j-1}) } \\
+&\leq \sqrt{\frac{1}{n} \log{\frac{4B}{\delta}} } \\
+&\leq c_2 \frac{1}{\sqrt{n}} \sqrt{\log{\frac{B}{\delta}}}
+\end{align*}
+
+Similarly, we can also bound the $\ell_1$-error. Here we also use the fact that $p_j \leq \frac{2}{B}$ since $\bins{}$ is 2-well-balanced.
+\begin{align*}
+||\hat{f_{\mathcal{B}}} - f_{\mathcal{B}}||_1 &= \sum_{j =1}^B p_j |\mu_j - \hat{\mu}(R_j)| \\
+&\leq \sum_{j =1}^B p_j \sqrt{\frac{(b_j - b_{j-1})^2}{p_jn} \log{\frac{4B}{\delta}}} \\
+&\leq \sum_{j =1}^B \sqrt{\frac{p_j(b_j - b_{j-1})^2}{n} \log{\frac{4B}{\delta}}} \\
+&\leq \sum_{j =1}^B \sqrt{\frac{2(b_j - b_{j-1})^2}{Bn} \log{\frac{4B}{\delta}}} \\
+&\leq \sqrt{\frac{2}{Bn} \log{\frac{4B}{\delta}}} \sum_{j =1}^B (b_j - b_{j-1}) \\
+&\leq c_1 \frac{1}{\sqrt{Bn}} \sqrt{\log{\frac{B}{\delta}}}
+\end{align*}
+By union bound, these hold with probability at least $1 - \delta$, which completes the proof.
+\end{proof}
+
+In our proofs we also required that the binning scheme we constructed was 2-well-balanced.
+
+\begin{lemma}
+There exists constant $c$ s.t. if $n \geq c B \log{\frac{B}{\delta}}$ then the binning scheme $\bins{}$ we construct in step 2 of our algorithm is 2-well-balanced.
+\end{lemma}
+
+\begin{proof}
+This can be proved using a PAC-Bayes relative error bound.
+\end{proof}
+
+Finally, we have the tools to prove the main theorem, which we restate below.
+
+\finalCalib*{}
+
+\begin{proof}
+
+\end{proof}
+
