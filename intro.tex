@@ -5,7 +5,7 @@
 The probability that a system outputs for an event should reflect the true frequency of that event: if an automated diagnosis system says 1,000 patients have cancer with probability 0.1, approximately 100 of them should indeed have cancer.
 In this case we say the model is uncertainty calibrated. The importance of this notion of calibration has been emphasized in personalized medicine~\cite{jiang2012calibrating}, meteorological forecasting~\cite{brocker2009decomposition} and natural language processing applications~\cite{nguyen2015posterior}.
 As most machine learning models, including neural networks, do not output calibrated probabilities out of the box~\cite{guo2017calibration, zadrozny2001calibrated} recalibration methods take the output of an uncalibrated model, and transform it into a calibrated probability.
-\emph{Scaling} approaches for recalibration include Platt scaling~\cite{platt1999probabilistic}, isotonic regression~\cite{zadrozny2002transforming}, and temperature scaling~\cite{guo2017calibration}. These methods are widely used, but do they actually produce calibrated probabilities?
+\emph{Scaling} approaches for recalibration include Platt scaling~\cite{platt1999probabilistic}, isotonic regression~\cite{zadrozny2002transforming}, and temperature scaling~\cite{guo2017calibration}. These methods are widely used and require very few samples, but do they actually produce calibrated probabilities?
 % , and speech recognition~\cite{dong2011calibration}
 % These methods use additional recalibration data to fit a simple function on top of the original model outputs.
 
@@ -23,7 +23,7 @@ As most machine learning models, including neural networks, do not output calibr
 % methods try to calibrate, but do they actually achieve it?
 % }
 
-\emph{We discover that these methods are less calibrated than reported.} Estimating the calibration of models can be very challenging, \tm{maybe "the calibration of models" -> "the calibration of models with continuous outputs"?}so past work approximates a model's calibration error using a finite set of bins. We show that by using more bins, we can uncover a higher calibration error for models on CIFAR-10 and ImageNet (Figure~\ref{fig:lower_bounds}). This is a fundamental limitation with approaches that output a continuous range of probabilities -- we show that their true calibration error may never be measurable with a finite number of bins (Example~\ref{ex:continuous-not-calibrated}).
+\emph{We discover that these methods are less calibrated than reported.} Estimating the calibration of models with continuous outputs can be very challenging, so past work approximates a model's calibration error using a finite set of bins. We show that by using more bins, we can uncover a higher calibration error for models on CIFAR-10 and ImageNet. This is a fundamental limitation with approaches that output a continuous range of probabilities -- we show that their true calibration error may never be measurable with a finite number of bins (Example~\ref{ex:continuous-not-calibrated}).
 
 An alternative approach, histogram binning~\cite{zadrozny2001calibrated}, outputs probabilities from a finite set.
 Histogram binning can produce a model that is calibrated, and unlike scaling methods we can measure its calibration error, but it can be sample inefficient.
@@ -85,7 +85,7 @@ We show that it achieves this by leveraging error cancellations across bins.
 We run multi-class calibration experiments on CIFAR-10~\cite{krizhevsky2009learningmultiple} and ImageNet~\cite{deng2009imagenet}.
 The objective is to minimize the mean-squared error, also known as the Brier score~\cite{brier1950verification}, subject to a calibration error budget.
 We show that the variance-reduced calibrator achieves a better calibration error than histogram binning, while allowing us to measure the true calibration error.
-For example, we get a \emph{35\% lower calibration error on CIFAR-10} if $B = 100$.
+For example, we get a \emph{35\% lower calibration error on CIFAR-10} than histogram binning if $B = 100$.
 We also show that the improved estimator converges to the true calibration error much faster than the plugin estimator.
 
 \tm{Sometimes I do a summary of contribution paragraph for the reviewers to easily see the contribution. doesn't add anything to the quality of the paper, but sometimes useful for paper acceptance .. (As a rushed reviewer sometimes I wanted the authors to have a simple para with a bit more technical term than abstract....)}

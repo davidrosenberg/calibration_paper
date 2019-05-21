@@ -1,4 +1,4 @@
-\section{Problem formulation}
+\section{Setup and background}
 \label{sec:formulation}
 
 \newcommand{\lpce}[0]{\ensuremath{\ell_p\mbox{-CE}}}
@@ -69,7 +69,18 @@ For notational simplicity, our theory focuses on the binary classification setti
 
 \subsection{Recalibration}
 
-Since most machine learning models do not output calibrated probabilities out of the box~\cite{guo2017calibration, zadrozny2001calibrated} recalibration methods take the output of an uncalibrated model, and transform it into a calibrated probability. That is, we are given a trained model $f: \mathcal{X} \to \mathcal{Z}$ and we wish to learn a recalibrator $g : \mathcal{Z} \to [0, 1]$ such that $g \circ f$ is well-calibrated.
+Since most machine learning models do not output calibrated probabilities out of the box~\cite{guo2017calibration, zadrozny2001calibrated} recalibration methods take the output of an uncalibrated model, and transform it into a calibrated probability. That is, we are given a trained model $f: \mathcal{X} \to \mathcal{Z}$ and recalibration data $T = \{ z_i, y_i \}_{i=1}^n$, and we wish to learn a recalibrator $g : \mathcal{Z} \to [0, 1]$ such that $g \circ f$ is well-calibrated.
+
+\emph{Scaling methods}, for example Platt scaling~\cite{platt1999probabilistic}, output a function $\hat{g} = \argmax_{g \in G} \sum_{(z, y) \in T} l(g(z), y)$, where $l$ is a loss function, for example the log likelihood or mean-squared error. The advantage of such methods is that they converge very quickly since they only fit a single parameter.
+
+\emph{Histogram binning} first constructs a set of bins (intervals) that partitions $[0, 1]$.
+
+\begin{definition}[Binning schemes]
+A binning scheme $\mathcal{B}$ of size $B$ is a set of $B$ intervals $I_1, \dots, I_j$ that partitions $[0, 1]$. Given an input $z \in [0, 1]$ if $z \in I_j$ let $\beta(z) = j$ be the interval z lands in.
+% into $B$ disjoint intervals or bins, defined by bin boundaries $0 = b_0 < b_1 < ... < b_B = 1$. For $1 \leq j \leq B$, the $j$-th bin is the interval $I_j$ where $I_1 = [b_0, b_1]$ and $I_j = (b_{j-1}, b_j]$ for $j > 1$. 
+\end{definition}
+
+The bins are typically chosen such that $I_1 = [0, \frac{1}{B}], I_2 = (\frac{1}{B}, \frac{2}{B}], \dots, I_B = (\frac{B-1}{B}, 1]$ or so that each bin contains an equal number of $g(z_i)$ values in the recalibration data~\cite{zadrozny2001calibrated, guo2017calibration}. Histogram binning then outputs the average $y_i$ value in each bin.
 
 % We say $M$ is pooled-calibrated (Kuleshov et al) if $J$ is sampled uniformly at random from $[k]$ and:
 % \[ P\Big(Y = J | f_J(x) = p) \Big) \quad \forall p \]

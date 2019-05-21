@@ -1,6 +1,6 @@
 \newpage
 \section{Proofs for section~\ref{sec:verifying_calibration}}
-\label{sec:calibrating_models}
+\label{sec:calibrating_models_appendix}
 
 \newcommand{\G}[0]{\ensuremath{\mathcal{G}}}
 
@@ -108,4 +108,12 @@ Finally, we have the tools to prove the main theorem, which we restate below.
 \begin{proof}
 
 \end{proof}
+
+We also show that if we use lots of bins, discretization has little impact on model quality as measured by the mean-squared error.
+
+\pl{we never mentioned sharpness and MSE is not sharpness}
+\begin{theorem}[MSE bound]
+\label{thm:sharpness-bound}
+If $\mathcal{B}$ is a 2-well-balanced binning scheme of size $B$ and $B \leq O(n\log{n})$, then with high probability $\mbox{MSE}(\hat{g}_{\mathcal{B}}) \leq \mbox{MSE}(g) + O(\frac{1}{B})$.
+\end{theorem}
 

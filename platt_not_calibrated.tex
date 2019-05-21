@@ -26,10 +26,10 @@ The calibration error in each bin is estimated as the difference between the ave
 Note that the binning here is for evaluation only, whereas in histogram binning is used for the method itself.
 We formalize the notion of this binned calibration error below.
 
-\ak{Is the above text enough to motivate these definitions, or should I add more text?}
-\begin{definition}
-A binning scheme $\mathcal{B}$ is a set of $B$ disjoint intervals $I_1, \cdots, I_B$ that cover $[0, 1]$.
-\end{definition}
+% \ak{Is the above text enough to motivate these definitions, or should I add more text?}
+% \begin{definition}
+% A binning scheme $\mathcal{B}$ is a set of $B$ disjoint intervals $I_1, \cdots, I_B$ that cover $[0, 1]$.
+% \end{definition}
 
 \begin{definition}
 The binned version of $f$ outputs the average value of $f$ in each bin:
@@ -38,19 +38,7 @@ f_{\mathcal{B}}(x) = E[f(X) \mid f(X) \in I_j] \quad\quad\quad \mbox{where }x \i
 \end{align} 
 \end{definition}
 
-\begin{definition}
 Given $\bins{}$, the binned calibration error of $f$ is simply $\lpce(f_{\bins{}})$.
-\end{definition}
-
-\tm{My style would be that some of these definitions, e.g, 3.1 and 3.3, can be just mentioned in texts without a definition environment}
-
-% \begin{definition}
-% Given $f$ and $\mathcal{B}$ the binned $\ell_p$ calibration error is given by:
-% \[ \lpce(f, B) = \lpce(f_B) \]
-% \end{definition}
-% \tm{I am not sure we need this definition. does it suffice to talk about the calibration error of the binned function, and say that's what people are doing? Or at least it seems that the notion above should be defined through the calibration error of the binned function}
-% \pl{I agree it'd be much nicer to not have this, both in saving space but is the better way to think about it}
-
 A simple example shows that using binning to estimate the $\ell_p$ calibration error can severely underestimate the true $\ell_p$ calibration error, even for $p=1$, the average calibration error.
 
 \begin{restatable}{example}{continuousNotCalibrated}
@@ -90,7 +78,7 @@ Our experiments on ImageNet and CIFAR-10 suggest that previous work reports numb
 As in~\cite{guo2017calibration}, the model's objective was to output the top predicted class and a confidence score associated with the prediction. For ImageNet, we used a trained VGG16 model with an accuracy of 64.3\%. We split the validation set into 3 chunks of size $(20000, 5000, 25000)$. We used the first chunk of data to recalibrate the model using Platt scaling, the second to select the binning scheme $\mathcal{B}$ so that each bin contains an equal number of points, and the third to measure the binned calibration error. We calculated $90\%$ confidence intervals for the binned calibration error using 1,000 bootstrap resamples and performed the same experiment with varying numbers of bins.
 % from the TensorFlow Keras library
 
-Figure~\ref{fig:imagenet_lower_bound} shows that as we increase the number of bins on ImageNet, the measured calibration error is higher and this is statistically significant. For example, if we use 15 bins as in~\cite{guo2017calibration}, we would think our calibration error is around 0.02 when the calibration error is at least twice as high. Figure~\ref{fig:cifar_10_lower_bound} shows similar findings for CIFAR-10, and in the Appendix we show that our findings hold even if we use $\ell_1$ calibration error and alternative binning strategies as in~\cite{guo2017calibration}.
+Figure~\ref{fig:imagenet_lower_bound} shows that as we increase the number of bins on ImageNet, the measured calibration error is higher and this is statistically significant. For example, if we use 15 bins as in~\cite{guo2017calibration}, we would think the $\ell_2$ calibration error is around 0.02 when the calibration error is at least twice as high. Figure~\ref{fig:cifar_10_lower_bound} shows similar findings for CIFAR-10, and in the Appendix we show that our findings hold even if we use $\ell_1$ calibration error and alternative binning strategies as in~\cite{guo2017calibration}.
 
 % To see if this phenomena \pl{restate the phenomena in case people started reading from here} occurs in practice, we ran experiments on CIFAR-10 and Imagenet \pl{capitalize N}, which show that \pl{here we have
 % to be very clear about how to interpret our result;
