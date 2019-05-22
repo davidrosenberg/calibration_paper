@@ -7,11 +7,19 @@
 \newcommand{\piSmallBound}[0]{\ensuremath{\frac{12}{n}\log{\frac{2B}{\delta}}}}
 
 \tm{I wonder we should have subscript for $\cancelEst$. $\ensuremath{\hat{E}_{\textup{cxl}}^2}$? Sounds a bit verbose..}
-Even if we use a recalibration method the actual calibration error may be lower or higher than the theory predicts. This is particularly true if the model is tested on a slightly different distribution that what it is trained on. Before deploying our model we would like to ensure that it has an acceptable calibration error.
+Even if we use a recalibration method\pl{,} the actual calibration error may be lower or higher than the theory predicts \pl{what theory? this sounds weird...I'd just say let's estimate calibration error, since that's what people do already, don't really need to justify}. This is particularly true if the model is tested on a slightly different distribution that what it is trained on \pl{you always estimate calibration on a calibration set - there's no train-test mismatch?}. Before deploying our model we would like to ensure that it has an acceptable calibration error.
 
-In this section we show that we can efficiently estimate the calibration error of binned models, if the binning scheme is 2-well-balanced. Prior work typically estimates each term in the calibration error directly from samples~\cite{nguyen2015posterior, hendrycks2019anomaly, kuleshov2015calibrated, hendrycks2019pretraining}. \cite{brocker2012empirical, ferro2012bias} notice that this leads to a biased estimate, and propose an approximate correction term to reduce the bias. Our contribution is to show that while the naive estimator requires samples proportional to $B$ to estimate the calibration error, the improved estimator requires samples proportional to $\sqrt{B}$.
+In this section we show that we can efficiently estimate the calibration error of binned models, if the binning scheme is 2-well-balanced. Prior work typically estimates each term in the calibration error directly from samples~\cite{nguyen2015posterior, hendrycks2019anomaly, kuleshov2015calibrated, hendrycks2019pretraining}. \pl{more words to describe this work - from meteorology?} \cite{brocker2012empirical, ferro2012bias} notice that this leads to a biased estimate, and propose an \pl{improved estimator than subtracts off an (so that we can refer to this by name)} approximate correction term to reduce the bias. Our contribution is to show that while the naive estimator requires samples proportional to $B$ to estimate the calibration error, the improved estimator requires samples proportional to $\sqrt{B}$.
 
-Concretely, suppose we are interested in checking if our model has calibration error $\leq \epsilon$ \pl{but this is not what we actually show due to $r$}. If the calibration error is $> \epsilon$, then with high probability we should output that it is not calibrated \pl{be more precise}\ak{Which part should be more precise?}. If the calibration error is $< r\epsilon$, where $0 < r < 1$ is a user-specified effect size, then with high probability we should output that the model is calibrated. Suppose we wish to measure the calibration error of a model $f : \mathcal{X} \to S$ where $S \subseteq [0, 1]$ and $|S| = B$. Suppose we get an evaluation set $T_n = \{(x_1, y_1), \dots, (x_n, y_n)\}$. Past work estimates the calibration error by directly estimating each term from samples:\ak{Does this background it?}
+Concretely, suppose we are interested in checking if our model has calibration error $\leq \epsilon$
+\pl{but this is not what we actually show due to $r$}. If the calibration error is $> \epsilon$, then with high probability we should output that it is not calibrated \pl{be more precise}\ak{Which part should be more precise?}
+\pl{what does saying 'it's calibrated' mean? I think you mean calibration error
+less than $\epsilon$; I think you want to say, the contract is: fix an
+$\epsilon$; we want to do a hypothesis test of whether this error is $< r \epsilon$ or $> \epsilon$; basically the contract is not clear}.
+If the calibration error is $< r\epsilon$, where $0 < r < 1$ is a user-specified effect size, then with high probability we should output that the model is calibrated.
+
+\pl{separate paragraph after defining the contract}
+Suppose we wish to measure the calibration error of a model $f : \mathcal{X} \to S$ where $S \subseteq [0, 1]$ and $|S| = B$. Suppose we get an evaluation set $T_n = \{(x_1, y_1), \dots, (x_n, y_n)\}$. Past work estimates the calibration error by directly estimating each term from samples:\ak{Does this background it?}
 
 \begin{restatable}[Plugin estimator]{definition}{pluginDfn}
 \label{dfn:plugin-estimator}
@@ -19,7 +27,9 @@ Concretely, suppose we are interested in checking if our model has calibration e
 \[ \hat{p_s} = \frac{|L_s|}{n} \]
 Let $\hat y_i$ be the empirical average of $Y$ when the model outputs $s$:
 \[ \hat{y_s} = \sum_{y \in L_s} \frac{y}{|L_s|} \] 
+  \pl{can make these equations inline to save space since they are basic}
 
+  \pl{it should be $\hat y_s$, not $\hat{y_s}$ everywhere or else the hat is in the wrong place}
   The plugin estimate for the $\ell_2^2$ calibration error is \tm{$\ell^2$ calibration error sounds clearer}the weighted squared difference between $\hat{y_s}$ and $s$:
 \[ \pluginEst{} = \sum_{s \in S} \hat{p_s} (s - \hat{y_s})^2 \]
 \end{restatable}
@@ -29,7 +39,7 @@ Let $\hat y_i$ be the empirical average of $Y$ when the model outputs $s$:
 \pl{this formula is a bit out of nowhere; saying 'debiasing' is helpful, but can you actually say the criteria more formally and declaratively?}
 
 \begin{restatable}[Debiased estimator]{definition}{cancelingDfn}
-The debiased estimator for the $\ell_2^2$ error is:
+  The debiased \pl{improved? pick a name and stick with it (probably debiased is better)} estimator for the $\ell_2^2$ error is:
 \[ \hat{E}^2 = \sum_{i=1}^b \hat{p_i} \Big[ (s_i - \hat{y_i})^2 - \frac{\hat{y_i}(1 - \hat{y_i})}{\hat{p_i}n-1} \Big] \]
 \end{restatable}
 
@@ -42,16 +52,22 @@ Our main result is that to check if the $\ell_2^2$ calibration error is $\leq \e
 
 \begin{restatable}[Debiased bound]{theorem}{finalCanceling}
 \label{thm:final-ours}
-Suppose $\forall i.\;p_i \geq \frac{1}{2B}$ and $n = \widetilde{\Theta}(B+\frac{\sqrt{B}}{\epsilon^2})$ ignoring $\log$ factors.\tm{$\Theta(..)$ ignoring log factors sounds a quite non-standard way to say this .. First, it's unclear at the first sight why you need $\Theta$ but not $\Omega()$, second, I think often people would say $n = \widetilde{\Omega}(...)$ where $\widetilde{\Omega}$ hides log factors. Maybe you can use n gtrsim ... because gtrsim'd precise meaning could be a bit more flexible. (we don't see to have the package to support gtrsim lesssim)} Then the cancelling estimator can check if ${E^*}^2 \leq \epsilon^2$ with failure probability $\delta$ and constant $r$. 
+  Suppose $\forall i.\;p_i \geq \frac{1}{2B}$ and $n = \widetilde{\Theta}(B+\frac{\sqrt{B}}{\epsilon^2})$ ignoring $\log$ factors.\tm{$\Theta(..)$ ignoring log factors sounds a quite non-standard way to say this .. First, it's unclear at the first sight why you need $\Theta$ but not $\Omega()$, second, I think often people would say $n = \widetilde{\Omega}(...)$ where $\widetilde{\Omega}$ hides log factors. Maybe you can use n gtrsim ... because gtrsim'd precise meaning could be a bit more flexible. (we don't see to have the package to support gtrsim lesssim)} Then the cancelling \pl{your names are all over the place} estimator can check if ${E^*}^2 \leq \epsilon^2$ with failure probability $\delta$ and constant $r$. 
 \end{restatable}
 
-The proof of both theorems is in Appendix~\ref{sec:verifying_calibration}. The idea is that for the plugin estimator each term in the sum has bias $1/n$. These biases accumulate, giving total bias $B/n$. The debiased estimator has much lower bias and the estimation variance cancels across bins---this intuition is captured in Lemma~\ref{lem:c3_bound} which requires careful conditioning to make this argument go through.
+The proof of both theorems is in Appendix~\ref{sec:verifying_calibration}. The idea is that for the plugin estimator each term in the sum has bias $1/n$. These biases accumulate, giving total bias $B/n$. The debiased estimator has much lower bias and the estimation variance cancels across bins---this intuition is captured in Lemma~\ref{lem:c3_bound} which requires careful conditioning to make this \pl{the} argument go through.
 
-Another way of thinking about this is that the debiased estimator needs fewer samples to get near the true calibration error: for the plugin estimator if $n = \widetilde{\Theta}(\frac{B}{{E^*}^2})$ then $\frac{1}{2} {E^*}^2 \leq \pluginEst{} \leq \frac{3}{2} {E^*}^2$ but for the debiased estimator if $n = \widetilde{\Theta}(\frac{\sqrt{B}}{{E^*}^2})$ then $\frac{1}{2} {E^*}^2 \leq \cancelEst{} \leq \frac{3}{2}{E^*}^2$.
+Another way of thinking about this \pl{the result? but you were just talking about the proof} is that the debiased estimator needs fewer samples to get near the true calibration error: for the plugin estimator if $n = \widetilde{\Theta}(\frac{B}{{E^*}^2})$ then $\frac{1}{2} {E^*}^2 \leq \pluginEst{} \leq \frac{3}{2} {E^*}^2$ but for the debiased estimator if $n = \widetilde{\Theta}(\frac{\sqrt{B}}{{E^*}^2})$ then $\frac{1}{2} {E^*}^2 \leq \cancelEst{} \leq \frac{3}{2}{E^*}^2$.
 
-These bounds suggest that estimating calibration error can be the bottleneck, underscoring the importance of the estimation problem, since under suitable conditions the variance reduced calibrator can calibrate with $\widetilde{\Theta}(B + \frac{1}{\epsilon^2})$ samples but we need $\widetilde{\Theta}(B + \frac{\sqrt{B}}{\epsilon^2})$ samples to check if the error is $\leq \epsilon$.
+These bounds suggest that estimating calibration error can be the bottleneck, underscoring the importance of the estimation problem, since under suitable conditions\pl{,} the variance reduced calibrator can calibrate with $\widetilde{\Theta}(B + \frac{1}{\epsilon^2})$ samples but we need $\widetilde{\Theta}(B + \frac{\sqrt{B}}{\epsilon^2})$ samples to check if the error is $\leq \epsilon$.
 
-Past work in meteorology has shown that the debiased estimator performs better in practice -- the main contribution of our work here is to show that the estimator also has an \emph{improved sample complexity}. However, in the Appendix, we run experiments on CIFAR-10, and show that for any desired calibration error, the cancelling estimator enables us to pick out models with a better mean-squared error. We recommend the use of this estimator.
+Past work in meteorology has shown that the debiased estimator performs better in practice -- the main contribution of our work here is to show that the estimator also has an \emph{improved sample complexity}. However, in the Appendix, we run experiments on CIFAR-10, and show that for any desired calibration error, the cancelling \pl{debiased} estimator enables us to pick out models with a better mean-squared error. We recommend the use of this estimator \pl{cut; sounds like you're writing a rec letter}.
+
+\pl{what happened to the results - I think we need to have one experiment in the main text comparing the plugin and the debiased estimator}
+
+\pl{This section needs some work - terminology issues aside, I think the biggest thing is that we to state more clearly what the goal is...
+estimators usually estimate things and you compute the error of the estimator...but here you're kind of doing a hypothesis test,
+but it's not clear}
 
 % We ran experiments on CIFAR-10 and Imagenet to compare the practical performance of the cancelling estimator and the plugin estimator. We split the validation set \pl{how big?} into two chunks $C_1$ \pl{maybe give these more meaningful names with subscripts? anyway, put them behind macros} and $C_2$ \pl{what sizes}. We use $C_1$ to re-calibrate and discretize a trained model using $B = 100$ bins. For varying values of $n$, we sample $n$ points, with replacement, from $C_2$, and estimate the calibration error using the cancelling estimator and the plugin estimator. We then compute the squared deviation of these estimates from the calibration error measured on the entire chunk $C_2$. We repeat this 1,000 times to get the mean squared deviation and confidence intervals. The results are in Figure~\ref{fig:mse_estimators}. \pl{always say what the result is: Figure shows that...}
 % In the Appendix, we include results for ImageNet, ablations on $B$, and we visualize the histogram of the deviations.
