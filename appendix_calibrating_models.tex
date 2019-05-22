@@ -1,10 +1,10 @@
 \newpage
-\section{Proofs for section~\ref{sec:verifying_calibration}}
+\section{Proofs for section~\ref{sec:calibrating_models}}
 \label{sec:calibrating_models_appendix}
 
 \newcommand{\G}[0]{\ensuremath{\mathcal{G}}}
 
-Our analysis of the sample complexity of \ourcal{} requires some assumptions on the function family $\G{}$ that hold for standard methods like Platt scaling, beta calibration, and vector scaling:
+Our analysis of the sample complexity of \ourcal{} requires some assumptions on the function family $\G{}$ that hold for standard methods like Platt scaling, beta calibration, and vector scaling (since vector scaling calibrates each class separately):
 
 \begin{enumerate}
 \item (Finite bounded parameters). Let $\G{} = \{ g_{\theta} : \mathcal{Z} \to [0, 1] \; | \; \theta \in \mathbb{R}^{d'} \wedge ||\theta||_{\infty} \leq R \}$
@@ -12,7 +12,13 @@ Our analysis of the sample complexity of \ourcal{} requires some assumptions on 
 \item (Lipschitz). Suppose that for all $z \in \mbox{supp}(Z)$, $|g_{\theta_1}(z) - g_{\theta_2}(z)| \leq L|\theta_1 - \theta_2|_2$.
 \end{enumerate}
 
-If $\G{}$ satisfies the following assumptions we say $\G{}$ is $(d', L, R)$-compatible. For Platt-scaling $d' = 1$ and $L$ and $R$ are small.
+If $\G{}$ satisfies the following assumptions we say $\G{}$ is $(d', L, R)$-compatible. For Platt-scaling $d' = 1$ and $L$ and $R$ are typically small constants.
+
+We will analyze each step of our algorithm and then combine the pieces to get Theorem~\ref{thm:final-calib}.
+As we mention in the main text, step 3 is the main variance-reduction step, so Lemma~\ref{thm:empirical-binning} is one of the core parts of our proof.
+Step 2 is where we construct a binning scheme so that each bin has an equal number of points---we show that this property holds approximately in the population.
+This is important as well, particularly to ensure we can estimate the calibration error.
+Step 1 is a simple adaptation of a standard result from learning theory.
 
 % We first need to introduce the Bayes optimal recalibrator $\omega^*$, which we compare all other recalibrators to. $\omega^* \circ f$ has calibration error $0$, and also has the minimum mean-squared error among all recalibrators.
 
@@ -20,10 +26,13 @@ If $\G{}$ satisfies the following assumptions we say $\G{}$ is $(d', L, R)$-comp
 % $\omega^* : \mathcal{Z} \to [0, 1]$ is given by $\omega^*(x) = \expect[Y | Z = z]$.
 % \end{definition}
 
-We show that if $\G{}$ is $(L, R)$-compatible and contains $g^* \in \G{}$ with low calibration error, then the empirical risk minimizer $g \in \G{}$ of the mean-squared loss will also quickly converge to low calibration error.
+We first show a generalization result for Step 1 of our approach---recall that step 1 is essentially Platt scaling.
+That is, if $\G{}$ is $(d', L, R)$-compatible and contains $g^* \in \G{}$ with low calibration error, then we show that the empirical risk minimizer $g \in \G{}$ of the mean-squared loss will also quickly converge to low calibration error.
+Intuitively, methods like Platt scaling fit a single parameter to the data so classical learning theory bounds tell us they will converge quickly to their optimal error, at least in mean-squared error.
+We can combine this with a decomposition of the mean-squared error into calibration and refinement, and the injectivity of $g \in \mathcal{G}$, to show they also converge in calibration error.
 
 \begin{lemma}
-Let $g^* = \argmin_{g \in \G{}}\ell_2^2\mbox{-CE}(g)$ and suppose $\ltwoce(g^*) \leq \epsilon^2$. Then, there exists a constant $c$, independent of $L$ and $n$ s.t. with high probability over the samples $\ltwoce(g) \leq \epsilon + \frac{cLd' \log{R}}{\sqrt{n}}$, where recall that $g \in \G{}$ was selected as the empirical risk minimizer of the mean-squared error loss.
+There exists a constant $c$, independent of $d', L, n$ such that with high probability over the recalibration samples $\ltwoce(g) \leq \min_{g' \in \G{}}\ell_2^2\mbox{-CE}(g') + \frac{cLd' \log{R}}{\sqrt{n}}$, where recall that $g \in \G{}$ was selected as the empirical risk minimizer of the mean-squared error loss.
 \end{lemma}
 
 \begin{proof}
@@ -31,7 +40,7 @@ We use the classic decomposition of the mean-squared error into calibration erro
 \[ \mbox{MSE}(g) = \underbrace{\ltwoce(g)}_{\mbox{calibration}} + \underbrace{\expect[(\expect[Y \mid g(Z)] - Y)^2]}_{\mbox{refinement}} \]
 Note that the refinement term is constant for all injective $g \in \G{}$, since for injective $g$:
 \[ \expect[(\expect[Y \mid g(Z)] - Y)^2] = \expect[(\expect[Y \mid Z] - Y)^2] \]
-This means that the difference in $\mbox{MSE}$ between $g$ and $g^*$ is precisely the difference in the mean-squared error. From a standard $\epsilon$-cover in the parameter space, or PAC-Bayes argument, we can get a generalization bound on the mean-squared error:
+This means that the difference in $\mbox{MSE}$ between any $g$ and $g'$ is precisely the difference in the mean-squared error. From a standard $\epsilon$-cover in the parameter space, or PAC-Bayes argument, we can get a high probability generalization bound on the mean-squared error:
 \[ \mbox{MSE}(g) \leq \mbox{MSE}(g^*) + \frac{cLd' \log{R}}{\sqrt{n}} \]
 This gives us the desired result.
 \end{proof}
@@ -55,10 +64,12 @@ There exist constants $c_B, c_1, c_2$ such that the following is true. Given $g 
 % One question is whether we can relax this theorem, for example if b_j - b_{j-1} are equal for all j. Maybe we don't need well-balancedness in that case.
 % We first discuss high level intuition for the proof. Recall that in the naive binning approach, where we bin the label (that is, $Y$) values, the $\ell_2$ calibration error is $O(\sqrt{\frac{B}{n}})$ ignoring $\log$ factors. That is, the number of samples we need for calibration increases linearly with the number of bins. The intuition is that when we have more bins, we have fewer samples per bin. That is, we have $\frac{n}{B}$ samples of $Y$ in each bin, where $Y \in \{0, 1\}$. Then Hoeffding's bound gives us the above result, which is tight up to constants. However, this theorem shows when we bin $f$ instead of $Y$, our rates have much better dependencies on $B$. The high level idea is that for each bin $j$ we are taking the average of values bounded in $I_j = [b_{j-1}, b_j]$. This is a narrower range than in naive binning where we took the average of values in $\{0, 1\}$. Since the values are bounded in a narrower range, the variance is lower. Of course, the variance of any particular bin could be big. For example we could have $I_7 = [0.1, 0.9]$. But the sum of all the bin sizes is 1, so `most' of the bins have a lower variance. We now give the formal proof.
 
-Define $R_j$ to be the set of points that fall into the $j$-th bin, given by $R_j = \{g(z_i) \mid g(z_i) \in I_j \wedge (z_i, y_i) \in T_3\}$.
+Recall that the intuition is in Figure~\ref{fig:variance_reduced_illustration} of the main text---the $g(z_i)$ values in each bin (gray circles in Figure~\ref{fig:var_red_binning}) are in a narrower range than the $y_i$ values (black crosses in Figure~\ref{fig:hist_binning}) so when we take the average we incur less of an estimation error. Now, there may be a small number of bins where the $g(z_i)$ values are not in a narrow range, but we will use the assumption that $\bins{}$ is 2-well-balanced to show that these effects average out and the overall estimation error is small.
+
+Define $R_j$ to be the set of $g(z_i)$ that fall into the $j$-th bin, given by $R_j = \{g(z_i) \mid g(z_i) \in I_j \wedge (z_i, y_i) \in T_3\}$ (recall that $T_3$ is the data we use in step 3).
 Let $p_j$ be the probability of landing in bin $j$, given by $p_j = \prob(g(Z) \in I_j)$.
 Since $\bins{}$ is 2-well-balanced, $p_j \geq \frac{1}{2B}$.
-Since $n \geq c_B B\log{\frac{B}{\delta}}$ by the multiplicative Chernoff bound, for some large enough $c_B$, with probability at least $1 - \frac{\delta}{2}$, $|R_j| \geq \frac{p_j}{2}$.
+Since $n \geq c_B B\log{\frac{B}{\delta}}$, by the multiplicative Chernoff bound, for some large enough $c_B$, with probability at least $1 - \frac{\delta}{2}$, $|R_j| \geq \frac{p_j}{2}$.
 
 Consider each bin $j$. Let $\mu_j$ be the expected output of $g$ in bin $j$, given by $\mu_j = \expect[g(Z) \; | \; g(Z) \in I_j]$. $\mu(R_j)$, the mean of the values in $R_j$, is the empirical average of $|R_j|$ such values, each bounded between $b_{j-1}$ and $b_j$ where $I_j = [b_{j-1}, b_j]$. So $\hat{\mu}(R_j)$ is sub-Gaussian with parameter:
 
