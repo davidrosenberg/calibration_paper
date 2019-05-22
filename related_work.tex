@@ -1,17 +1,16 @@
-\section{Comparison to related work}
+\section{Related work}
 
-Calibration, including the $\ell_2^2$ calibration error and its connection to the Brier score, has been explored extensively in the statistics literature. Its importance has been emphasized in medicine, natural language processing~\cite{jiang2012calibrating}, speech recognition, meteorology, econometrics, and psychology.
+Calibration (also known as reliability) including the $\ell_2^2$ calibration error and its connection to the Brier score has been explored extensively in the statistics and meteorology literature~\cite{murphy1973vector, murphy1977reliability, degroot1983forecasters,gneiting2005weather, brocker2009decomposition}. The importance of calibration has also been emphasized in medicine~\cite{jiang2012calibrating, crowson2017calibration, harrell1996prognostic}, reinforcement learning~\cite{malik2019calibrated}, natural language processing~\cite{nguyen2015posterior, card2018calibration}, speech recognition~\cite{dong2011calibration}, econometrics~\cite{gneiting2007probabilistic}, and psychology~\cite{lichtenstein1982calibration}. Our work is inspired in part by recent work on calibration~\cite{guo2017calibration, kuleshov2018accurate, hendrycks2019anomaly}. In these papers, binning is used to evaluate the calibration error of models, whereas in our case it is part of the method itself, which is key to the guarantees we give. Besides the calibration error metric, prior work also uses the Hosmer-Lemeshov test~\cite{hosmer1980goodness} and reliability diagrams~\cite{degroot1983forecasters, brocker2007reliability} to evaluate calibration.
 
-Our work is inspired in part by recent work on calibration. In these papers, binning is used to \emph{evaluate} the calibration error of models. As we show, binning underestimates the calibration error. This is inspired by the classical data processing inequality in information theory, which tells us that binning gives us a lower bound for the mutual information between two continuous random variables. A key difference in our variance-reduced calibration method is that binning is part of the calibration procedure. The way we choose bins is also different from (cite) and crucial for our theoretical guarantees and practical performance.
+\section{Conclusion}
 
-Our variance reduced calibration approach is also inspired by classical variance reduction techniques like control variates. Add stuff here.
+In this paper we had three main contributions: 1. We showed that the calibration error of popular continuous models is typically underestimated, 2. We introduced the first method, to our knowledge, that has better sample complexity than histogram binning but has a \emph{measurable calibration error}, and 3. We showed that an alternative estimator has better sample complexity than the commonly used plugin estimator. We showed experimental results on top-label and marginal calibration for CIFAR-10 and ImageNet.
+% We hope future work looks at even stronger notions of multi-class calibration (prior work typically focuses on top-label calibration) and calibration under domain shift.
 
-Add stuff about estimators. Debiasing, lots of focus in the literature on this. James Stein.
+% We think our framework opens up many new avenues for exploration. Can we come up with a binning scheme that is better than the well-balanced binning scheme that is one that leads estimate the calibration error even faster, at least for 
 
-\section{Conclusions}
+% \tm{I guess we need a conclusion section. }
 
-\tm{I guess we need a conclusion section. }
-
-\tm{briefly summarize the contribution (now we can use slightly different language because we assume the readers have read most of the paper and now the definitions.)}
-\tm{Open question or future directions, potential implication of the paper}
+% \tm{briefly summarize the contribution (now we can use slightly different language because we assume the readers have read most of the paper and now the definitions.)}
+% \tm{Open question or future directions, potential implication of the paper}
 

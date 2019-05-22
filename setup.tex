@@ -25,7 +25,7 @@ For $p \geq 1$, the $\ell_p$ calibration error of $f : \mathcal{X} \to [0, 1]$ i
 \pl{I like to use align for everything so equations be referencable}
 \pl{$\ell_p\mbox{-CE}$ - is this standard? looks super awkward; can we do $\text{CE}_p$ or something? in any case, put it behind a macro}
 
-The $\ell_2^2$ calibration error~\cite{nguyen2015posterior, hendrycks2019anomaly, kuleshov2015calibrated, hendrycks2019pretraining, murphy1973vector,degroot1983forecasters} is most commonly used but the $\ell_1$ and $\ell_{\infty}$ calibration errors are also used in the literature~\cite{guo2017calibration}.
+The $\ell_2^2$ calibration error~\cite{murphy1973vector,murphy1977reliability,degroot1983forecasters, nguyen2015posterior, hendrycks2019anomaly, kuleshov2015calibrated, hendrycks2019pretraining, brocker2012empirical} is most commonly used but the $\ell_1$ and $\ell_{\infty}$ calibration errors are also used in the literature~\cite{guo2017calibration, naeini2015obtaining, nixon2019calibration}.
 
 Calibration alone is not sufficient: consider an image dataset containing $50\%$ dogs and $50\%$ cats.
 If $f$ outputs $0.5$ on all inputs, $f$ is calibrated but not very useful.
@@ -35,7 +35,7 @@ We often also wish to minimize the mean-squared error -- also known as the Brier
 The mean-squared error of $f : \mathcal{X} \to [0, 1]$ is given by $\mbox{MSE}(f) = \mathbb{E}[(f(X) - Y)^2]$.
 \end{definition}
 
-We often want to minimize the MSE subject to a calibration constraint. Of course, these are not orthogonal because $\mbox{MSE} = 0$ implies perfect calibration -- in fact the MSE is the sum of the $\ell_2^2$ calibration error and a `sharpness' term~\cite{murphy1973vector,degroot1983forecasters, kuleshov2015calibrated}.
+We often want to minimize the MSE subject to a calibration constraint~\cite{gneiting2005weather, gneiting2007probabilistic}. Of course, these are not orthogonal because $\mbox{MSE} = 0$ implies perfect calibration -- in fact the MSE is the sum of the $\ell_2^2$ calibration error and a `sharpness' term~\cite{murphy1973vector,degroot1983forecasters, kuleshov2015calibrated}.
 
 \subsection{Multi-class classification}
 
@@ -59,13 +59,13 @@ Let $P(j)$ denote the probability of class $j$. The $\ell_2^2$ marginal calibrat
 \end{align}
 \end{definition}
 
-Note that prior works~\cite{guo2017calibration, hendrycks2019anomaly, hendrycks2019pretraining} often claim to perform multi-class calibration but only measure top-label calibration.
+Note that prior works~\cite{guo2017calibration, hendrycks2019anomaly, hendrycks2019pretraining} often claim to perform multi-class calibration but only measure top-label calibration---\cite{nixon2019calibration} shows that temperature scaling~\cite{guo2017calibration} scores worse than vector scaling on a marginal calibration metric, even though it has lower top-label calibration error.
 % In the Appendix we discuss other notions of multi-class calibration.
 
 \pl{is marginal calibration standard terminology? makes sense when compared with joint, but sounds a bit strange in relation to top-label}
 
 \tm{by quickly skimming the rest of the paper, I didn't see \margsquaredce and \topsquaredce showing up again. If they are only needed for experimetns, we could define there instead of here?}
-For notational simplicity, our theory focuses on the binary classification setting. We can transform top-label calibration into a binary calibration problem -- the model outputs a probability corresponding to its top prediction, and the label represents whether the model gets it correct or not. Marginal calibration can be transformed into $K$ one-vs-all binary calibration problems where for each $k \in [K]$ the model outputs the probability associated with the $k$-th class, and the label represents whether the input belongs to the $k$-th class or not. We look at both top-label calibration and marginal calibration in our experiments.
+For notational simplicity, our theory focuses on the binary classification setting. We can transform top-label calibration into a binary calibration problem -- the model outputs a probability corresponding to its top prediction, and the label represents whether the model gets it correct or not. Marginal calibration can be transformed into $K$ one-vs-all binary calibration problems where for each $k \in [K]$ the model outputs the probability associated with the $k$-th class, and the label represents whether the input belongs to the $k$-th class or not~\cite{zadrozny2002transforming}---this is analogous to how vector scaling~\cite{guo2017calibration} extends Platt scaling. We look at both top-label calibration and marginal calibration in our experiments.
 
 \subsection{Recalibration}
 

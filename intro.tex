@@ -3,8 +3,8 @@
 % Applications like personalized medicine, meteorological forecasting, and natural language processing \pl{NLP is so broad...anything could go here; either motivate based on fields that already use calibration (good to stand on shoulders of giants) or say something substantive about why calibration is needed (danger of being too preachy (danger of being too preachy))} require that classifiers provide calibrated confidence measures in addition to their predictions~\cite{jiang2012calibrating, brocker2009decomposition, nguyen2015posterior}.
 % In other words, the probability that a system outputs for an event should reflect the true frequency of that event: if an automated diagnosis system says 1,000 patient have cancer with probability 0.1, approximately 100 of them should indeed have cancer.
 The probability that a system outputs for an event should reflect the true frequency of that event: if an automated diagnosis system says 1,000 patients have cancer with probability 0.1, approximately 100 of them should indeed have cancer.
-In this case we say the model is uncertainty calibrated. The importance of this notion of calibration has been emphasized in personalized medicine~\cite{jiang2012calibrating}, meteorological forecasting~\cite{brocker2009decomposition} and natural language processing applications~\cite{nguyen2015posterior}.
-As most machine learning models, including neural networks, do not output calibrated probabilities out of the box~\cite{guo2017calibration, zadrozny2001calibrated} recalibration methods take the output of an uncalibrated model, and transform it into a calibrated probability.
+In this case we say the model is uncertainty calibrated. The importance of this notion of calibration has been emphasized in personalized medicine~\cite{jiang2012calibrating}, meteorological forecasting~\cite{murphy1973vector, murphy1977reliability, degroot1983forecasters,gneiting2005weather, brocker2009decomposition} and natural language processing applications~\cite{nguyen2015posterior, card2018calibration}.
+As most machine learning models, including neural networks and Bayesian methods, do not output calibrated probabilities out of the box~\cite{guo2017calibration, zadrozny2001calibrated, kuleshov2018accurate} recalibration methods take the output of an uncalibrated model, and transform it into a calibrated probability.
 \emph{Scaling} approaches for recalibration include Platt scaling~\cite{platt1999probabilistic}, isotonic regression~\cite{zadrozny2002transforming}, and temperature scaling~\cite{guo2017calibration}. These methods are widely used and require very few samples, but do they actually produce calibrated probabilities?
 % , and speech recognition~\cite{dong2011calibration}
 % These methods use additional recalibration data to fit a simple function on top of the original model outputs.
@@ -34,7 +34,7 @@ Recalibration sample efficiency is crucial -- we often want to recalibrate our m
 To get the sample efficiency of Platt scaling and the verification guarantees of histogram binning, \emph{we propose the variance-reduced calibrator} (Figure~\ref{fig:var_red_binning}).
 Like scaling methods, we fit a simple function $g \in \mathcal{G}$ to the recalibration dataset.
 We then bin the input space so that an equal number of inputs land in each bin.
-In each bin, we output the average of the $g$ values in that bin -- these are the gray circles in Figure~\ref{fig:var_red_binning}.
+In each bin, we output the average of the $g$ values in that bin---these are the gray circles in Figure~\ref{fig:var_red_binning}.
 In contrast, histogram binning outputs the average of the label values in each bin (Figure~\ref{fig:hist_binning}).
 The motivation behind our method is that the $g$ values in each bin are in a narrower range than the label values -- when we take the average we incur less of an estimation error.
 If $\mathcal{G}$ is well chosen, our method requires $O(\frac{1}{\epsilon^2} + B)$ samples to achieve calibration error $\epsilon$ instead of $O(\frac{B}{\epsilon^2})$ samples for histogram binning, where $B$ is the number of model outputs (Theorem~\ref{thm:final-calib}). Note that in prior work binning the outputs of a function was used for evaluation and without any guarantees, whereas in our case it is used for the method itself and we show improved sample complexity.
@@ -69,7 +69,7 @@ If $\mathcal{G}$ is well chosen, our method requires $O(\frac{1}{\epsilon^2} + B
      \begin{subfigure}[b]{0.32\textwidth}
          \centering
          \includegraphics[width=\textwidth]{variance_reduced_binning_with_deltas}
-         \caption{Variance-reduced binning.}
+         \caption{Variance-reduced calibrator.}
          \label{fig:var_red_binning}
      \end{subfigure}
         \caption{
@@ -77,19 +77,19 @@ If $\mathcal{G}$ is well chosen, our method requires $O(\frac{1}{\epsilon^2} + B
         The black crosses are the ground truth labels, and the red lines are the output of the recalibration methods.
         Platt Scaling (Figure~\ref{fig:platt_scaling}) fits a function to the recalibration data, but its calibration error is not measurable.
         Histogram binning (Figure~\ref{fig:hist_binning}) outputs the average label in each bin.
-        Our variance-reduced binning (Figure~\ref{fig:var_red_binning}) fits a function $g \in \mathcal{G}$ to the recalibration data and then \emph{takes the average of the function values (the gray circles)} in each bin.
+        Our variance-reduced calibrator (Figure~\ref{fig:var_red_binning}) fits a function $g \in \mathcal{G}$ to the recalibration data and then \emph{takes the average of the function values (the gray circles)} in each bin.
         The function values have lower variance than the labels, as visualized by the blue dotted lines, which is why our approach has lower variance. 
         }
         \label{fig:variance_reduced_illustration}
 \end{figure}
 
 How do we check if the model produced by a recalibration method is actually calibrated? This is an important problem because all methods may achieve calibration error lower or higher than their theoretical rates predict---\cite{hendrycks2019anomaly} measures calibration error when the test distribution is different from train, where this is especially true. Prior work in machine learning~\cite{nguyen2015posterior, guo2017calibration, hendrycks2019anomaly, kuleshov2015calibrated, hendrycks2019pretraining} directly estimates each term in the calibration error from samples (Definition~\ref{dfn:plugin-estimator}).
-The sample complexity of the plugin estimator scales linearly with $B$.
-\emph{We find that an alternative estimator introduced in the meteorological literature has sample complexity that scales with $\sqrt{B}$ (Theorem~\ref{thm:final-ours})}.
+The sample complexity of this plugin estimator scales linearly with $B$.
+\emph{We show that an alternative estimator introduced in the meteorological literature~\cite{brocker2012empirical, ferro2012bias} has sample complexity that scales with $\sqrt{B}$ (Theorem~\ref{thm:final-ours})}.
 We prove that it achieves this by leveraging error cancellations across bins.
 
 We run multi-class calibration experiments on CIFAR-10~\cite{krizhevsky2009learningmultiple} and ImageNet~\cite{deng2009imagenet}.
-The objective is to minimize the mean-squared error, also known as the Brier score~\cite{brier1950verification}, subject to a calibration error budget.
+The objective is to minimize the mean-squared error, also known as the Brier score~\cite{brier1950verification}, subject to a calibration error budget~\cite{gneiting2005weather}.
 We show that the variance-reduced calibrator achieves a better calibration error than histogram binning, while allowing us to measure the true calibration error.
 For example, we get a \emph{35\% lower calibration error on CIFAR-10} than histogram binning if $B = 100$.
 
