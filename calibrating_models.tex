@@ -27,7 +27,7 @@ We show that the variance-reduced calibrator requires $O(B + 1/\epsilon^2)$ samp
 \begin{restatable}[Calibration bound]{theorem}{finalCalib}
 \label{thm:final-calib}
 Suppose that $\min_{g \in \mathcal{G}}\ell_2^2\mbox{-CE}(g) \leq \epsilon^2$.
-  Ignoring $\log$ factors, with $n = O(B + \frac{d'}{\epsilon^2})$ samples the variance-reduced calibration algorithm finds $\hat{g}_{\mathcal{B}}$ with $\ell_2^2\mbox{-CE}(\hat{g}_{\mathcal{B}}) \leq 2 \epsilon^2$. Note that $d'$ is the number of parameters which is $1$ for Platt scaling.
+  With $n = \widetilde{\Theta}(B + \frac{d'}{\epsilon^2})$ samples, where $\widetilde{\Theta}$ hides log factors, the variance-reduced calibration algorithm finds $\hat{g}_{\mathcal{B}}$ with $\ell_2^2\mbox{-CE}(\hat{g}_{\mathcal{B}}) \leq 2 \epsilon^2$. Note that $d'$ is the number of parameters which is $1$ for Platt scaling.
 \end{restatable}
 
 We present a proof in Appendix~\ref{sec:calibrating_models_appendix} but give a sketch here. Step 1 of our algorithm, essentially Platt scaling, simply fits a function $g$ to the data---standard statistical learning theory results show that $g$ converges in $O(\frac{1}{\epsilon^2})$ samples.
