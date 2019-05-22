@@ -13,6 +13,7 @@
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{xcolor}
+\usepackage[utf8]{inputenc}
 \usepackage{thmtools, thm-restate}
 
 \newtheorem{theorem}{Theorem}[section]
@@ -100,7 +101,7 @@ An alternative method, histogram binning, is sample inefficient -- it requires $
 To solve these problems, we introduce the variance-reduced calibrator, which first fits a parametric function that acts like a baseline for variance reduction and then bins the function values to actually ensure calibration.
 This requires only $O(1/\epsilon^2 + B)$ samples.
 We also show that the methods used in the machine learning literature to estimate calibration error are suboptimal---we prove that an alternative estimator introduced in the meteorological community requires fewer samples -- samples proportional to $\sqrt{B}$ instead of $B$.
-We validate our approach with multi-class calibration experiments on CIFAR-10 and ImageNet, where we get a 35\% lower calibration error than histogram binning and guarantees on true calibration unlike scaling methods.
+We validate our approach with multiclass calibration experiments on CIFAR-10 and ImageNet, where we get a 35\% lower calibration error than histogram binning and guarantees on true calibration unlike scaling methods.
 
 % Applications such as weather forecasting and personalized medicine demand models that output calibrated probability estimates---those representative of the true likelihood of a prediction.
 % Scaling recalibration methods that fit a parametric model are great, because they require $O(1/\epsilon^2)$ samples to achieve calibration error $\epsilon$, but we find in this work that they are (i) less calibrated than reported and (ii) current techniques cannot estimate how miscalibrated they are.
@@ -116,8 +117,7 @@ We validate our approach with multi-class calibration experiments on CIFAR-10 an
 %   We then turn to the question of how to verify calibration. We introduce a new estimator for the calibration error that requires fewer samples -- samples proportional to $\sqrt{B}$ instead of $B$. We prove finite sample guarantees for all our results, and validate our theory with multi-class calibration experiments on CIFAR-10 and ImageNet, where we get a 2x lower calibration error than histogram binning. \pl{and guarantees on true calibration unlike scaling methods}
 \end{abstract}
 
-\pl{Writing tip: find ways to group statements into single sentences so that you get some hierarchical structure:
-each sentence should express a set of related ideas, and important ideas are at the beginning of sentences}
+%\pl{Writing tip: find ways to group statements into single sentences so that you get some hierarchical structure: each sentence should express a set of related ideas, and important ideas are at the beginning of sentences}
 
 \input{intro}
 
