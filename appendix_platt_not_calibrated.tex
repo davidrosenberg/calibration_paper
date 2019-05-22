@@ -8,9 +8,13 @@
 \continuousNotCalibrated*
 
 \begin{proof}
-Converting the intuition into a concrete example is fairly straightforward. Since $f$ is continuous and surjective we can select data distribution $P$ s.t. $f(X)$ is uniformly distributed.
-For each interval $I_j = [a, b]$ we set $E[Y | f(X) = s] = 0$ for all $a \leq s \leq \frac{a+b}{2}$ and we set $E[Y | f(X) = s] = 1$ for all $\frac{a+b}{2} \leq x \leq b$.
-We can verify that $\ell_p\mbox{-CE}(f, B) = 0$ but $\ell_p\mbox{-CE}(f, B) = 0.5$ for all $p$.
+As stated in the main text, the intuition is that in each interval $I_j$ in $\bins{}$, the model could underestimate the true probability $\expect[Y \mid f(X)]$ half the time, and overestimate the probability half the time. So if we average over the entire bin the model appears to be calibrated, even though it is very uncalibrated. The proof simply formalizes this intuition.
+
+Since $f$ is bijective and continuous we can select data distribution $P$ s.t. $f(X) \sim \mbox{Uniform}[0.5 - \epsilon, 0.5 + \epsilon]$ for any $\epsilon > 0$. To see this, first note that from real analysis since $f : [0, 1] \to [0, 1]$ and $f$ is bijective and continuous, $f^{-1}$ is also bijective and continuous. That is, $f$ is a homeomorphism. Now, consider $I = f^{-1}([0.5 - \epsilon, 0.5 + \epsilon])$. We will choose $P(X)$ s.t. $P(X \not\in I) = 0$ and $P(X \leq f^{-1}(0.5 - \epsilon + t)) = \frac{t}{2\epsilon}$ for $0 \leq t \leq 2 \epsilon$. Since $f$ is increasing and $f^{-1}$ is continuous, this defines a valid probability distribution, and by construction $f(X) \sim \mbox{Uniform}[0.5 - \epsilon, 0.5 + \epsilon]$.
+
+Now, consider each interval $I_j$ in binning scheme $\bins{}$. Let $p_j = \expect[f(X) \mid f(X) \in I_j]$. Since $f(X) \in [0.5 - \epsilon, 0.5 + \epsilon]$, $p_j \in [0.5 - \epsilon, 0.5 + \epsilon]$ as well. We will choose $P(Y)$ so that $Y$ is $1$ whenever $f(X)$ lands in the first $p_j$ fraction of interval $I_j$, and $0$ whenever $f(X)$ lands in the latter $1 - p_j$ fraction of $I_j$. Then $\expect[Y \mid f(X) \in I_j] = p_j$, so the binned calibration error is 0. But notice that for all $s \in [0.5 - \epsilon, 0.5 + \epsilon]$:
+\[ \lvert \expect[Y \mid f(X) = s] - s \rvert \geq 0.5 - \epsilon \]
+That is, at every point the model is actually very miscalibrated because $\expect[Y \mid f(X) = s]$ is either $0$ or $1$ while $s \in [0.5 - \epsilon, 0.5 + \epsilon]$. By taking $\epsilon$ very small, we then get that $\lpce(p) \geq 0.5 - \epsilon'$ for any $\epsilon' > 0$, which completes the proof.
 \end{proof}
 
 
