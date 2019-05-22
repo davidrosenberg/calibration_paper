@@ -1,7 +1,7 @@
 \section{Is Platt scaling calibrated?}
 \label{sec:challenges-measuring}
 
-In this section, we show why methods like Platt scaling and temperature scaling are (i) less calibrated than reported and (ii) it is difficult to tell how miscalibrated they are. The issue is that it is very difficult to measure the calibration error of models that output a continuous range of values. We show, both theoretically and with experiments on CIFAR-10 and ImageNet, why the calibration error of such models is \emph{underestimated}. We defer proofs to Appendix~\ref{sec:appendix-platt-not-calibrated}.
+In this section, we show why methods like Platt scaling and temperature scaling are (i) less calibrated than reported and (ii) it is difficult to tell how miscalibrated they are. The issue is that it is very difficult \pl{we will show it's impossible?} to measure the calibration error of models that output a continuous range of values. We show, both theoretically and with experiments on CIFAR-10 and ImageNet, why the calibration error of such models is \emph{underestimated}. We defer proofs to Appendix~\ref{sec:appendix-platt-not-calibrated}.
 
 % We begin by reviewing the definition of uncertainty calibration in the binary classification setting. Let $\mathcal{X} \subseteq \mathbb{R}^d$ and $\mathcal{Y} = \{0, 1\}$. Let $X \in \mathcal{X}$ and $Y \in \mathcal{Y}$ be random variables denoting the input and label, given by an unknown joint distribution $P(X, Y)$. Suppose we have a model $f : \mathcal{X} \to [0, 1]$ where the output of the model represents the model's confidence that the label is 1.
 
@@ -17,13 +17,13 @@ In this section, we show why methods like Platt scaling and temperature scaling 
 % The $\ell_2^2$, $\ell_1$ and $\ell_{\infty}$ calibration errors are popular choices. For all $p$, the $\ell_p$ calibration error can be tricky to estimate from samples, because $E[Y | f(X)]$ is difficult to estimate. In particular, for a model $f$ that outputs a continuous range of values between $[0, 1]$, we usually see any given $f(X)$ value exactly once.
 % This makes estimating $E[Y | f(X)$ impossible without additional assumptions on the smoothness of $E[Y | f(X)]$.
 
-For all $p$, the $\ell_p$ calibration error can be tricky to estimate from samples, because $\expect[Y \mid f(X)]$ is difficult to estimate.
+For all $p$, the $\ell_p$ calibration error can be tricky to estimate from samples, because $\expect[Y \mid f(X)]$ is difficult to estimate. \pl{seems like we're being very repetitive; say: The key to estimating $\ell_p$ is estimating a conditional expectation based on a continuous value;
+without smoothness assumptions, this is impossible}
 The core problem for a model $f$ that outputs a continuous range of values between $[0, 1]$ is that we usually see any given $f(X)$ value exactly once. This is analogous to the difficulty of measuring the mutual information between two continuous signals~\cite{paninski2003entropy}.
-% \pl{can we analogize this with estimating individual treatment effects (because you only see factual or counterfactual)? is this right? also, same with marginal DRO (though don't have to mention that)}
 
 To approximate the $\ell_p$ calibration error, prior work bins the output of $f$ into $B$ intervals.
 The calibration error in each bin is estimated as the difference between the average value of $f(X)$ and $Y$ in that bin.
-Note that the binning here is for evaluation only, whereas in histogram binning is used for the method itself.
+Note that the binning here is for evaluation only, whereas in histogram binning is used for the \pl{recalibration} method itself.
 We formalize the notion of this binned calibration error below.
 
 % \ak{Is the above text enough to motivate these definitions, or should I add more text?}
@@ -37,6 +37,7 @@ The binned version of $f$ outputs the average value of $f$ in each bin:
 f_{\mathcal{B}}(x) = E[f(X) \mid f(X) \in I_j] \quad\quad\quad \mbox{where }x \in I_j
 \end{align} 
 \end{definition}
+\pl{hoping you could just reuse the binning definition from setup, so you just have to write $\hat f$, or better $\bar f$ or $f_\text{binned}$ or some macro}
 
 Given $\bins{}$, the binned calibration error of $f$ is simply $\lpce(f_{\bins{}})$.
 A simple example shows that using binning to estimate the $\ell_p$ calibration error can severely underestimate the true $\ell_p$ calibration error, even for $p=1$, the average calibration error.
@@ -47,7 +48,7 @@ For any binning scheme $\bins{}$, $p \in \mathbb{Z}^+$, and continuous bijective
 Note that for all $f$, $0 \leq \lpce(f) \leq 1$.
 \end{restatable}
 
-The intuition is that in each interval $I_j$ in $\bins{}$, the model could underestimate the true probability $\expect[Y \mid f(X)]$ half the time, and overestimate the probability half the time. So if we average over the entire bin the model appears to be calibrated, even though it is very uncalibrated. The formal construction is in Appendix~\ref{sec:appendix-platt-not-calibrated}. This may seem contrived but we will show experimental evidence of this phenomena as well.
+The intuition is that in each interval $I_j$ in $\bins{}$, the model could underestimate the true probability $\expect[Y \mid f(X)]$ half the time, and overestimate the probability half the time. So if we average over the entire bin the model appears to be calibrated, even though it is very uncalibrated. The formal construction is in Appendix~\ref{sec:appendix-platt-not-calibrated}. This may seem contrived but we will show experimental evidence of this phenomena as well \pl{cut this sentence}.
 % \begin{proof}
 % The intuition is that $E[Y | f(X)]$ can be a function that oscillates a lot (like a sine wave with very high frequency), but for each interval $I_j$ we still have $\hat{f}(I_j) = \hat{Y}(I_j)$. Formal proof in Appendix.
 % \end{proof}
@@ -65,15 +66,15 @@ Next, we show that given a function $f$, its binned version always has lower cal
 
 \begin{restatable}[Binning underestimates error]{proposition}{binningLowerBound}
 \label{prop:bin_low_bound}
-Given $\bins{}$ and model $f : \mathcal{X} \to [0, 1]$. We have:
+  Given \pl{English} $\bins{}$ and model $f : \mathcal{X} \to [0, 1]$. We have:
 \[  \lpce(f_{\bins{}}) \leq \lpce(f) \]
 \end{restatable}
 
-The proof is by Jensen's inequality. The intuition for why this holds is that averaging a model's prediction within a bin allows errors at different parts of the bin to cancel out with each other. 
+The proof is by Jensen's inequality. The intuition for why this holds is that \pl{shorten: Intuitively,} averaging a model's prediction within a bin allows errors at different parts of the bin to cancel out with each other. 
 
 \subsection{Experiments}
 
-Our experiments on ImageNet and CIFAR-10 suggest that previous work reports numbers which are lower than the actual calibration error of their models. We cannot compute the actual calibration error, however recall that binning lower bounds the calibration error of a model. If we use a `finer' set of bins then we get a better lower bound on the calibration error than reported in past work.
+Our experiments on ImageNet and CIFAR-10 suggest that previous work reports numbers which are lower than the actual calibration error of their models. We cannot compute the actual calibration error, however recall that \pl{run-on sentence} binning lower bounds the calibration error of a model. If we use a `finer' set of bins then we get a better \pl{tighter} lower bound on the calibration error than reported in past work.
 
 As in~\cite{guo2017calibration}, the model's objective was to output the top predicted class and a confidence score associated with the prediction. For ImageNet, we used a trained VGG16 model with an accuracy of 64.3\%. We split the validation set into 3 chunks of size $(20000, 5000, 25000)$. We used the first chunk of data to recalibrate the model using Platt scaling, the second to select the binning scheme $\mathcal{B}$ so that each bin contains an equal number of points, and the third to measure the binned calibration error. We calculated $90\%$ confidence intervals for the binned calibration error using 1,000 bootstrap resamples and performed the same experiment with varying numbers of bins.
 % from the TensorFlow Keras library
