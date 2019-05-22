@@ -11,11 +11,10 @@ Even if we use a recalibration method the actual calibration error may be lower 
 
 In this section we show that we can efficiently estimate the calibration error of binned models, if the binning scheme is 2-well-balanced. Prior work typically estimates each term in the calibration error directly from samples~\cite{nguyen2015posterior, hendrycks2019anomaly, kuleshov2015calibrated, hendrycks2019pretraining}. (Cites) notice that this leads to a biased estimate, and propose an approximate correction term to reduce the bias. Our contribution is to show that while the naive estimator requires samples proportional to $B$ to estimate the calibration error, the improved estimator requires samples proportional to $\sqrt{B}$.
 
-Concretely, suppose we are interested in checking if our model has calibration error $\leq \epsilon$ \pl{but this is not what we actually show due to $r$}. If the calibration error is $> \epsilon$, then with high probability we should output that it is not calibrated \pl{be more precise}. If the calibration error is $< r\epsilon$, where $0 < r < 1$ is a user-specified effect size, then with high probability we should output that the model is calibrated. Suppose we wish to measure the calibration error of a model $f : \mathcal{X} \to S$ where $S \subseteq [0, 1]$ and $|S| = B$. Suppose we get an evaluation set $T_n = \{(x_1, y_1), \dots, (x_n, y_n)\}$. Past work estimates the calibration error by directly estimating each term from samples:
+Concretely, suppose we are interested in checking if our model has calibration error $\leq \epsilon$ \pl{but this is not what we actually show due to $r$}. If the calibration error is $> \epsilon$, then with high probability we should output that it is not calibrated \pl{be more precise}\ak{Which part should be more precise?}. If the calibration error is $< r\epsilon$, where $0 < r < 1$ is a user-specified effect size, then with high probability we should output that the model is calibrated. Suppose we wish to measure the calibration error of a model $f : \mathcal{X} \to S$ where $S \subseteq [0, 1]$ and $|S| = B$. Suppose we get an evaluation set $T_n = \{(x_1, y_1), \dots, (x_n, y_n)\}$. Past work estimates the calibration error by directly estimating each term from samples:\ak{Does this background it?}
 
 \begin{restatable}[Plugin estimator]{definition}{pluginDfn}
 \label{dfn:plugin-estimator}
-\pl{English: define $\hat y_i$ to be the empirical average for the $i$-th score}
   Let $L_s$ denote the $y_j$ values where the model outputs $s$, given by $L_s = \{ y_j \; | \; (x_j, y_j) \in T_n\wedge f(x_j) = s \}$. \pl{background this}Let $\hat{p_s}$ be the estimated probability of $f$ outputting $s$:
 \[ \hat{p_s} = \frac{|L_s|}{n} \]
 Let $\hat y_i$ be the empirical average of $Y$ when the model outputs $s$:
@@ -26,17 +25,17 @@ Let $\hat y_i$ be the empirical average of $Y$ when the model outputs $s$:
 \end{restatable}
 \pl{can we just use $L^2$ for this whole paper?}
 
-\cite{brocker2012empirical, ferro2012bias} observe that the plugin estimator is biased. They propose to subtract an approximation of the bias from the estimate:
-
+\cite{brocker2012empirical, ferro2012bias} propose to subtract an approximation of the bias from the estimate:
 \pl{this formula is a bit out of nowhere; saying 'debiasing' is helpful, but can you actually say the criteria more formally and declaratively?}
+
 \begin{restatable}[Debiased estimator]{definition}{cancelingDfn}
 The cancelling estimator for the $\ell_2^2$ error is:
 \[ \hat{E}^2 = \sum_{i=1}^b \hat{p_i} \Big[ (s_i - \hat{y_i})^2 - \frac{\hat{y_i}(1 - \hat{y_i})}{\hat{p_i}n-1} \Big] \]
 \end{restatable}
 
-Our main result is that to check if the $\ell_2^2$ calibration error is $\leq \epsilon^2$, the plugin estimator requires $\widetilde{\Theta}(\frac{B}{\epsilon^2})$ samples (Theorem~\ref{thm:final-plugin}) while the debiased estimator requires $\widetilde{\Theta}(\frac{\sqrt{B}}{\epsilon^2})$ samples (Theorem~\ref{thm:final-ours}\tm{maybe some links issues here? Our theorem shouldn't be in section D, right?}): \tm{$\Theta$ notations --- see comments in the last theorem}
+Our main result is that to check if the $\ell_2^2$ calibration error is $\leq \epsilon^2$, the plugin estimator requires $\widetilde{\Theta}(\frac{B}{\epsilon^2})$ samples (Theorem~\ref{thm:final-plugin}) while the debiased estimator requires $\widetilde{\Theta}(\frac{\sqrt{B}}{\epsilon^2})$ samples (Theorem~\ref{thm:final-ours}):
 
-\begin{restatable}[Plugin bound]{theorem}{finalPlugin}\tm{Should this be a corollary instead of a theorem?}
+\begin{restatable}[Plugin bound]{theorem}{finalPlugin}
 \label{thm:final-plugin}
   Suppose \pl{use English} $\forall i.\;p_i \geq \frac{1}{2B}$ and $n = \widetilde{\Theta}(\frac{B}{\epsilon^2})$ ignoring $\log$ factors. Then the plugin estimator can check if ${E^*}^2 \leq \epsilon^2$ with failure probability $\delta$, and constant effect size $0 < r < 1$. 
 \end{restatable}
@@ -51,10 +50,6 @@ The proof of both theorems is in Appendix~\ref{sec:verifying_calibration}. The i
 Another way of thinking about this is that the debiased estimator needs fewer samples to get near the true calibration error: for the plugin estimator if $n = \widetilde{\Theta}(\frac{B}{{E^*}^2})$ then $\frac{1}{2} {E^*}^2 \leq \pluginEst{} \leq \frac{3}{2} {E^*}^2$ but for the debiased estimator if $n = \widetilde{\Theta}(\frac{\sqrt{B}}{{E^*}^2})$ then $\frac{1}{2} {E^*}^2 \leq \cancelEst{} \leq \frac{3}{2}{E^*}^2$.
 
 These bounds suggest that estimating calibration error can be the bottleneck, underscoring the importance of the estimation problem, since under suitable conditions the variance reduced calibrator can calibrate with $\widetilde{\Theta}(B + \frac{1}{\epsilon^2})$ samples but we need $\widetilde{\Theta}(B + \frac{\sqrt{B}}{\epsilon^2})$ samples to check if the error is $\leq \epsilon$.
-
-\pl{provide a few sentences for proof sketch - at least the highlights - standard concentration or anything new? what's the hard part?}
-
-\tm{To address the Percy's comment above, I think one choice would be to mention the canceling effect --- anyway it's in the name of your estimator. So explain the the estimate for each bin is unbiased, and then variance got cancelled. By contrast, the bias accumulates for plug-in estimator.}
 
 Past work in meteorology has shown that the debiased estimator performs better in practice -- the main contribution of our work here is to show that the estimator also has an \emph{improved sample complexity}. However, in the Appendix, we run experiments on CIFAR-10, and show that for any desired calibration error, the cancelling estimator enables us to pick out models with a better mean-squared error. We recommend the use of this estimator.
 
