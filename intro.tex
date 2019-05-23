@@ -4,7 +4,7 @@
 % In other words, the probability that a system outputs for an event should reflect the true frequency of that event: if an automated diagnosis system says 1,000 patient have cancer with probability 0.1, approximately 100 of them should indeed have cancer.
 The probability that a system outputs for an event should reflect the true frequency of that event: if an automated diagnosis system says 1,000 patients have cancer with probability 0.1, approximately 100 of them should indeed have cancer.
 In this case we say the model is uncertainty calibrated. The importance of this notion of calibration has been emphasized in personalized medicine~\cite{jiang2012calibrating}, meteorological forecasting~\cite{murphy1973vector, murphy1977reliability, degroot1983forecasters,gneiting2005weather, brocker2009decomposition} and natural language processing applications~\cite{nguyen2015posterior, card2018calibration}.
-As most \pl{modern} machine learning models \pl{such as neural networks (cut Bayesian methods)} , including neural networks and Bayesian methods, do not output calibrated probabilities out of the box~\cite{guo2017calibration, zadrozny2001calibrated, kuleshov2018accurate}, recalibration methods take the output of an uncalibrated model, and transform it into a calibrated probability.
+As most modern machine learning models, such as neural networks, do not output calibrated probabilities out of the box~\cite{guo2017calibration, zadrozny2001calibrated, kuleshov2018accurate}, recalibration methods take the output of an uncalibrated model, and transform it into a calibrated probability.
 \emph{Scaling} approaches for recalibration---Platt scaling~\cite{platt1999probabilistic}, isotonic regression~\cite{zadrozny2002transforming}, and temperature scaling~\cite{guo2017calibration}---are widely used and require very few samples, but do they actually produce calibrated probabilities?
 % , and speech recognition~\cite{dong2011calibration}
 % These methods use additional recalibration data to fit a simple function on top of the original model outputs.
@@ -23,7 +23,7 @@ As most \pl{modern} machine learning models \pl{such as neural networks (cut Bay
 % methods try to calibrate, but do they actually achieve it?
 % }
 
-\emph{We discover that these methods are less calibrated than reported.} Estimating the calibration of models with continuous outputs can be very \pl{is} challenging \pl{it's worse than challenging as we say next - it'd just cut this and say past work approximates}, so past work approximates a model's calibration error using a finite set of bins. We show that by using more bins, we can uncover a higher calibration error for models on CIFAR-10 and ImageNet.
+\emph{We discover that these methods are less calibrated than reported.} Past work approximates a model's calibration error using a finite set of bins. We show that by using more bins, we can uncover a higher calibration error for models on CIFAR-10 and ImageNet.
 We show that a fundamental limitation with approaches that output a continuous range of probabilities is that their true calibration error may never be measurable with a finite number of bins (Example~\ref{ex:continuous-not-calibrated}).
 
 An alternative approach, histogram binning~\cite{zadrozny2001calibrated}, outputs probabilities from a finite set.

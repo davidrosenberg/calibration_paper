@@ -25,7 +25,7 @@ We detail our experimental protocol for CIFAR-10 first. The CIFAR-10 validation 
          \label{fig:cifar_top_cal_var_red}
      \end{subfigure}
   \caption{
-    Recalibrating using 1,000 data points on ImageNet and CIFAR-10, our variance-reduced calibrator typically achieves lower $\ell_2^2$ calibration error than histogram binning, especially when the number of bins $B$ is large. The difference is very significant on ImageNet, where our method does better when $B \geq 10$, and gets a nearly 5 times lower calibration error when $B = 100$. For CIFAR-10 our method does better when $B > 30$, which supports the theory which predicts that our method does better when $B$ is large. However, when $B$ is small, practitioners should try both histogram binning and the variance-reduced calibrator.
+    Recalibrating using 1,000 data points on ImageNet and CIFAR-10, our variance-reduced calibrator typically achieves lower $\ell_2^2$ calibration error than histogram binning, especially when the number of bins $B$ is large. The difference is very significant on ImageNet, where our method does better when $B \geq 10$, and gets a nearly 5 times lower calibration error when $B = 100$. For CIFAR-10 our method does better when $B > 30$, which supports the theory, which predicts that our method does better when $B$ is large. However, when $B$ is small, practitioners should try both histogram binning and the variance-reduced calibrator.
 }
   \label{fig:mse_estimators_bins}
 \end{figure}
