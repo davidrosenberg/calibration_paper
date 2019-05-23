@@ -73,7 +73,7 @@ I think we should do that more explicitly throughout
 
 Since most machine learning models do not output calibrated probabilities out of the box~\cite{guo2017calibration, zadrozny2001calibrated} recalibration methods take the output of an uncalibrated model, and transform it into a calibrated probability. That is, we are given a trained model $f: \mathcal{X} \to \mathcal{Z}$ and recalibration data $T = \{ (z_i, y_i) \}_{i=1}^n$, and we wish to learn a recalibrator $g : \mathcal{Z} \to [0, 1]$ such that $g \circ f$ is well-calibrated.
 
-\emph{Scaling methods}, for example Platt scaling~\cite{platt1999probabilistic}, output a function $\hat{g} = \argmax_{g \in G} \sum_{(z, y) \in T} l(g(z), y)$, where $l$ \pl{use $\ell$} is a loss function, for example the log likelihood \pl{log loss} or mean-squared error. The advantage of such methods is that they converge very quickly since they only fit a single parameter.
+\emph{Scaling methods}, for example Platt scaling~\cite{platt1999probabilistic}, output a function $\hat{g} = \argmin_{g \in G} \sum_{(z, y) \in T} l(g(z), y)$, where $l$ \pl{use $\ell$} is a loss function, for example the log loss or mean-squared error. The advantage of such methods is that they converge very quickly since they only fit a single parameter.
 
 \emph{Histogram binning} first constructs a set of bins (intervals) that partitions $[0, 1]$.
 

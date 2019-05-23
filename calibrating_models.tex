@@ -7,7 +7,7 @@ In the previous section we saw that the problem with scaling methods is we canno
 
 We split the recalibration data $T$ of size $n$ into 3 sets: $T_1$, $T_2$, $T_3$. The variance-reduced recalibration algorithm, illustrated in Figure~\ref{fig:variance_reduced_illustration}, outputs $\hat{g_{\mathcal{B}}}$ such that $\hat{g_{\mathcal{B}}} \circ f$ has low calibration error:
 
-\textbf{Step 1 (Function fitting):} The first step is to select $g = \argmax_{g \in G} \sum_{(z, y) \in T_1} (y - g(z))^2$.
+\textbf{Step 1 (Function fitting):} The first step is to select $g = \argmin_{g \in G} \sum_{(z, y) \in T_1} (y - g(z))^2$.
 \pl{this should have been defined when you introduce Platt scaling}
 
 \textbf{Step 2 (Bin construction):} The second step is to construct a suitable binning scheme. We choose the bins so that an equal number of $g(z_i)$ in $T_2$ land in each bin $I_j$ for each $j \in \{1, \dots, B\}$.
