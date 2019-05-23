@@ -29,7 +29,7 @@ The goal is to prove the following theorem from Section~\ref{sec:calibrating_mod
 
 We will analyze each step of our algorithm and then combine the pieces to get Theorem~\ref{thm:final-calib}.
 As we mention in the main text, step 3 is the main variance-reduction step, so Lemma~\ref{thm:empirical-binning} is one of the core parts of our proof.
-Step 2 is where we construct a binning scheme so that each bin has an equal number of points---we show that this property holds approximately in the population.
+Step 2 is where we construct a binning scheme so that each bin has an equal number of points---we show that this property holds approximately in the population (Lemma~\ref{lem:well-balanced}).
 This is important as well, particularly to ensure we can estimate the calibration error.
 Step 1 is a simple adaptation of a standard result from learning theory.
 
@@ -125,7 +125,7 @@ For any interval $I$, let $\hat{P}(I)$ be the empirical estimate of $P(I) = \pro
 
 We constructed the bins so that each interval $I_j$ contains $\frac{n}{B}$ points, or in other words, $\hat{P}(I_j) = \frac{1}{B}$. We want to show that $\frac{1}{2B} \leq \prob(g(Z) \in I_j) \leq \frac{2}{B}$. Since the intervals are chosen from data, we want a uniform concentration result that holds for all such intervals $I_j$.
 
-We will use a discretization argument. The idea is that we will cover $[0, 1]$ with $10B$ small intervals such that for each of these intervals $I_j'$, $P(g(Z) \in I_j') = \frac{1}{10B}$. We will then use Bernstein and union bound to get that with probability at least $1 - \delta$, for all $I_j'$ $|P(I_j') - \hat{P_j}(I_j')| \leq \frac{1}{100B}$ . Given a new interval $I$, we can write it as an approximate union of these small intervals, which will allow us to concentrate $|P(I) - \hat{P}(I)|$.
+We will use a discretization argument. The idea is that we will cover $[0, 1]$ with $10B$ disjoint small intervals such that for each of these intervals $I_j'$, $P(g(Z) \in I_j') = \frac{1}{10B}$. We will then use Bernstein and union bound to get that with probability at least $1 - \delta$, for all $I_j'$, $|P(I_j') - \hat{P_j}(I_j')| \leq \frac{1}{100B}$ . Given an arbitrary interval $I$, we can write it as an approximate union of these small intervals, which will allow us to concentrate $|P(I) - \hat{P}(I)|$.
 
 \textbf{Concentrating the small intervals:} Fix some interval $I_j'$. Let $w_i = \mathbb{I}(g(z_i) \in I_j')$ for $i = 1,\dots,n$. Then $w_i \sim \mbox{Bernoulli}(\frac{1}{10B})$. $\hat{P}(I_j')$ is simply the empirical average of $n$ such values and as such with probability at least $1 - \frac{\delta}{10B}$:
 \[ |P(I_j') - \hat{P_j}(I_j')| \leq \sqrt{\frac{2}{10Bn} \log{\frac{10B}{\delta}}} + \frac{2}{3n} \log{\frac{10B}{\delta}} \]
@@ -136,11 +136,11 @@ And this was with probability at least $1 - \frac{\delta}{10B}$. So by union bou
 \textbf{Concentrating arbitrary intervals:} Now consider arbitrary $I \subseteq [0, 1]$. We can approximately write $I$ as a union of the small $I_j'$ intervals. More concretely, we can form a lower bound for $\hat{P}(I)$ by considering all $I_j'$ contained in $I$:
 \[ S_L = \{I_j' \mid I_j' \subseteq I \} \]
 Similarly we can form an upper bound for $\hat{P}(I)$ by considering all $I_j'$ that have non-empty intersection with $I$:
-\[ S_U = \{I_j' \mid I_j' \cup I \neq \emptyset \} \]
+\[ S_U = \{I_j' \mid I_j' \cap I \neq \emptyset \} \]
 We can then show:
 \[  \frac{9}{10} P(I) - \frac{1}{5B} \leq \hat{P}(I) \leq \frac{11}{10} P(I) + \frac{1}{5B} \]
-Since in our case $\hat{P}(I) = \frac{1}{B}$, this gives us:
-\[ \frac{1}{2B} \leq P(I) \leq \frac{2}{B} \]
+Since in our case for all $j$, $\hat{P}(I_j) = \frac{1}{B}$, this gives us:
+\[ \frac{1}{2B} \leq P(I_j) \leq \frac{2}{B} \]
 \end{proof}
 
 Finally, we have the tools to prove the main theorem:
