@@ -43,7 +43,7 @@ We ran experiments on CIFAR-10 and Imagenet to compare the practical performance
 \end{figure}
 
 
-We give an overview of our experimental setup here, with more details in the Appendix, and all code on Github. For CIFAR-10, we used a trained VGG-net model that we recalibrated using Platt scaling on a small held-out set with 1,000 data points. We use 2,000 data points to select $B$ bins to discretize the outputs of the model. The bins were selected so that each bin has an equal number of data points. We use the remaining data points (7,000 for CIFAR-10) for our experiments. 
+We give an overview of our experimental setup here, with more details in the Appendix, and all code provided. For CIFAR-10, we used a trained VGG-net model that we recalibrated using Platt scaling on a small held-out set with 1,000 data points. We use 2,000 data points to select $B$ bins to discretize the outputs of the model. The bins were selected so that each bin has an equal number of data points. We use the remaining data points (7,000 for CIFAR-10) for our experiments. 
 
 Suppose we want to evaluate how good our estimates are when they are allowed to use $m$ samples. Ideally, we would draw $m$ samples from the true data distribution, and measure the difference between our estimate and the ground truth. This gives us a single data point, so we would need to do this $T$ times and compute the mean and confidence intervals. This requires an exhaustive amount of data, for example if $m = 5000$ and $T = 100$, we would need 500K data points just for evaluation.
 
