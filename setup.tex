@@ -12,7 +12,7 @@
 Let $\mathcal{X}$ be the input space and $\mathcal{Y}$ be the label space where $\mathcal{Y} = \{0, 1\}$ in the binary classification setting.
 Let $X \in \mathcal{X}$ and $Y \in \mathcal{Y}$ be random variables denoting the input and label, given by an unknown joint distribution $P(X, Y)$.
 
-Suppose we have a model $f : \mathcal{X} \to [0, 1]$ where the output of the model represents the model's confidence that the label is 1. \pl{style: don't start sentence with math} $f$ may not be calibrated -- \pl{---; I'll stop bugging you} we define the calibration error, which examines the difference between the model's probability and the true probability given the model's output. If the calibration error is $0$ then the model is perfectly calibrated.
+Suppose we have a model $f : \mathcal{X} \to [0, 1]$ where the output of the model represents the model's confidence that the label is 1. As $f$ may not be calibrated, we define the calibration error, which examines the difference between the model's probability and the true probability given the model's output. If the calibration error is $0$ then the model is perfectly calibrated.
 
 % \pl{in general, before introducing a formula, I always try to give the informal English description that conveys the core essence;
 % here it'd be: something like 'calibration error, which examines the difference between the model's probability and true probability given the model's output'}
@@ -27,18 +27,18 @@ The $\ell_2^2$ calibration error~\cite{murphy1973vector,murphy1977reliability,de
 
 Calibration alone is not sufficient: consider an image dataset containing $50\%$ dogs and $50\%$ cats.
 If $f$ outputs $0.5$ on all inputs, $f$ is calibrated but not very useful.
-We often also wish to minimize the mean-squared error -- also known as the Brier score -- as defined below.
+We often also wish to minimize the mean-squared error---also known as the Brier score---as defined below.
 
 \begin{definition}
 The mean-squared error of $f : \mathcal{X} \to [0, 1]$ is given by $\mbox{MSE}(f) = \mathbb{E}[(f(X) - Y)^2]$.
 \end{definition}
 
-We often want to minimize the MSE subject to a calibration constraint~\cite{gneiting2005weather, gneiting2007probabilistic}. Of course, these are not orthogonal because $\mbox{MSE} = 0$ implies perfect calibration -- in fact the MSE is the sum of the $\ell_2^2$ calibration error and a ``sharpness'' term~\cite{murphy1973vector,degroot1983forecasters, kuleshov2015calibrated}.
+We often want to minimize the MSE subject to a calibration constraint~\cite{gneiting2005weather, gneiting2007probabilistic}. Of course, these are not orthogonal because $\mbox{MSE} = 0$ implies perfect calibration---in fact the MSE is the sum of the $\ell_2^2$ calibration error and a ``sharpness'' term~\cite{murphy1973vector,degroot1983forecasters, kuleshov2015calibrated}.
 
-\subsection{Multi-class classification}
+\subsection{Multiclass classification}
 
 While calibration in binary classification is well-studied,
-it's less clear what to do for multi-class, where multiple definitions abound, differing in their strength. In the multi-class setting, $\mathcal{Y} = [K]$, where $[K] = \{1, \dots, K\}$ and $f : \mathcal{X} \to [0, 1]^k$ outputs a confidence measure for each class in $[K]$.
+it's less clear what to do for multiclass, where multiple definitions abound, differing in their strength. In the multiclass setting, $\mathcal{Y} = [K]$, where $[K] = \{1, \dots, K\}$ and $f : \mathcal{X} \to [0, 1]^k$ outputs a confidence measure for each class in $[K]$.
 
 \begin{definition}[Top-label calibration]
 The $\ell_2$ calibration error is given by:
@@ -47,7 +47,7 @@ The $\ell_2$ calibration error is given by:
 \end{align}
 \end{definition}
 
-We would often like the model to be calibrated on less likely predictions as well -- imagine that a medical diagnosis system says there is a $50\%$ chance a patient has a benign tumor, a $10\%$ chance she has an aggressive form of cancer, and a $40\%$ chance she has one of a long list of other conditions. We would like the model to be calibrated on all of these predictions so we define the marginal calibration error which examines, \emph{for each class}, the difference between the model's probability and the true probability of that class given the model's output.
+We would often like the model to be calibrated on less likely predictions as well---imagine that a medical diagnosis system says there is a $50\%$ chance a patient has a benign tumor, a $10\%$ chance she has an aggressive form of cancer, and a $40\%$ chance she has one of a long list of other conditions. We would like the model to be calibrated on all of these predictions so we define the marginal calibration error which examines, \emph{for each class}, the difference between the model's probability and the true probability of that class given the model's output.
 
 \begin{definition}[Marginal calibration error]
 \label{dfn:marginal-ce}
@@ -57,13 +57,13 @@ Let $P(j)$ denote the probability of class $j$. The $\ell_2^2$ marginal calibrat
 \end{align}
 \end{definition}
 
-Note that prior works~\cite{guo2017calibration, hendrycks2019anomaly, hendrycks2019pretraining} often claim to perform multi-class \pl{marginal?} calibration but only measure top-label calibration---\cite{nixon2019calibration} shows that temperature scaling~\cite{guo2017calibration} scores worse than vector scaling on a marginal calibration metric, even though it has lower top-label calibration error.
-% In the Appendix we discuss other notions of multi-class calibration.
+Note that prior works~\cite{guo2017calibration, hendrycks2019anomaly, hendrycks2019pretraining} often claim to perform marginal calibration but only measure top-label calibration---\cite{nixon2019calibration} shows that temperature scaling~\cite{guo2017calibration} scores worse than vector scaling on a marginal calibration metric, even though it has lower top-label calibration error.
+% In the Appendix we discuss other notions of multiclass calibration.
 
 \pl{is marginal calibration standard terminology? makes sense when compared with joint, but sounds a bit strange in relation to top-label}
 
 \tm{by quickly skimming the rest of the paper, I didn't see \margsquaredce and \topsquaredce showing up again. If they are only needed for experimetns, we could define there instead of here?}
-For notational simplicity, our theory focuses on the binary classification setting. We can transform top-label calibration into a binary calibration problem -- the model outputs a probability corresponding to its top prediction, and the label represents whether the model gets it correct or not. Marginal calibration can be transformed into $K$ one-vs-all binary calibration problems where for each $k \in [K]$ the model outputs the probability associated with the $k$-th class, and the label represents whether the input belongs to the $k$-th class or not~\cite{zadrozny2002transforming}---this is analogous to how vector scaling~\cite{guo2017calibration} extends Platt scaling. We look at both top-label calibration and marginal calibration in our experiments.
+For notational simplicity, our theory focuses on the binary classification setting. We can transform top-label calibration into a binary calibration problem---the model outputs a probability corresponding to its top prediction, and the label represents whether the model gets it correct or not. Marginal calibration can be transformed into $K$ one-vs-all binary calibration problems where for each $k \in [K]$ the model outputs the probability associated with the $k$-th class, and the label represents whether the input belongs to the $k$-th class or not~\cite{zadrozny2002transforming}---this is analogous to how vector scaling~\cite{guo2017calibration} extends Platt scaling. We look at both top-label calibration and marginal calibration in our experiments.
 
 \pl{I suggested that we introduce multiclass early so that we can motivate how the the number of probbility outputs scales with $K$;
 I think we should do that more explicitly throughout
@@ -73,7 +73,7 @@ I think we should do that more explicitly throughout
 
 Since most machine learning models do not output calibrated probabilities out of the box~\cite{guo2017calibration, zadrozny2001calibrated} recalibration methods take the output of an uncalibrated model, and transform it into a calibrated probability. That is, we are given a trained model $f: \mathcal{X} \to \mathcal{Z}$ and recalibration data $T = \{ (z_i, y_i) \}_{i=1}^n$, and we wish to learn a recalibrator $g : \mathcal{Z} \to [0, 1]$ such that $g \circ f$ is well-calibrated.
 
-\emph{Scaling methods}, for example Platt scaling~\cite{platt1999probabilistic}, output a function $\hat{g} = \argmin_{g \in G} \sum_{(z, y) \in T} l(g(z), y)$, where $l$ \pl{use $\ell$} is a loss function, for example the log loss or mean-squared error. The advantage of such methods is that they converge very quickly since they only fit a single parameter.
+\emph{Scaling methods}, for example Platt scaling~\cite{platt1999probabilistic}, output a function $\hat{g} = \argmin_{g \in G} \sum_{(z, y) \in T} \ell(g(z), y)$, where $l$ is a loss function, for example the log loss or mean-squared error. The advantage of such methods is that they converge very quickly since they only fit a single parameter.
 
 \emph{Histogram binning} first constructs a set of bins (intervals) that partitions $[0, 1]$.
 
@@ -83,4 +83,4 @@ A binning scheme $\mathcal{B}$ of size $B$ is a set of $B$ intervals $I_1, \dots
 % into $B$ disjoint intervals or bins, defined by bin boundaries $0 = b_0 < b_1 < ... < b_B = 1$. For $1 \leq j \leq B$, the $j$-th bin is the interval $I_j$ where $I_1 = [b_0, b_1]$ and $I_j = (b_{j-1}, b_j]$ for $j > 1$. 
 \end{definition}
 
-The bins are typically chosen such that $I_1 = [0, \frac{1}{B}], I_2 = (\frac{1}{B}, \frac{2}{B}], \dots, I_B = (\frac{B-1}{B}, 1]$ or so that each bin contains an equal number of $g(z_i)$ values in the recalibration data~\cite{zadrozny2001calibrated, guo2017calibration}. \pl{but say we don't do this...} Histogram binning then outputs the average $y_i$ value in each bin.
+The bins are typically chosen such that either $I_1 = [0, \frac{1}{B}], I_2 = (\frac{1}{B}, \frac{2}{B}], \dots, I_B = (\frac{B-1}{B}, 1]$ or so that each bin contains an equal number of $g(z_i)$ values in the recalibration data~\cite{zadrozny2001calibrated, guo2017calibration}. \pl{but say we don't do this...} Histogram binning then outputs the average $y_i$ value in each bin.
