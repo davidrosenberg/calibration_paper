@@ -30,7 +30,7 @@ Alternatively, \cite{brocker2012empirical, ferro2012bias} propose to subtract an
 \[ \hat{E}^2 = \sum_{s \in S} \hat{p}_s \Big[ (s - \hat{y}_s)^2 - \frac{\hat{y}_s(1 - \hat{y}_s)}{\hat{p}_sn-1} \Big] \]
 \end{restatable}
 
-For our analysis, we focus on two related goals. The first is to hypothesis test between whether a model has error $\geq \epsilon^2$ or $\leq \frac{1}{2} \epsilon^2$ (where we can replace $\frac{1}{2}$ by any constant $0 < r < 1$). Intuitively, this is what we would do in statistics if we want to `check' if our model has calibration error $\leq \epsilon$. Equivalently, we can examine the number of samples required to estimate the calibration error within a constant multiplicative factor, that is $\lvert \hat{E}^2 - {E^*}^2 \rvert \leq \frac{1}{2}{E^*}^2$.
+Suppose we want to check if our model has calibration error $\leq \epsilon^2$. With high probability, if the calibration error is $> \epsilon^2$, we should output that the model is not calibrated, but if the calibration error is $\leq \frac{1}{2} \epsilon^2$, we should output that it is calibrated. They way we do this is we take $n$ samples and get an estimate, $\hat{E}^2$, of the calibration error---we output `calibrated' iff $\hat{E}^2 \leq \frac{3}{4} \epsilon^2$. We are interested in analyzing how large $n$ needs to be. Equivalently, we can examine the number of samples required to estimate the calibration error within a constant multiplicative factor, that is $\lvert \hat{E}^2 - {E^*}^2 \rvert \leq \frac{1}{2}{E^*}^2$.
 
 % Concretely, suppose we are interested in checking if our model has calibration error $\leq \epsilon$
 % \pl{but this is not what we actually show due to $r$}. If the calibration error is $> \epsilon$, then with high probability we should output that it is not calibrated \pl{be more precise}\ak{Which part should be more precise?}
@@ -44,15 +44,16 @@ Our main result is that to check if the $\ell_2^2$ calibration error is $\leq \e
 
 \begin{restatable}[Plugin bound]{theorem}{finalPlugin}
 \label{thm:final-plugin}
-  Suppose we have a binned model, where the binning scheme is 2-well-balanaced, that is $\forall i.\;p_i \geq \frac{1}{2B}$, and $n = \widetilde{O}(\frac{B}{\epsilon^2})$ where $\widetilde{O}$ hides $\log$ factors. Then the plugin estimator can hypothesis test between ${E^*}^2 \leq \frac{1}{2}\epsilon^2$ or ${E^*}^2 \geq \epsilon^2$ with high probability.
+  Suppose we have a binned model, where the binning scheme is 2-well-balanaced, that is $\forall i.\;p_i \geq \frac{1}{2B}$, and $n = \widetilde{O}(\frac{B}{\epsilon^2})$ where $\widetilde{O}$ hides $\log$ factors. Then the plugin estimator can check if ${E^*}^2 \leq \epsilon^2$ with high probability.
 \end{restatable}
 
 \begin{restatable}[Debiased bound]{theorem}{finalCanceling}
 \label{thm:final-ours}
-  Suppose $\forall i.\;p_i \geq \frac{1}{2B}$ and $n = \widetilde{O}(B+\frac{\sqrt{B}}{\epsilon^2})$. Then the debiased estimator can hypothesis test between ${E^*}^2 \leq \frac{1}{2}\epsilon^2$ or ${E^*}^2 \geq \epsilon^2$ with high probability.
+  Suppose $\forall i.\;p_i \geq \frac{1}{2B}$ and $n = \widetilde{O}(B+\frac{\sqrt{B}}{\epsilon^2})$. Then the debiased estimator can check if ${E^*}^2 \leq \epsilon^2$ with high probability.
 \end{restatable}
 
-Another way of thinking about the result is that the debiased estimator needs fewer samples to estimate the true calibration error: for the plugin estimator if $n = \widetilde{O}(\frac{B}{{E^*}^2})$ then $\frac{1}{2} {E^*}^2 \leq \pluginEst{} \leq \frac{3}{2} {E^*}^2$ but for the debiased estimator if $n = \widetilde{O}(\frac{\sqrt{B}}{{E^*}^2})$ then $\frac{1}{2} {E^*}^2 \leq \cancelEst{} \leq \frac{3}{2}{E^*}^2$. Theorems~\ref{thm:plugin-bound} and~\ref{thm:our-bound} in Appendix~\ref{sec:verifying_calibration_appendix} also bound the estimation error as a function of $n$.
+Another way of thinking about the result is that the debiased estimator needs fewer samples to estimate the true calibration error: for the plugin estimator if $n = \widetilde{O}(\frac{B}{{E^*}^2})$ then $\frac{1}{2} {E^*}^2 \leq \pluginEst{} \leq \frac{3}{2} {E^*}^2$ but for the debiased estimator if $n = \widetilde{O}(\frac{\sqrt{B}}{{E^*}^2})$ then $\frac{1}{2} {E^*}^2 \leq \cancelEst{} \leq \frac{3}{2}{E^*}^2$.
+% Theorems~\ref{thm:plugin-bound} and~\ref{thm:our-bound} in Appendix~\ref{sec:verifying_calibration_appendix} also bound the estimation error as a function of $n$.
 
 The proof of both theorems is in Appendix~\ref{sec:verifying_calibration_appendix}. The idea is that for the plugin estimator each term in the sum has bias $1/n$. These biases accumulate, giving total bias $B/n$. The debiased estimator has much lower bias and the estimation variance cancels across bins---this intuition is captured in Lemma~\ref{lem:c3_bound} which requires careful conditioning to make the argument go through.
 
