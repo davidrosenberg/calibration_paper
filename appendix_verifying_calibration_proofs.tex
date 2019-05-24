@@ -3,11 +3,11 @@
 \section{Proofs for section~\ref{sec:verifying_calibration}}
 \label{sec:verifying_calibration_appendix}
 
-In this section we prove the finite sample bounds for the plugin and canceling estimators. We follow a very similar structure for both the plugin estimator and the canceling estimators.
+In this section we prove the finite sample bounds for the plugin and debiased estimators. We follow a very similar structure for both the plugin estimator and the debiased estimators.
 
 We first give a proof for the plugin estimator. At a high level, we decompose the plugin estimator into three terms (Lemma~\ref{lem:plugin_decomp}), and then bound each of these terms. Most of these terms simply involve algebraic manipulation and standard concentration results, except Lemma~\ref{lem:p2_bound} which requires some tricky conditioning.
 
-The canceling estimator decomposes into three terms as well, two of these terms are the same as those in the plugin estimator. Bounding the third term (Lemma~\ref{lem:c3_bound}) is the key to the improved sample complexity of the plugin estimator. The canceling estimator is not unbiased. However, with high probability if we condition on the $x_i$s in the evaluation set, each of these error terms is unbiased. We can then use Hoeffding's to concentrate each term near 0. The errors in each bin are then independent which leads to some cancelations of the error terms when we sum them up.
+The debiased estimator decomposes into three terms as well, two of these terms are the same as those in the plugin estimator. Bounding the third term (Lemma~\ref{lem:c3_bound}) is the key to the improved sample complexity of the plugin estimator. The debiased estimator is not completely unbiased. However, with high probability if we condition on the $x_i$s in the evaluation set, each of these error terms is unbiased. We can then use Hoeffding's to concentrate each term near 0. The errors in each bin are then independent which leads to some cancelations of the error terms when we sum them up.
 
 \textbf{We use the following notation simplification} to simplify the theorem statements and proofs:
 \[ p_i = P(f(X) = s_i) \]
@@ -137,42 +137,43 @@ We then prove the final bound for the plugin estimator.
 \finalPlugin*
 
 \begin{proof}
-We first provide an intuitive argument, and then a formal proof. When $r = 0.5$, we intuitively want to distinguish between when ${E^*}^2$ is $\epsilon^2$ and $0.5\epsilon^2$. So we want to bound the confidence interval by a constant factor of $\epsilon^2$ in the regime where ${E^*}^2 \approx \epsilon^2$. Substitute ${E^*}^2 = \epsilon^2$ into the bound in Theorem~\ref{thm:plugin-bound}, and write out the condition that $| \pluginEst{} - {E^*}^2 | \leq \frac{\epsilon^2}{4}$. With some simple algebra, we get $n = \Theta(B + \frac{B}{\epsilon})$.
+This is now a simple corollary of Theorem~\ref{thm:plugin-bound}. For large enough constant $c$, where $c$ is a constant independent of all the other variables, we choose $n = c\frac{B}{\epsilon^2} \log{\frac{B}{\epsilon^2}}$. Plugging it into the bound of Theorem~\ref{thm:plugin-bound}, we get the desired result, that $\lvert \hat{E}^2 - {E^*}^2 \rvert \leq \frac{1}{2}{E^*}^2$. Notice that the dominating term is term $(P3)$ in Theorem~\ref{thm:plugin-bound}---we will see that the debiased estimator improves on this. 
+% We first provide an intuitive argument, and then a formal proof. When $r = 0.5$, we intuitively want to distinguish between when ${E^*}^2$ is $\epsilon^2$ and $0.5\epsilon^2$. So we want to bound the confidence interval by a constant factor of $\epsilon^2$ in the regime where ${E^*}^2 \approx \epsilon^2$. Substitute ${E^*}^2 = \epsilon^2$ into the bound in Theorem~\ref{thm:plugin-bound}, and write out the condition that $| \pluginEst{} - {E^*}^2 | \leq \frac{\epsilon^2}{4}$. With some simple algebra, we get $n = \Theta(B + \frac{B}{\epsilon})$.
 
-Now we give the formal proof, which formalizes the above intuition. First, we note that if $n \geq 6B \log{\frac{B}{\delta}}$ then $p_i > \piSmallBound{}$ so this satisfies the requirements to apply Theorem~\ref{thm:plugin-bound}.
+% Now we give the formal proof, which formalizes the above intuition. First, we note that if $n \geq 6B \log{\frac{B}{\delta}}$ then $p_i > \piSmallBound{}$ so this satisfies the requirements to apply Theorem~\ref{thm:plugin-bound}.
 
-Let $\omega = \frac{1-r}{2}$. Note that $r + \omega = 1 - \omega$. We split into two cases. In the first case, we will assume that ${E^*}^2 \leq r \epsilon^2$. We will show that with probability at least $1 - \delta$, $\pluginEst{} \leq (1-\omega) \epsilon^2$. In the second case, we will assume that ${E^*}^2 > \epsilon^2$. We will show that with probability at least $1 - \delta$, $\pluginEst{} > (1-\omega) \epsilon^2$. This then gives us an easy way to hypothesis test between the two cases. That is, we will say the model is probably calibrated iff $\pluginEst{} \leq (1-\omega) \epsilon^2$.
+% Let $\omega = \frac{1-r}{2}$. Note that $r + \omega = 1 - \omega$. We split into two cases. In the first case, we will assume that ${E^*}^2 \leq r \epsilon^2$. We will show that with probability at least $1 - \delta$, $\pluginEst{} \leq (1-\omega) \epsilon^2$. In the second case, we will assume that ${E^*}^2 > \epsilon^2$. We will show that with probability at least $1 - \delta$, $\pluginEst{} > (1-\omega) \epsilon^2$. This then gives us an easy way to hypothesis test between the two cases. That is, we will say the model is probably calibrated iff $\pluginEst{} \leq (1-\omega) \epsilon^2$.
 
-\textbf{Case 1}: Suppose  ${E^*}^2 \leq r \epsilon^2$.
+% \textbf{Case 1}: Suppose  ${E^*}^2 \leq r \epsilon^2$.
 
-We will show that $| \pluginEst{} - {E^*}^2 | \leq \omega \epsilon^2$ by bounding each of the three term of  $| \pluginEst{} - {E^*}^2 |$ in Theorem~\ref{thm:plugin-bound} by $\frac{\omega}{3}\epsilon^2$.
+% We will show that $| \pluginEst{} - {E^*}^2 | \leq \omega \epsilon^2$ by bounding each of the three term of  $| \pluginEst{} - {E^*}^2 |$ in Theorem~\ref{thm:plugin-bound} by $\frac{\omega}{3}\epsilon^2$.
 
-For the first term, suppose $n \geq (\frac{54r^2}{\omega^2}\log{\frac{2B}{\delta}})B$ . Then $c(n) {E^*}^2 \leq \frac{\omega}{3}\epsilon^2$.
+% For the first term, suppose $n \geq (\frac{54r^2}{\omega^2}\log{\frac{2B}{\delta}})B$ . Then $c(n) {E^*}^2 \leq \frac{\omega}{3}\epsilon^2$.
 
-For the second term, we first note that from Lemma~\ref{lem:pi_bound}, $c(n) < 1$. So, we have,
-\[ \sqrt{\frac{2(1+c(n)){E^*}^2}{n} \log{\frac{2}{\delta}}} \leq \sqrt{\frac{4{E^*}^2}{n} \log{\frac{2}{\delta}}} \]
-Then, if $n \geq (\frac{36r^2}{\omega^2} \log{\frac{2}{\delta}})\frac{1}{\epsilon^2}$, we have,
-\[ \sqrt{\frac{4{E^*}^2}{n} \log{\frac{2}{\delta}}} \leq \sqrt{\frac{4r^2\epsilon^2}{n} \log{\frac{2}{\delta}}} \leq \frac{\omega}{3}\epsilon^2 \]
+% For the second term, we first note that from Lemma~\ref{lem:pi_bound}, $c(n) < 1$. So, we have,
+% \[ \sqrt{\frac{2(1+c(n)){E^*}^2}{n} \log{\frac{2}{\delta}}} \leq \sqrt{\frac{4{E^*}^2}{n} \log{\frac{2}{\delta}}} \]
+% Then, if $n \geq (\frac{36r^2}{\omega^2} \log{\frac{2}{\delta}})\frac{1}{\epsilon^2}$, we have,
+% \[ \sqrt{\frac{4{E^*}^2}{n} \log{\frac{2}{\delta}}} \leq \sqrt{\frac{4r^2\epsilon^2}{n} \log{\frac{2}{\delta}}} \leq \frac{\omega}{3}\epsilon^2 \]
 
-Finally, for the third term, if $n \geq (\frac{3}{2\omega} \log{\frac{2B}{\delta}}) \frac{B}{\epsilon^2}$, then,
-\[ \frac{B}{2n} \log{\frac{2B}{\delta}} \leq \frac{\omega}{3}\epsilon^2 \]
-In total, for constant $\omega$ and ignoring $\log$ factors, this means if $n = \Theta(B + \frac{B}{\epsilon^2})$, then $\hat{E}^2 \leq (1-\omega) \epsilon^2$.
+% Finally, for the third term, if $n \geq (\frac{3}{2\omega} \log{\frac{2B}{\delta}}) \frac{B}{\epsilon^2}$, then,
+% \[ \frac{B}{2n} \log{\frac{2B}{\delta}} \leq \frac{\omega}{3}\epsilon^2 \]
+% In total, for constant $\omega$ and ignoring $\log$ factors, this means if $n = \Theta(B + \frac{B}{\epsilon^2})$, then $\hat{E}^2 \leq (1-\omega) \epsilon^2$.
 
-\textbf{Case 2}: Suppose ${E^*}^2 > \epsilon^2$.
+% \textbf{Case 2}: Suppose ${E^*}^2 > \epsilon^2$.
 
-It suffices to show that $| \pluginEst{} - {E^*}^2 | \leq \omega {E^*}^2$, because then $\pluginEst{} > (1 - \omega) {E^*}^2 \geq (1 - \omega) \epsilon^2$. As in the previous case, we show this by bounding each of the three terms of  $| \pluginEst{} - {E^*}^2 |$ in Theorem~\ref{thm:plugin-bound} by $\frac{\omega}{3}{E^*}^2$. The proof of this case is nearly identical to the previous case and using the fact that $\epsilon^2 \leq {E^*}^2$.
+% It suffices to show that $| \pluginEst{} - {E^*}^2 | \leq \omega {E^*}^2$, because then $\pluginEst{} > (1 - \omega) {E^*}^2 \geq (1 - \omega) \epsilon^2$. As in the previous case, we show this by bounding each of the three terms of  $| \pluginEst{} - {E^*}^2 |$ in Theorem~\ref{thm:plugin-bound} by $\frac{\omega}{3}{E^*}^2$. The proof of this case is nearly identical to the previous case and using the fact that $\epsilon^2 \leq {E^*}^2$.
 
 \end{proof}
 
-\subsection{Analysis of canceling estimator}
+\subsection{Analysis of debiased estimator}
 
-Next, we bound the error of our canceling estimator. The proof follows along the lines of the plugin estimator. We begin with a decomposition (Lemma~\ref{lem:canceling_decomp}), similar to the decomposition of the plugin estimator. However, one of the terms in the decomposition, $C3$, is different. Lemma~\ref{lem:c3_bound} bounds this term $C3$. The rest of the proof is the same as for the plugin estimator, so we omit the other proofs.
+Next, we bound the error of the debiased estimator. The proof follows along the lines of the plugin estimator. We begin with a decomposition (Lemma~\ref{lem:canceling_decomp}), similar to the decomposition of the plugin estimator. However, one of the terms in the decomposition, $C3$, is different. Lemma~\ref{lem:c3_bound} bounds this term $C3$. The rest of the proof is the same as for the plugin estimator, so we omit the other proofs.
 
-As with the plugin estimator, we have a decomposition for the canceling estimator.
+As with the plugin estimator, we have a decomposition for the debiased estimator.
 
-\begin{lemma}[Canceling decomposition]
+\begin{lemma}[Debiased decomposition]
 \label{lem:canceling_decomp}
-The canceling estimator satisfies the following decomposition:
+The debiased estimator satisfies the following decomposition:
 \[ \cancelEst{} = \underbrace{\sum_{i=1}^b \hat{p_i}e_i^2}_{(C1)}  - \underbrace{2\sum_{i=1}^b \hat{p_i}e_i(\hat{y_i} - y_i^*)}_{(C2)} + \underbrace{\sum_{i=1}^b \hat{p_i}\Big[ (\hat{y_i} - y_i^*)^2 - \frac{\hat{y_i}(1 - \hat{y_i})}{\hat{p_i}n-1} \Big]}_{(C3)} \]
 \end{lemma}
 
@@ -188,7 +189,7 @@ Suppose $|\hat{p_i} - p_i| < c(n) p_i < 0.5 p_i$ for all $i$. Then with probabil
 Let $Z = (f(x_1), \cdots, f(x_n))$ be a random variable. We note that for all $i$, $\hat{p_i}$ is a deterministic function of $Z$. For convenience, define $t_i$ as follows:
 \[ t_i = (\hat{y_i} - y_i^*)^2 - \frac{\hat{y_i}(1 - \hat{y_i})}{\hat{p_i}n-1} \]
 
-\textbf{Computing the expectation:} The canceling estimator debiases the plugin estimator. In particular, we briefly explain why $\expect[C3 \mid Z] = 0$. Since $\hat{y_i}$ is the mean of $n\hat{p_i}$ draws of a Bernoulli with parameter $y_i^*$, we have:
+\textbf{Computing the expectation:} The debiased estimator debiases the plugin estimator. In particular, we briefly explain why $\expect[C3 \mid Z] = 0$. Since $\hat{y_i}$ is the mean of $n\hat{p_i}$ draws of a Bernoulli with parameter $y_i^*$, we have:
 \[ \expect[(\hat{y_i} - y_i^*)^2 \mid Z] = \frac{y_i^*(1 - y_i^*)}{n\hat{p_i}} \] 
 The term we subtracted is the unbiased estimate of the standard deviation of the samples, so from elementary statistics:
 \[ \expect\Big[\frac{\hat{y_i}(1 - \hat{y_i})}{\hat{p_i}n-1} \mid Z\Big] = \frac{y_i^*(1 - y_i^*)}{n\hat{p_i}} \]
@@ -227,12 +228,12 @@ Summing over $t_i$s, we get:
 
 \tm{where the theorem above is used. It sounds atypical to have a theorem in appendix..}
 \tm{it's almost always better to write theorem first and then lemmas.. }
-We combine the bounds for $(C1)$, $(C2)$, $(C3)$, as in Theorem~\ref{thm:plugin-bound}, to bound the estimation error of the canceling estimator.
+We combine the bounds for $(C1)$, $(C2)$, $(C3)$, as in Theorem~\ref{thm:plugin-bound}, to bound the estimation error of the debiased estimator.
 
 \begin{restatable}{theorem}{cancelingBound}
 \label{thm:our-bound}
 Let $p_i = P(f(X) = s_i)$ and suppose $p_i > \piSmallBound{}$ for all $i$. Let $c(n)$ be as defined in Theorem~\ref{thm:plugin-bound}. \tm{maybe an easier way to do it is: In the same setting of Theorem ??. Then you don't have to redefine some of these quantities.}
-Then for the cancelling estimator, with probability at least $1 - 4\delta$,
+Then for the debiased estimator, with probability at least $1 - 4\delta$,
 \[ | \hat{E}^2 - {E^*}^2 | \leq c(n){E^*}^2 + \sqrt{\frac{2(1+c(n)){E^*}^2}{n} \log{\frac{2}{\delta}}} + \frac{3\sqrt{B}}{n} \log{\frac{n}{\delta}} + \frac{\delta}{n}\]
 \end{restatable}
 \tm{may be good to explain what's the dominating term. How to interpret the bound ---}\tm{I guess it's kind of okay if you have a corollary that directly follows}

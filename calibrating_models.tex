@@ -10,7 +10,6 @@ We split the recalibration data $T$ of size $n$ into 3 sets: $T_1$, $T_2$, $T_3$
 \textbf{Step 1 (Function fitting):} The first step is to select $g = \argmin_{g \in G} \sum_{(z, y) \in T_1} (y - g(z))^2$.
 
 \textbf{Step 2 (Bin construction):} The second step is to construct a suitable binning scheme. We choose the bins so that an equal number of $g(z_i)$ in $T_2$ land in each bin $I_j$ for each $j \in \{1, \dots, B\}$, instead of equal width bins used in~\cite{guo2017calibration}--our choice of bins is essential for our bounds.
-\pl{emphasize this is not evenly spaced bins like previous work}
 
 \textbf{Step 3 (Discretization):} The third step is to discretize $g$, by outputting the average $g$ value in each bin---these are the gray circles in Figure~\ref{fig:var_red_binning}. Let $\mu(S) = \frac{1}{|S|} \sum_{s \in S} s$ denote the mean of a set of values.
 Let $\hat{\mu}[j] = \mu(\{ g(z_i) \; | \; g(z_i) \in I_j \wedge (z_i, y_i) \in T_3 \})$ be the mean of the $g(z_i)$ values that landed in the $j$-th bin.
@@ -25,7 +24,7 @@ We now show that the variance-reduced calibrator requires $O(B + 1/\epsilon^2)$ 
 \begin{restatable}[Calibration bound]{theorem}{finalCalib}
 \label{thm:final-calib}
 Suppose that $\min_{g \in \mathcal{G}}\ell_2^2\mbox{-CE}(g) \leq \epsilon^2$.
-  With $n = \widetilde{O}(B + \frac{d'}{\epsilon^2})$ samples, where $\widetilde{O}$ hides log factors, the variance-reduced calibration algorithm \pl{estimator} finds $\hat{g}_{\mathcal{B}}$ with $\ell_2^2\mbox{-CE}(\hat{g}_{\mathcal{B}}) \leq 2 \epsilon^2$. Note that $d'$ is the number of parameters which is $1$ for Platt scaling.
+  With $n = \widetilde{O}(B + \frac{d'}{\epsilon^2})$ samples, where $\widetilde{O}$ hides log factors, the variance-reduced calibration algorithm finds $\hat{g}_{\mathcal{B}}$ with $\ell_2^2\mbox{-CE}(\hat{g}_{\mathcal{B}}) \leq 2 \epsilon^2$. Note that $d'$ is the number of parameters which is $1$ for Platt scaling.
 \end{restatable}
 
 We present a proof in Appendix~\ref{sec:calibrating_models_appendix} but give a sketch here. Step 1 of our algorithm is Platt scaling, which simply fits a function $g$ to the data---standard statistical learning theory results show that $g$ converges in $O(\frac{1}{\epsilon^2})$ samples.
@@ -79,8 +78,6 @@ Using more bins allows a model to produce more fine-grained predictions e.g.~\ci
   \caption{
   (\textbf{Left}) Recalibrating using 1,000 data points on CIFAR-10, our variance-reduced calibrator achieves lower $\ell_2^2$ calibration error than histogram binning, especially when the number of bins $B$ is large.
   (\textbf{Right}) For a fixed calibration error, our variance-reduced calibrator allows us to use more bins. This results in models with more predictive power which can be measured by the mean-squared error. Note the Y-axis range is $[0.4, 0.8]$ to zoom into the relevant region.
-  \pl{change legend to 'histogram binning' and variance-reduced estimator' for both for consistency}
-  \tm{if we have time, we could also make the x,y lablel font bigger. and use scientific formt for xtick and ytick; and maybe slightly bigger legend.}
   }
   \label{fig:nan2}
 \end{figure}
