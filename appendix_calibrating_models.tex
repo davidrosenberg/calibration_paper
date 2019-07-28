@@ -112,10 +112,7 @@ By union bound, these hold with probability at least $1 - \delta$, which complet
 
 In our proofs we also required that the binning scheme we constructed was 2-well-balanced.
 
-\begin{lemma}[Well-balanced on population]
-\label{lem:well-balanced}
-If $n \geq \Omega(B \log{\frac{B}{\delta}})$ then the binning scheme $\bins{}$ we construct in step 2 of our algorithm is 2-well-balanced.
-\end{lemma}
+\wellBalanced*{}
 
 \begin{proof}
 Suppose we are given a bin construction set of size $n$, $T_n = \{(z_1, y_1), \dots, (z_n, y_n)\}$.
@@ -125,7 +122,7 @@ For any interval $I$, let $\hat{P}(I)$ be the empirical estimate of $P(I) = \pro
 
 We constructed the bins so that each interval $I_j$ contains $\frac{n}{B}$ points, or in other words, $\hat{P}(I_j) = \frac{1}{B}$. We want to show that $\frac{1}{2B} \leq \prob(g(Z) \in I_j) \leq \frac{2}{B}$. Since the intervals are chosen from data, we want a uniform concentration result that holds for all such intervals $I_j$.
 
-We will use a discretization argument. The idea is that we will cover $[0, 1]$ with $10B$ disjoint small intervals such that for each of these intervals $I_j'$, $P(g(Z) \in I_j') = \frac{1}{10B}$. We will then use Bernstein and union bound to get that with probability at least $1 - \delta$, for all $I_j'$, $|P(I_j') - \hat{P_j}(I_j')| \leq \frac{1}{100B}$ . Given an arbitrary interval $I$, we can write it as an approximate union of these small intervals, which will allow us to concentrate $|P(I) - \hat{P}(I)|$.
+We will use a discretization argument. The idea is that we will cover $[0, 1]$ with $10B$ disjoint small intervals such that for each of these intervals $I_j'$, $P(g(Z) \in I_j') = \frac{1}{10B}$. We will then use Bernstein and union bound to get that with probability at least $1 - \delta$, for all $I_j'$, $|P(I_j') - \hat{P}(I_j')| \leq \frac{1}{100B}$ . Given an arbitrary interval $I$, we can write it as an approximate union of these small intervals $I_j'$, which will allow us to concentrate $|P(I) - \hat{P}(I)|$ for every $I$ simultaneously.
 
 \textbf{Concentrating the small intervals:} Fix some interval $I_j'$. Let $w_i = \mathbb{I}(g(z_i) \in I_j')$ for $i = 1,\dots,n$. Then $w_i \sim \mbox{Bernoulli}(\frac{1}{10B})$. $\hat{P}(I_j')$ is simply the empirical average of $n$ such values and as such with probability at least $1 - \frac{\delta}{10B}$:
 \[ |P(I_j') - \hat{P_j}(I_j')| \leq \sqrt{\frac{2}{10Bn} \log{\frac{10B}{\delta}}} + \frac{2}{3n} \log{\frac{10B}{\delta}} \]

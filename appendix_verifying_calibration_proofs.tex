@@ -31,9 +31,7 @@ Suppose $p_i > \piSmallBound{}$ for all $i$. Then we have $c(n) < 0.5$ and excep
 \[ |\hat{p_i} - p_i| < c(n)p_i = \sqrt{\frac{3}{n \min p_i} \log{\frac{2B}{\delta}}} p_i \]
 \end{lemma}
 
-\subsection{Analysis of plugin estimator}
-
-\tm{for appendix, we probably want to maximize clarity. So title could be "Analysis of plugin estimator: proof of Theorem??" }
+\subsection{Analysis of plugin estimator (proof of Theorem~\ref{thm:final-plugin})}
 
 The following lemma is crucial -- we decompose the plugin estimator into three terms that we can bound separately.
 
@@ -137,7 +135,9 @@ We then prove the final bound for the plugin estimator.
 \finalPlugin*
 
 \begin{proof}
-This is now a simple corollary of Theorem~\ref{thm:plugin-bound}. For large enough constant $c$, where $c$ is a constant independent of all the other variables, we choose $n = c\frac{B}{\epsilon^2} \log{\frac{B}{\epsilon^2}}$. Plugging it into the bound of Theorem~\ref{thm:plugin-bound}, we get the desired result, that $\lvert \hat{E}^2 - {E^*}^2 \rvert \leq \frac{1}{2}{E^*}^2$. Notice that the dominating term is term $(P3)$ in Theorem~\ref{thm:plugin-bound}---we will see that the debiased estimator improves on this. 
+This is now a simple corollary of Theorem~\ref{thm:plugin-bound}. For large enough constant $c$, where $c$ is a constant independent of all the other variables, we choose $n = c\frac{B}{\epsilon^2} \log{\frac{B}{\epsilon^2}}$. Plugging it into the bound of Theorem~\ref{thm:plugin-bound}, we get the desired result, that $\lvert \hat{E}^2 - {E^*}^2 \rvert \leq \frac{1}{2}{E^*}^2$. Notice that the dominating term is term $(P3)$ in Theorem~\ref{thm:plugin-bound}---we will see that the debiased estimator improves on this.
+
+In fact, we can also show that in the worst case the plugin estimator will need at least $O(\frac{B}{\epsilon^2})$ samples to estimate the calibration error. To see this, first note that the bias of the plugin estimator, which comes from term $(P3)$ is at least $\frac{B}{n}$. Furthermore, in the analysis of the debiased estimator we show that the variance of this term is on the order of $O(\frac{\sqrt{B}}{n})$. So if $n < 0.1\frac{B}{\epsilon^2}$ we can consider very large $B$, and use Chebyshev to show that that with high probability the estimation error is larger than $\epsilon^2$. 
 % We first provide an intuitive argument, and then a formal proof. When $r = 0.5$, we intuitively want to distinguish between when ${E^*}^2$ is $\epsilon^2$ and $0.5\epsilon^2$. So we want to bound the confidence interval by a constant factor of $\epsilon^2$ in the regime where ${E^*}^2 \approx \epsilon^2$. Substitute ${E^*}^2 = \epsilon^2$ into the bound in Theorem~\ref{thm:plugin-bound}, and write out the condition that $| \pluginEst{} - {E^*}^2 | \leq \frac{\epsilon^2}{4}$. With some simple algebra, we get $n = \Theta(B + \frac{B}{\epsilon})$.
 
 % Now we give the formal proof, which formalizes the above intuition. First, we note that if $n \geq 6B \log{\frac{B}{\delta}}$ then $p_i > \piSmallBound{}$ so this satisfies the requirements to apply Theorem~\ref{thm:plugin-bound}.
@@ -165,7 +165,7 @@ This is now a simple corollary of Theorem~\ref{thm:plugin-bound}. For large enou
 
 \end{proof}
 
-\subsection{Analysis of debiased estimator}
+\subsection{Analysis of debiased estimator (proof of Theorem~\ref{thm:final-ours})}
 
 Next, we bound the error of the debiased estimator. The proof follows along the lines of the plugin estimator. We begin with a decomposition (Lemma~\ref{lem:canceling_decomp}), similar to the decomposition of the plugin estimator. However, one of the terms in the decomposition, $C3$, is different. Lemma~\ref{lem:c3_bound} bounds this term $C3$. The rest of the proof is the same as for the plugin estimator, so we omit the other proofs.
 

@@ -38,10 +38,10 @@ Given a binning scheme $\mathcal{B}$ of size $B$, and $\alpha \leq 1$. We say $\
   \[ \frac{1}{\alpha B} \leq \prob(Z \in I_j) \leq \frac{\alpha}{B}\]
 \end{definition}
 
-\begin{lemma}
+\begin{restatable}{lemma}{wellBalanced}
 \label{lem:well-balanced}
 If $n \geq B\log{\frac{B}{\delta}}$, with probability at least $1 - \delta$, the binning scheme $\mathcal{B}$ we chose is 2-well-balanced.
-\end{lemma}
+\end{restatable}
 
 While the way we choose bins is not novel~\cite{zadrozny2001calibrated}, we believe the guarantees around it are---not all binning schemes in the literature allow us to efficiently estimate the calibration error, for example the binning scheme in~\cite{guo2017calibration} does not. Our proof of Lemma~\ref{lem:well-balanced} is in Appendix~\ref{sec:calibrating_models_appendix}. The core challenge is that applying Chernoff bounds or a standard VC dimension argument gives us a loose bound and tells us we need $O(B^2\log{\frac{B}{\delta}})$ samples. We use a discretization argument to prove the result.
 

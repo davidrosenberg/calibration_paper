@@ -17,9 +17,7 @@ In this section, we show why methods like Platt scaling and temperature scaling 
 % The $\ell_2^2$, $\ell_1$ and $\ell_{\infty}$ calibration errors are popular choices. For all $p$, the $\ell_p$ calibration error can be tricky to estimate from samples, because $E[Y | f(X)]$ is difficult to estimate. In particular, for a model $f$ that outputs a continuous range of values between $[0, 1]$, we usually see any given $f(X)$ value exactly once.
 % This makes estimating $E[Y | f(X)$ impossible without additional assumptions on the smoothness of $E[Y | f(X)]$.
 
-For all $p$, the $\ell_p$ calibration error can be tricky to estimate from samples, because $\expect[Y \mid f(X)]$ is difficult to estimate. \pl{seems like we're being very repetitive; say: The key to estimating $\ell_p$ is estimating a conditional expectation based on a continuous value;
-without smoothness assumptions, this is impossible}
-The core problem for a model $f$ that outputs a continuous range of values between $[0, 1]$ is that we usually see any given $f(X)$ value exactly once. This is analogous to the difficulty of measuring the mutual information between two continuous signals~\cite{paninski2003entropy}.
+The key to estimating the calibration error is estimating the conditional expectation $\expect[Y \mid f(X)]$ where $f(X)$ is a continuous value; without smoothness assumptions on $\expect[Y \mid f(X)]$ (that cannot be verified in practice), this is impossible. This is analogous to the difficulty of measuring the mutual information between two continuous signals~\cite{paninski2003entropy}.
 
 To approximate the $\ell_p$ calibration error, prior work bins the output of $f$ into $B$ intervals.
 The calibration error in each bin is estimated as the difference between the average value of $f(X)$ and $Y$ in that bin.

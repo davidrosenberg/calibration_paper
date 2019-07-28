@@ -38,12 +38,12 @@ We often want to minimize the MSE subject to a calibration constraint~\cite{gnei
 \subsection{Multiclass classification}
 
 While calibration in binary classification is well-studied,
-it's less clear what to do for multiclass, where multiple definitions abound, differing in their strength. In the multiclass setting, $\mathcal{Y} = [K]$, where $[K] = \{1, \dots, K\}$ and $f : \mathcal{X} \to [0, 1]^k$ outputs a confidence measure for each class in $[K]$.
+it's less clear what to do for multiclass, where multiple definitions abound, differing in their strength. In the multiclass setting, $\mathcal{Y} = [K]$, where $[K] = \{1, \dots, K\}$ and $f : \mathcal{X} \to [0, 1]^K$ outputs a confidence measure for each class in $[K]$.
 
 \begin{definition}[Top-label calibration]
-The $\ell_2$ calibration error is given by:
+The $\ell_2^2$ top-label calibration error examines the difference between the model's probability for its top prediction and the true probability of that prediction given the model's output:
 \begin{align}
-\topsquaredce(f) = \expect\Big[ \Big( \prob\big(Y = \argmax_{j \in [k]} M(X)_j \mid \max_{j \in [k]} M(X)_j\big) - \max_{j \in [k]} M(X)_j \Big)^2 \Big]
+\topsquaredce(f) = \expect\Big[ \Big( \prob\big(Y = \argmax_{j \in [K]} M(X)_j \mid \max_{j \in [K]} M(X)_j\big) - \max_{j \in [K]} M(X)_j \Big)^2 \Big]
 \end{align}
 \end{definition}
 
@@ -51,9 +51,9 @@ We would often like the model to be calibrated on less likely predictions as wel
 
 \begin{definition}[Marginal calibration error]
 \label{dfn:marginal-ce}
-Let $P(j)$ denote the probability of class $j$. The $\ell_2^2$ marginal calibration error is:
+Let $P(k)$ denote the probability of class $k$. The $\ell_2^2$ marginal calibration error is:
 \begin{align}
-\margsquaredce(f) = \sum_{k = 1}^K P(j) \mathbb{E}\big[ (M(X)_k - \expect[Y = k \mid M(X)_k])^2 \big]
+\margsquaredce(f) = \sum_{k = 1}^K P(k) \mathbb{E}\big[ (M(X)_k - \expect[Y = k \mid M(X)_k])^2 \big]
 \end{align}
 \end{definition}
 
@@ -83,4 +83,4 @@ A binning scheme $\mathcal{B}$ of size $B$ is a set of $B$ intervals $I_1, \dots
 % into $B$ disjoint intervals or bins, defined by bin boundaries $0 = b_0 < b_1 < ... < b_B = 1$. For $1 \leq j \leq B$, the $j$-th bin is the interval $I_j$ where $I_1 = [b_0, b_1]$ and $I_j = (b_{j-1}, b_j]$ for $j > 1$. 
 \end{definition}
 
-The bins are typically chosen such that either $I_1 = [0, \frac{1}{B}], I_2 = (\frac{1}{B}, \frac{2}{B}], \dots, I_B = (\frac{B-1}{B}, 1]$ or so that each bin contains an equal number of $g(z_i)$ values in the recalibration data~\cite{zadrozny2001calibrated, guo2017calibration}. \pl{but say we don't do this...} Histogram binning then outputs the average $y_i$ value in each bin.
+The bins are typically chosen such that either $I_1 = [0, \frac{1}{B}], I_2 = (\frac{1}{B}, \frac{2}{B}], \dots, I_B = (\frac{B-1}{B}, 1]$ or so that each bin contains an equal number of $g(z_i)$ values in the recalibration data~\cite{zadrozny2001calibrated, guo2017calibration}. Histogram binning then outputs the average $y_i$ value in each bin.
