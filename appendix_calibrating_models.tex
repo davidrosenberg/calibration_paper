@@ -7,7 +7,7 @@
 Our analysis of the sample complexity of \ourcal{} requires some assumptions on the function family $\G{}$ that hold for standard methods like Platt scaling, beta calibration, and vector scaling (since vector scaling calibrates each class separately):
 
 \begin{enumerate}
-\item (Finite bounded parameters). Let $\G{} = \{ g_{\theta} : \mathcal{Z} \to [0, 1] \; | \; \theta \in \mathbb{R}^{d'} \wedge ||\theta||_{\infty} \leq R \}$
+\item (Finite bounded parameters). Let $\G{} = \{ g_{\theta} : \mathcal{Z} \to [0, 1] \; | \; \theta \in \mathbb{R}^{d'} \wedge ||\theta||_{\infty} \leq R \}$.
 \item (Injective). For all $g_{\theta} \in \G{}$ we assume $g_{\theta}$ is injective.
 \item (Lipschitz). Suppose that for all $z \in \mbox{supp}(Z)$, $|g_{\theta_1}(z) - g_{\theta_2}(z)| \leq L|\theta_1 - \theta_2|_2$.
 \end{enumerate}
@@ -48,7 +48,7 @@ We use the classic decomposition of the mean-squared error into calibration erro
 \[ \mbox{MSE}(g) = \underbrace{\squaredce(g)}_{\mbox{calibration}} + \underbrace{\expect[(\expect[Y \mid g(Z)] - Y)^2]}_{\mbox{refinement}} \]
 Note that the refinement term is constant for all injective $g \in \G{}$, since for injective $g$:
 \[ \expect[(\expect[Y \mid g(Z)] - Y)^2] = \expect[(\expect[Y \mid Z] - Y)^2] \]
-This means that the difference in $\mbox{MSE}$ between any $g$ and $g'$ is precisely the difference in the mean-squared error. From a standard $\epsilon$-cover in the parameter space, or PAC-Bayes argument, we can get a high probability generalization bound on the mean-squared error:
+This means that the difference in calibration errors between any $g$ and $g'$ is precisely the difference in the mean-squared error. From a standard $\epsilon$-cover in the parameter space, or PAC-Bayes argument, we can get a high probability generalization bound on the mean-squared error:
 \[ \mbox{MSE}(g) \leq \mbox{MSE}(g^*) + \frac{cLd' \log{R}}{\sqrt{n}} \]
 This gives us the desired result.
 \end{proof}
@@ -110,7 +110,7 @@ Similarly, we can also bound the $\ell_1$-error. Here we also use the fact that 
 By union bound, these hold with probability at least $1 - \delta$, which completes the proof.
 \end{proof}
 
-In our proofs we also required that the binning scheme we constructed was 2-well-balanced.
+In our proofs we also required that the binning scheme we constructed was 2-well-balanced. The lemma below shows that this property does in fact hold with high probability.
 
 \wellBalanced*{}
 

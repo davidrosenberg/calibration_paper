@@ -9,14 +9,14 @@
 \tm{I wonder we should have subscript for $\cancelEst$. $\ensuremath{\hat{E}_{\textup{cxl}}^2}$? Sounds a bit verbose..}
 Before deploying our model we would like to check that it has calibration error below some desired threshold $\epsilon^2$. In this section we show that we can efficiently estimate the calibration error of binned models, if the binning scheme is 2-well-balanced. Recent work in machine learning typically estimates each term in the calibration error directly from samples~\cite{nguyen2015posterior, hendrycks2019anomaly, kuleshov2015calibrated, hendrycks2019pretraining}. Older work in meteorology~\cite{brocker2012empirical, ferro2012bias} notices that this leads to a biased estimate, and proposes a `debiased' estimator that subtracts off an approximate correction term to reduce the bias. Our contribution is to show that while the naive estimator requires samples proportional to $B$ to estimate the calibration error, the debiased estimator requires samples proportional to $\sqrt{B}$. To our knowledge we are the first to show an \emph{improved sample complexity}---prior work only showed that the naive estimator is biased.
 
-Suppose we wish to measure the calibration error of a model $f : \mathcal{X} \to S$ where $S \subseteq [0, 1]$ and $|S| = B$. Suppose we get an evaluation set $T_n = \{(x_1, y_1), \dots, (x_n, y_n)\}$. Past work typically estimates the calibration error by directly estimating each term from samples:
+Suppose we wish to measure the calibration error of a binned model $f : \mathcal{X} \to S$ where $S \subseteq [0, 1]$ and $|S| = B$. Suppose we get an evaluation set $T_n = \{(x_1, y_1), \dots, (x_n, y_n)\}$. Past work typically estimates the calibration error by directly estimating each term from samples:
 
 \begin{restatable}[Plugin estimator]{definition}{pluginDfn}
 \label{dfn:plugin-estimator}
   Let $L_s$ denote the $y_j$ values where the model outputs $s$: $L_s = \{ y_j \; | \; (x_j, y_j) \in T_n\wedge f(x_j) = s \}$. Let $\hat{p}_s$ be the estimated probability of $f$ outputting $s$:
 $\hat{p}_s = \frac{|L_s|}{n}$.
 
-Let $\hat y_i$ be the empirical average of $Y$ when the model outputs $s$: $\hat y_s = \sum_{y \in L_s} \frac{y}{|L_s|}$
+Let $\hat y_s$ be the empirical average of $Y$ when the model outputs $s$: $\hat y_s = \sum_{y \in L_s} \frac{y}{|L_s|}$
 
   The plugin estimate for the $\ell_2^2$ calibration error is \tm{$\ell^2$ calibration error sounds clearer}the weighted squared difference between $\hat y_s$ and $s$:
 \[ \pluginEst{} = \sum_{s \in S} \hat{p}_s (s - \hat y_s)^2 \]
@@ -47,7 +47,7 @@ We are interested in analyzing the number of samples required to estimate the ca
 
 \begin{restatable}[Plugin bound]{theorem}{finalPlugin}
 \label{thm:final-plugin}
-  Suppose we have a binned model with $\ell_2^2$ calibration error ${E^*}^2 = \epsilon^2$, where the binning scheme is 2-well-balanced, that is for all $s \in S$, $\prob(f(X) = s) \geq \frac{1}{2B}$. If $n \geq c\frac{B}{\epsilon^2}\log{\frac{B}{\delta}}$ for some universal constant $c$ then for the plugin estimator: $\frac{1}{2} {E^*}^2 \leq \pluginEst{} \leq \frac{3}{2} {E^*}^2$ with probability at least $1 - \delta$.
+  Suppose we have a binned model with $\ell_2^2$ calibration error ${E^*}^2 = \epsilon^2$, where the binning scheme is 2-well-balanced, that is for all $s \in S$, $\prob(f(X) = s) \geq \frac{1}{2B}$.\footnote{We do not need the upper bound of the 2-well-balanced property.} If $n \geq c\frac{B}{\epsilon^2}\log{\frac{B}{\delta}}$ for some universal constant $c$ then for the plugin estimator: $\frac{1}{2} {E^*}^2 \leq \pluginEst{} \leq \frac{3}{2} {E^*}^2$ with probability at least $1 - \delta$.
  % Suppose we have a binned model with $\ell_2^2$ calibration error ${E^*}^2 = \epsilon^2$, where the binning scheme is 2-well-balanced, that is $\forall i.\;p_i \geq \frac{1}{2B}$, and $n = \widetilde{O}(\frac{B}{\epsilon^2})$ where $\widetilde{O}$ hides $\log$ factors. Then for the plugin estimator: $\frac{1}{2} {E^*}^2 \leq \pluginEst{} \leq \frac{3}{2} {E^*}^2$ with high probability.
 \end{restatable}
 

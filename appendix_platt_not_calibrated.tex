@@ -14,7 +14,7 @@
 As stated in the main text, the intuition is that in each interval $I_j$ in $\bins{}$, the model could underestimate the true probability $\expect[Y \mid f(X)]$ half the time, and overestimate the probability half the time. So if we average over the entire bin the model appears to be calibrated, even though it is very uncalibrated. The proof simply formalizes this intuition.
 
 Since $f$ is bijective and continuous we can select data distribution $P$ s.t. $f(X) \sim \mbox{Uniform}[0.5 - \epsilon, 0.5 + \epsilon]$ for any $\epsilon > 0$. To see this, first note that from real analysis since $f : [0, 1] \to [0, 1]$ and $f$ is bijective and continuous, $f^{-1}$ is also bijective and continuous.
-Then we can let $X \sim f^{-1}(\mbox{Uniform}[0.5 - \epsilon, 0.5 + \epsilon])$ which has the desired property and has density.
+Then we can let $X \sim f^{-1}(\mbox{Uniform}[0.5 - \epsilon, 0.5 + \epsilon])$ which has the desired property and has a density.
 
 Now, consider each interval $I_j$ in binning scheme $\bins{}$, and let $A_j = I_j \cap \mbox{Uniform}[0.5 - \epsilon, 0.5 + \epsilon]$.
 If $A_j = \emptyset$ then $P(f(X) \in A_j) = 0$ so we can ignore this interval (since $f(X)$ will never land in this bin).
