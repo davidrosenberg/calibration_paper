@@ -14,8 +14,6 @@ Let $X \in \mathcal{X}$ and $Y \in \mathcal{Y}$ be random variables denoting the
 
 Suppose we have a model $f : \mathcal{X} \to [0, 1]$ where the output of the model represents the model's confidence that the label is 1. As $f$ may not be calibrated, we define the calibration error, which examines the difference between the model's probability and the true probability given the model's output. If the calibration error is $0$ then the model is perfectly calibrated.
 
-% \pl{in general, before introducing a formula, I always try to give the informal English description that conveys the core essence;
-% here it'd be: something like 'calibration error, which examines the difference between the model's probability and true probability given the model's output'}
 \begin{definition}[Calibration error]
 For $p \geq 1$, the $\ell_p$ calibration error of $f : \mathcal{X} \to [0, 1]$ is given by:
 \begin{align}
@@ -51,9 +49,9 @@ We would often like the model to be calibrated on less likely predictions as wel
 
 \begin{definition}[Marginal calibration error]
 \label{dfn:marginal-ce}
-Let $P(k)$ denote the probability of class $k$, that is, $\prob(Y = k)$. The $\ell_2^2$ marginal calibration error is:
+Let $w_k \in [0, 1]$ denote how important calibrating class $k$ is, where $w_k = \prob(Y = k)$ if all classes are equally important. The $\ell_2^2$ marginal calibration error is:
 \begin{align}
-\margsquaredce(f) = \sum_{k = 1}^K P(k) \mathbb{E}\big[ (f(X)_k - \prob(Y = k \mid f(X)_k))^2 \big]
+\margsquaredce(f) = \sum_{k = 1}^K w_k \mathbb{E}\big[ (f(X)_k - \prob(Y = k \mid f(X)_k))^2 \big]
 \end{align}
 \end{definition}
 

@@ -1,21 +1,7 @@
 \section{Is Platt scaling calibrated?}
 \label{sec:challenges-measuring}
 
-In this section, we show why methods like Platt scaling and temperature scaling are (i) less calibrated than reported and (ii) it is difficult to tell how miscalibrated they are. The issue is that it is very difficult \pl{we will show it's impossible?} to measure the calibration error of models that output a continuous range of values. We show, both theoretically and with experiments on CIFAR-10 and ImageNet, why the calibration error of such models is \emph{underestimated}. We defer proofs to Appendix~\ref{sec:appendix-platt-not-calibrated}.
-
-% We begin by reviewing the definition of uncertainty calibration in the binary classification setting. Let $\mathcal{X} \subseteq \mathbb{R}^d$ and $\mathcal{Y} = \{0, 1\}$. Let $X \in \mathcal{X}$ and $Y \in \mathcal{Y}$ be random variables denoting the input and label, given by an unknown joint distribution $P(X, Y)$. Suppose we have a model $f : \mathcal{X} \to [0, 1]$ where the output of the model represents the model's confidence that the label is 1.
-
-% \begin{definition}
-% A model $f : \mathcal{X} \to [0, 1]$ is perfectly calibrated if $s = E[Y | f(X) = s]$ for all $s \in [0, 1]$.
-% \end{definition}
-
-% \begin{definition}
-% For $p \geq 1$, the $\ell_p$ calibration error of a model $f : \mathcal{X} \to [0, 1]$ is given by:
-% \[ \ell_p\mbox{-CE}(f) = \Big(E\big[ (f(X) - E[Y | f(X)])^p \big] \Big)^{1/p} \]
-% \end{definition}
-
-% The $\ell_2^2$, $\ell_1$ and $\ell_{\infty}$ calibration errors are popular choices. For all $p$, the $\ell_p$ calibration error can be tricky to estimate from samples, because $E[Y | f(X)]$ is difficult to estimate. In particular, for a model $f$ that outputs a continuous range of values between $[0, 1]$, we usually see any given $f(X)$ value exactly once.
-% This makes estimating $E[Y | f(X)$ impossible without additional assumptions on the smoothness of $E[Y | f(X)]$.
+In this section, we show why methods like Platt scaling and temperature scaling are (i) less calibrated than reported and (ii) it is difficult to tell how miscalibrated they are. The issue is that it is very difficult to measure the calibration error of models that output a continuous range of values. We show, both theoretically and with experiments on CIFAR-10 and ImageNet, why the calibration error of such models is \emph{underestimated}. We defer proofs to Appendix~\ref{sec:appendix-platt-not-calibrated}.
 
 The key to estimating the calibration error is estimating the conditional expectation $\expect[Y \mid f(X)]$ where $f(X)$ is a continuous value; without smoothness assumptions on $\expect[Y \mid f(X)]$ (that cannot be verified in practice), this is impossible. This is analogous to the difficulty of measuring the mutual information between two continuous signals~\cite{paninski2003entropy}.
 
@@ -47,20 +33,8 @@ Note that for all $f$, $0 \leq \lpce(f) \leq 1$.
 \end{restatable}
 
 The intuition is that in each interval $I_j$ in $\bins{}$, the model could underestimate the true probability $\expect[Y \mid f(X)]$ half the time, and overestimate the probability half the time. So if we average over the entire bin the model appears to be calibrated, even though it is very uncalibrated. The formal construction is in Appendix~\ref{sec:appendix-platt-not-calibrated}.
-% \begin{proof}
-% The intuition is that $E[Y | f(X)]$ can be a function that oscillates a lot (like a sine wave with very high frequency), but for each interval $I_j$ we still have $\hat{f}(I_j) = \hat{Y}(I_j)$. Formal proof in Appendix.
-% \end{proof}
 
 Next, we show that given a function $f$, its binned version always has lower calibration error.
-% and that \emph{finer} binning schemes give us a better lower bound.
-
-% \begin{definition}
-% Let $\mathcal{B}$ given by intervals $I_1, ..., I_m$ and $\mathcal{B}'$ given by intervals $I_1', ..., I_n'$ be binning schemes. We say $\mathcal{B}' \preceq \mathcal{B}$ if for all $1 \leq j \leq n$, there exists $1 \leq k \leq m$ s.t. $I_j' \subseteq I_k$. 
-% \end{definition}
-
-% \begin{example}
-% A finer binning scheme partitions $[0, 1]$ into a finer set of intervals. If $\mathcal{B}_1 = \{ (0, 0.5), (0.5, 1.0)\}$ and $\mathcal{B}_2 = \{(0, 0.2), (0.2, 0.5), (0.5, 0.75), (0.75, 1.0)\}$, then we $\mathcal{B}_2$ is a finer binning scheme than $\mathcal{B}_1$. On the other hand, $\mathcal{B}_3 = \{(0, 0.2), (0.2, 0.6), (0.6, 1.0)\}$ is not a finer binning scheme than $\mathcal{B}_1$. 
-% \end{example}
 
 \begin{restatable}[Binning underestimates error]{proposition}{binningLowerBound}
 \label{prop:bin_low_bound}
@@ -78,26 +52,6 @@ As in~\cite{guo2017calibration}, our model's objective was to output the top pre
 % from the TensorFlow Keras library
 
 Figure~\ref{fig:imagenet_lower_bound} shows that as we increase the number of bins on ImageNet, the measured calibration error is higher and this is statistically significant. For example, if we use 15 bins as in~\cite{guo2017calibration}, we would think the $\ell_2$ calibration error is around 0.02 when the calibration error is at least twice as high. Figure~\ref{fig:cifar_10_lower_bound} shows similar findings for CIFAR-10, and in Appendix~\ref{sec:appendix_platt_experiments} we show that our findings hold even if we use $\ell_1$ calibration error and alternative binning strategies.
-
-% To see if this phenomena \pl{restate the phenomena in case people started reading from here} occurs in practice, we ran experiments on CIFAR-10 and Imagenet \pl{capitalize N}, which show that \pl{here we have
-% to be very clear about how to interpret our result;
-% remember, we want to show that previous work has reported numbers which are lower than the actual calibration because they used binning;
-% Then say, we can't compute the calibration error of the final thing, but remember that binning can lower improve calibration error,
-% so the calibration error of $f$ must be at least with a finer bin (i.e., walk people through the argument starting with what you want to show
-% } increasing the number of bins uncovers a higher model calibration error.
-% The model's objective was to output the top predicted class and a confidence score associated with the prediction.
-% For CIFAR-10, we used a trained VGG-net model \pl{say where it came from (can defer to appendix or experimental section)} with an accuracy of 93.1\%.
-% We then split the test set into 3 chunks of size $(1000, 1000, 8000)$.
-% We used the first chunk of data to recalibrate the model using Platt Scaling \pl{lowercase}, the second to select the binning scheme $\mathcal{B}$ \pl{how?}, and the third to measure the binned calibration error.
-% We calculated $90\%$ confidence intervals for the binned calibration error using 1,000 Bootstrap \pl{lowercase b} resamples.
-% We performed the same experiment with varying numbers of bins --
-% the results are shown in Figure~\ref{fig:lower_bounds}.
-% \pl{rewrite: Figure~\ref{fig:lower_bounds} shows that as we increase the number of bins, [punchline]}
-% \pl{need to interpret and spoon feed the result: say that according to the binned method of reporting (cite), they would have said calibration error of $f$
-% was X, but this experiment shows that it is at least Y}
-% We repeated this experiment on ImageNet using a trained VGG-net model with top-1 accuracy of 64.3\%, splitting the validation set into 3 chunks of size $(20000, 5000, 25000)$.
-% \pl{and?}
-% In the Appendix we show that similar results hold for the $\ell_1$ calibration error as well.  \pl{what's the point?}
 
 \begin{figure}
      \centering
