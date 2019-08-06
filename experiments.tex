@@ -2,7 +2,7 @@
 
 \subsection{Estimator accuracy}
 
-We ran experiments on CIFAR-10 and Imagenet to compare the practical performance of our estimator and the plugin estimator. Suppose we have a model with $B$ outputs that has true $\ell_2^2$ calibration error ${E^*}^2$. Suppose we draw $n$ samples, and obtain estimates $\hat{E}^2$ and $\hat{E}_{pl}^2$ from our estimator and the plugin estimator respectively, where $\hat{E}^2$ and $\hat{E}_{pl}^2$ are random variables. We want to know which of these estimates tends to be closer to the true value ${E^*}^2$. One way is to compare the mean squared error of the estimates: $\mathbb{E}\big[ (\hat{E}^2 - {E^*}^2)^2 \big]$  and $\mathbb{E}\big[ (\hat{E}_{pl}^2 - {E^*}^2)^2 \big]$, for varying values of $B$ and $n$, which we show in Figure~\ref{fig:mse_estimators_bins}. We might also wish to compare histograms of $|\hat{E}^2 - {E^*}^2|$ and $|\hat{E}_{pl}^2 - {E^*}^2|$ for some fixed sample size $n$, which we show in Figure~\ref{fig:histograms_estimators_bins}.
+We ran experiments on CIFAR-10 and Imagenet to compare the practical performance of our estimator and the plugin estimator. Suppose we have a model with $B$ outputs that has true $\lsquared$ calibration error ${E^*}^2$. Suppose we draw $n$ samples, and obtain estimates $\hat{E}^2$ and $\hat{E}_{pl}^2$ from our estimator and the plugin estimator respectively, where $\hat{E}^2$ and $\hat{E}_{pl}^2$ are random variables. We want to know which of these estimates tends to be closer to the true value ${E^*}^2$. One way is to compare the mean squared error of the estimates: $\mathbb{E}\big[ (\hat{E}^2 - {E^*}^2)^2 \big]$  and $\mathbb{E}\big[ (\hat{E}_{pl}^2 - {E^*}^2)^2 \big]$, for varying values of $B$ and $n$, which we show in Figure~\ref{fig:mse_estimators_bins}. We might also wish to compare histograms of $|\hat{E}^2 - {E^*}^2|$ and $|\hat{E}_{pl}^2 - {E^*}^2|$ for some fixed sample size $n$, which we show in Figure~\ref{fig:histograms_estimators_bins}.
 
 \begin{figure}
   \centering
@@ -38,7 +38,7 @@ We ran experiments on CIFAR-10 and Imagenet to compare the practical performance
          \includegraphics[width=\textwidth]{histogram_estimates_100_bins.png}
          \caption{$B = 100$ bins}
      \end{subfigure}
-  \caption{Histograms of the absolute value of the difference between estimated and ground truth $\ell_2^2$ calibration errors. For $B = 10$ bins, the results are mixed but we avoid very bad estimates. For $B=100$ our estimates are much closer to ground truth.}
+  \caption{Histograms of the absolute value of the difference between estimated and ground truth $\lsquared$ calibration errors. For $B = 10$ bins, the results are mixed but we avoid very bad estimates. For $B=100$ our estimates are much closer to ground truth.}
   \label{fig:histograms_estimators_bins}
 \end{figure}
 

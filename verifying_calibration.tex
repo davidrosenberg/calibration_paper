@@ -6,10 +6,10 @@
 \newcommand{\ltwoerror}[0]{\ensuremath{{\hat{E}^*}^2}}
 \newcommand{\piSmallBound}[0]{\ensuremath{\frac{12}{n}\log{\frac{2B}{\delta}}}}
 
-\tm{I wonder we should have subscript for $\cancelEst$. $\ensuremath{\hat{E}_{\textup{cxl}}^2}$? Sounds a bit verbose..}
+\tm{I wonder we should have subscript for $\cancelEst$. $\ensuremath{\hat{E}_{\textup{cxl}}^2}$? Sounds a bit verbose..} \ak{Ah are you suggesting we should, or should not, have these subscripts? I removed it for the debiased estimator, but kept it for plugin.}
 Before deploying our model we would like to check that it has calibration error below some desired threshold $\epsilon^2$. In this section we show that we can efficiently estimate the calibration error of binned models, if the binning scheme is 2-well-balanced. Recent work in machine learning typically estimates each term in the calibration error directly from samples~\cite{nguyen2015posterior, hendrycks2019anomaly, kuleshov2015calibrated, hendrycks2019pretraining}. Older work in meteorology~\cite{brocker2012empirical, ferro2012bias} notices that this leads to a biased estimate, and proposes a `debiased' estimator that subtracts off an approximate correction term to reduce the bias. Our contribution is to show that while the naive estimator requires samples proportional to $B$ to estimate the calibration error, the debiased estimator requires samples proportional to $\sqrt{B}$. To our knowledge we are the first to show an \emph{improved sample complexity}---prior work only showed that the naive estimator is biased.
 
-Suppose we wish to measure the calibration error of a binned model $f : \mathcal{X} \to S$ where $S \subseteq [0, 1]$ and $|S| = B$. Suppose we get an evaluation set $T_n = \{(x_1, y_1), \dots, (x_n, y_n)\}$. Past work typically estimates the calibration error by directly estimating each term from samples:
+Suppose we wish to measure the $\lsquared{}$ calibration error ${E^*}^2$ of a binned model $f : \mathcal{X} \to S$ where $S \subseteq [0, 1]$ and $|S| = B$. Suppose we get an evaluation set $T_n = \{(x_1, y_1), \dots, (x_n, y_n)\}$. Past work typically estimates the calibration error by directly estimating each term from samples:
 
 \begin{restatable}[Plugin estimator]{definition}{pluginDfn}
 \label{dfn:plugin-estimator}
@@ -18,15 +18,15 @@ $\hat{p}_s = \frac{|L_s|}{n}$.
 
 Let $\hat y_s$ be the empirical average of $Y$ when the model outputs $s$: $\hat y_s = \sum_{y \in L_s} \frac{y}{|L_s|}$
 
-  The plugin estimate for the $\ell_2^2$ calibration error is \tm{$\ell^2$ calibration error sounds clearer}the weighted squared difference between $\hat y_s$ and $s$:
+  The plugin estimate for the $\lsquared{}$ calibration error is \tm{$\ell^2$ calibration error sounds clearer}the weighted squared difference between $\hat y_s$ and $s$:
 \[ \pluginEst{} = \sum_{s \in S} \hat{p}_s (s - \hat y_s)^2 \]
 \end{restatable}
-\pl{can we just use $L^2$ for this whole paper?}
+\pl{can we just use $L^2$ for this whole paper?} \ak{Should be fixed.}
 
 Alternatively, \cite{brocker2012empirical, ferro2012bias} propose to subtract an approximation of the bias from the estimate:
 
 \begin{restatable}[Debiased estimator]{definition}{cancelingDfn}
-  The debiased estimator for the $\ell_2^2$ error is:
+  The debiased estimator for the $\lsquared$ error is:
 \[ \hat{E}^2 = \sum_{s \in S} \hat{p}_s \Big[ (s - \hat{y}_s)^2 - \frac{\hat{y}_s(1 - \hat{y}_s)}{\hat{p}_sn-1} \Big] \]
 \end{restatable}
 
@@ -43,17 +43,17 @@ We are interested in analyzing the number of samples required to estimate the ca
 % If the calibration error is $< r\epsilon$, where $0 < r < 1$ is a user-specified effect size, then with high probability we should output that the model is calibrated.
 
 
-% Our main result is that to check if the $\ell_2^2$ calibration error is $\leq \epsilon^2$, the plugin estimator requires $\widetilde{O}(\frac{B}{\epsilon^2})$ samples (Theorem~\ref{thm:final-plugin}) while the debiased estimator requires $\widetilde{O}(\frac{\sqrt{B}}{\epsilon^2})$ samples (Theorem~\ref{thm:final-ours}):
+% Our main result is that to check if the $\lsquared{}$ calibration error is $\leq \epsilon^2$, the plugin estimator requires $\widetilde{O}(\frac{B}{\epsilon^2})$ samples (Theorem~\ref{thm:final-plugin}) while the debiased estimator requires $\widetilde{O}(\frac{\sqrt{B}}{\epsilon^2})$ samples (Theorem~\ref{thm:final-ours}):
 
 \begin{restatable}[Plugin bound]{theorem}{finalPlugin}
 \label{thm:final-plugin}
-  Suppose we have a binned model with $\ell_2^2$ calibration error ${E^*}^2 = \epsilon^2$, where the binning scheme is 2-well-balanced, that is for all $s \in S$, $\prob(f(X) = s) \geq \frac{1}{2B}$.\footnote{We do not need the upper bound of the 2-well-balanced property.} If $n \geq c\frac{B}{\epsilon^2}\log{\frac{B}{\delta}}$ for some universal constant $c$ then for the plugin estimator: $\frac{1}{2} {E^*}^2 \leq \pluginEst{} \leq \frac{3}{2} {E^*}^2$ with probability at least $1 - \delta$.
- % Suppose we have a binned model with $\ell_2^2$ calibration error ${E^*}^2 = \epsilon^2$, where the binning scheme is 2-well-balanced, that is $\forall i.\;p_i \geq \frac{1}{2B}$, and $n = \widetilde{O}(\frac{B}{\epsilon^2})$ where $\widetilde{O}$ hides $\log$ factors. Then for the plugin estimator: $\frac{1}{2} {E^*}^2 \leq \pluginEst{} \leq \frac{3}{2} {E^*}^2$ with high probability.
+  Suppose we have a binned model with $\lsquared{}$ calibration error ${E^*}^2 = \epsilon^2$, where the binning scheme is 2-well-balanced, that is for all $s \in S$, $\prob(f(X) = s) \geq \frac{1}{2B}$.\footnote{We do not need the upper bound of the 2-well-balanced property.} If $n \geq c\frac{B}{\epsilon^2}\log{\frac{B}{\delta}}$ for some universal constant $c$ then for the plugin estimator: $\frac{1}{2} {E^*}^2 \leq \pluginEst{} \leq \frac{3}{2} {E^*}^2$ with probability at least $1 - \delta$.
+ % Suppose we have a binned model with $\lsquared{}$ calibration error ${E^*}^2 = \epsilon^2$, where the binning scheme is 2-well-balanced, that is $\forall i.\;p_i \geq \frac{1}{2B}$, and $n = \widetilde{O}(\frac{B}{\epsilon^2})$ where $\widetilde{O}$ hides $\log$ factors. Then for the plugin estimator: $\frac{1}{2} {E^*}^2 \leq \pluginEst{} \leq \frac{3}{2} {E^*}^2$ with high probability.
 \end{restatable}
 
 \begin{restatable}[Debiased bound]{theorem}{finalCanceling}
 \label{thm:final-ours}
-  Suppose we have a binned model with $\ell_2^2$ calibration error ${E^*}^2 = \epsilon^2$ and for all $s \in S$, $\prob(f(X) = s) \geq \frac{1}{2B}$. If $n \geq c\frac{\sqrt{B}}{\epsilon^2}\log{\frac{B}{\delta}}$ for some universal constant $c$ then for the debiased estimator: $\frac{1}{2} {E^*}^2 \leq \cancelEst{} \leq \frac{3}{2}{E^*}^2$ with probability at least $1 - \delta$.
+  Suppose we have a binned model with $\lsquared{}$ calibration error ${E^*}^2 = \epsilon^2$ and for all $s \in S$, $\prob(f(X) = s) \geq \frac{1}{2B}$. If $n \geq c\frac{\sqrt{B}}{\epsilon^2}\log{\frac{B}{\delta}}$ for some universal constant $c$ then for the debiased estimator: $\frac{1}{2} {E^*}^2 \leq \cancelEst{} \leq \frac{3}{2}{E^*}^2$ with probability at least $1 - \delta$.
 \end{restatable}
 
 % Another way of thinking about the result is that the debiased estimator needs fewer samples to estimate the true calibration error: for the plugin estimator if $n = \widetilde{O}(\frac{B}{{E^*}^2})$ then $\frac{1}{2} {E^*}^2 \leq \pluginEst{} \leq \frac{3}{2} {E^*}^2$ but for the debiased estimator if $n = \widetilde{O}(\frac{\sqrt{B}}{{E^*}^2})$ then $\frac{1}{2} {E^*}^2 \leq \cancelEst{} \leq \frac{3}{2}{E^*}^2$.

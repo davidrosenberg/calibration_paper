@@ -18,15 +18,17 @@ Then we set $\hat{g_{\mathcal{B}}}(z) = \hat{\mu}[\beta(g(z))]$---that is we sim
 
 \pl{why is $g$ not hatted and $\hat{g_\mathcal{B}}$ hatted? make consistent}
 
+\ak{one reason is that I use $g_{\mathcal{B}}$ below. This is the binned version of $g$, assuming infinite data for binning. $\hat{g_\mathcal{B}}$ is the empirically binned version of $g$. The hat refers to the empirical binning. What do you think?}
+
 \subsection{Analysis}
 
 We now show that the variance-reduced calibrator requires $O(B + 1/\epsilon^2)$ samples to calibrate, and in Section~\ref{sec:verifying_calibration} we show that we can efficiently measure its calibration error. For the main theorem, we make some standard regularity assumptions on $\mathcal{G}$ (Lipschitz, injectivity, bounded parameters) which we formalize in Appendix~\ref{sec:calibrating_models_appendix}. These hold for Platt scaling, Beta calibration~\cite{kull2017sigmoids}, and vector scaling. Our result is a generalization result---we show that if $\mathcal{G}$ contains some $g^*$ with low calibration error, then our method will quickly find $\hat{g}_{\mathcal{B}}$ with low calibration error:
 
 \begin{restatable}[Calibration bound]{theorem}{finalCalib}
 \label{thm:final-calib}
-Assume regularity conditions on $\mathcal{G}$ (Lipschitz, injective, and all conditions in Theorem 5.23 in~\cite{vaart98asymptotic}) Given $\delta \in (0, 1)$, there is a constant $c$ such that \emph{for all} $B, \epsilon$, with $n \geq c \Big(B\log{B} + \frac{\log{B}}{\epsilon^2}\Big)$ samples, the variance-reduced algorithm finds $\hat{g}_{\mathcal{B}}$ with $\ell_2^2\mbox{-CE}(\hat{g}_{\mathcal{B}}) \leq \min_{g \in \mathcal{G}}\ell_2^2\mbox{-CE}(g) + \epsilon^2$, with probability $\geq 1 - \delta$.
-% Suppose that $\min_{g \in \mathcal{G}}\ell_2^2\mbox{-CE}(g) \leq \epsilon^2$.
-%   With $n = \widetilde{O}(B + \frac{d'}{\epsilon^2})$ samples, where $\widetilde{O}$ hides log factors, the variance-reduced calibration algorithm finds $\hat{g}_{\mathcal{B}}$ with $\ell_2^2\mbox{-CE}(\hat{g}_{\mathcal{B}}) \leq 2 \epsilon^2$. Note that $d'$ is the number of parameters which is $1$ for Platt scaling.
+Assume regularity conditions on $\mathcal{G}$ (Lipschitz, injective, and all conditions in Theorem 5.23 in~\cite{vaart98asymptotic}) Given $\delta \in (0, 1)$, there is a constant $c$ such that \emph{for all} $B, \epsilon$, with $n \geq c \Big(B\log{B} + \frac{\log{B}}{\epsilon^2}\Big)$ samples, the variance-reduced algorithm finds $\hat{g}_{\mathcal{B}}$ with $\squaredce(\hat{g}_{\mathcal{B}}) \leq \min_{g \in \mathcal{G}}\squaredce(g) + \epsilon^2$, with probability $\geq 1 - \delta$.
+% Suppose that $\min_{g \in \mathcal{G}}\lsquared\mbox{-CE}(g) \leq \epsilon^2$.
+%   With $n = \widetilde{O}(B + \frac{d'}{\epsilon^2})$ samples, where $\widetilde{O}$ hides log factors, the variance-reduced calibration algorithm finds $\hat{g}_{\mathcal{B}}$ with $\lsquared\mbox{-CE}(\hat{g}_{\mathcal{B}}) \leq 2 \epsilon^2$. Note that $d'$ is the number of parameters which is $1$ for Platt scaling.
 \end{restatable}
 
 We present a proof in Appendix~\ref{sec:calibrating_models_appendix} but give a sketch here. Step 1 of our algorithm is Platt scaling, which simply fits a function $g$ to the data---standard results in asymptotic statistics show that $g$ converges in $O(\frac{1}{\epsilon^2})$ samples.
@@ -58,7 +60,7 @@ The CIFAR-10 validation set has 10,000 data points. We sampled, with replacement
 % \footnote{This is equivalent to using the empirical distribution on the 10K validation points as the true data distribution, and comparing how these methods perform. We do this since we cannot measure the ground truth calibration error.}
 We repeated this entire procedure 100 times and computed mean and 90\% confidence intervals, and we repeated this varying the number of bins $B$. Figure~\ref{fig:marginal_calibrator_comparison_cifar} shows that the variance-reduced calibrator produces models with lower calibration error, for example $35\%$ lower calibration error when we use 100 bins per class.
 
-Using more bins allows a model to produce more fine-grained predictions, e.g.~\cite{brocker2012empirical} use $B = 51$ bins, which improves the quality of predictions which can be measured by the mean-squared error -- Figure~\ref{fig:cifar_calibrator_cmp_mse_ce} shows that our method achieves better mean-squared errors for any given calibration constraint.\footnote{By the decomposition of the mean-squared error, this means our method achieves better `sharpness' as well.} More concretely, the figure shows a scatter plot of the mean-squared error and $\ell_2^2$ calibration error for histogram binning and variance-reduced calibration when we vary the number of bins. For example, if we want our models to have an $\ell_2^2$ calibration error $\leq 0.0004$ (which translates to an $\ell_2$ `average' calibration error of 2\%) we get a $9\%$ better mean-squared error. In Appendix~\ref{sec:calibrating_models_appendix_experiments} we show that we can get nearly \emph{5x lower top-label calibration error on ImageNet}, and give further experiment details.
+Using more bins allows a model to produce more fine-grained predictions, e.g.~\cite{brocker2012empirical} use $B = 51$ bins, which improves the quality of predictions which can be measured by the mean-squared error -- Figure~\ref{fig:cifar_calibrator_cmp_mse_ce} shows that our method achieves better mean-squared errors for any given calibration constraint.\footnote{By the decomposition of the mean-squared error, this means our method achieves better `sharpness' as well.} More concretely, the figure shows a scatter plot of the mean-squared error and $\lsquared{}$ calibration error for histogram binning and variance-reduced calibration when we vary the number of bins. For example, if we want our models to have an $\lsquared{}$ calibration error $\leq 0.0004$ (which translates to an $\ell_2$ `average' calibration error of 2\%) we get a $9\%$ better mean-squared error. In Appendix~\ref{sec:calibrating_models_appendix_experiments} we show that we can get nearly \emph{5x lower top-label calibration error on ImageNet}, and give further experiment details.
 % We also run an ablation to show that if we have more data points then as the theory predicts histogram binning catches up to the variance-reduced calibrator, and that the way we construct bins is crucial, the result do not hold if we use the binning scheme in~\cite{guo2017calibration}.
 
 \begin{figure}
@@ -67,7 +69,7 @@ Using more bins allows a model to produce more fine-grained predictions, e.g.~\c
      \begin{subfigure}[b]{0.54\textwidth}
          \centering
          \includegraphics[width=0.8\textwidth]{marginal_ces.png}
-         \caption{Effect of number of bins on $\ell_2^2$ calibration error.}
+         \caption{Effect of number of bins on $\lsquared{}$ calibration error.}
          \label{fig:marginal_calibrator_comparison_cifar}
      \end{subfigure}
      \hfill
@@ -78,7 +80,7 @@ Using more bins allows a model to produce more fine-grained predictions, e.g.~\c
          \label{fig:cifar_calibrator_cmp_mse_ce}
      \end{subfigure}
   \caption{
-  (\textbf{Left}) Recalibrating using 1,000 data points on CIFAR-10, our variance-reduced calibrator achieves lower $\ell_2^2$ calibration error than histogram binning, especially when the number of bins $B$ is large.
+  (\textbf{Left}) Recalibrating using 1,000 data points on CIFAR-10, our variance-reduced calibrator achieves lower $\lsquared{}$ calibration error than histogram binning, especially when the number of bins $B$ is large.
   (\textbf{Right}) For a fixed calibration error, our variance-reduced calibrator allows us to use more bins. This results in models with more predictive power which can be measured by the mean-squared error. Note the Y-axis range is $[0.4, 0.8]$ to zoom into the relevant region.
   }
   \label{fig:nan2}

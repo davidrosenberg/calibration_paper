@@ -3,9 +3,10 @@
 
 \newcommand{\lpce}[0]{\ensuremath{\ell_p\mbox{-CE}}}
 \newcommand{\ltwoce}[0]{\ensuremath{\ell_2\mbox{-CE}}}
-\newcommand{\squaredce}[0]{\ensuremath{\ell_2^2\mbox{-CE}}}
-\newcommand{\topsquaredce}[0]{\ensuremath{\ell_2^2\mbox{-TCE}}}
-\newcommand{\margsquaredce}[0]{\ensuremath{\ell_2^2\mbox{-MCE}}}
+\newcommand{\lsquared}[0]{\ensuremath{L^2}}
+\newcommand{\squaredce}[0]{\ensuremath{L^2\mbox{-CE}}}
+\newcommand{\topsquaredce}[0]{\ensuremath{L^2\mbox{-TCE}}}
+\newcommand{\margsquaredce}[0]{\ensuremath{L^2\mbox{-MCE}}}
 
 \subsection{Binary classification}
 
@@ -21,7 +22,7 @@ For $p \geq 1$, the $\ell_p$ calibration error of $f : \mathcal{X} \to [0, 1]$ i
 \end{align}
 \end{definition}
 
-The $\ell_2^2$ calibration error~\cite{murphy1973vector,murphy1977reliability,degroot1983forecasters, nguyen2015posterior, hendrycks2019anomaly, kuleshov2015calibrated, hendrycks2019pretraining, brocker2012empirical} is most commonly used but the $\ell_1$ and $\ell_{\infty}$ calibration errors are also used in the literature~\cite{guo2017calibration, naeini2015obtaining, nixon2019calibration}.
+The $\lsquared$ calibration error, $(\ltwoce(f))^2$,~\cite{murphy1973vector,murphy1977reliability,degroot1983forecasters, nguyen2015posterior, hendrycks2019anomaly, kuleshov2015calibrated, hendrycks2019pretraining, brocker2012empirical} is most commonly used but the $\ell_1$ and $\ell_{\infty}$ calibration errors are also used in the literature~\cite{guo2017calibration, naeini2015obtaining, nixon2019calibration}.
 
 Calibration alone is not sufficient: consider an image dataset containing $50\%$ dogs and $50\%$ cats.
 If $f$ outputs $0.5$ on all inputs, $f$ is calibrated but not very useful.
@@ -31,7 +32,7 @@ We often also wish to minimize the mean-squared error---also known as the Brier 
 The mean-squared error of $f : \mathcal{X} \to [0, 1]$ is given by $\mbox{MSE}(f) = \mathbb{E}[(f(X) - Y)^2]$.
 \end{definition}
 
-We often want to minimize the MSE subject to a calibration constraint~\cite{gneiting2005weather, gneiting2007probabilistic}. Of course, these are not orthogonal because $\mbox{MSE} = 0$ implies perfect calibration---in fact the MSE is the sum of the $\ell_2^2$ calibration error and a ``sharpness'' term~\cite{murphy1973vector,degroot1983forecasters, kuleshov2015calibrated}.
+We often want to minimize the MSE subject to a calibration constraint~\cite{gneiting2005weather, gneiting2007probabilistic}. Of course, these are not orthogonal because $\mbox{MSE} = 0$ implies perfect calibration---in fact the MSE is the sum of the $\lsquared$ calibration error and a ``sharpness'' term~\cite{murphy1973vector,degroot1983forecasters, kuleshov2015calibrated}.
 
 \subsection{Multiclass classification}
 
@@ -39,7 +40,7 @@ While calibration in binary classification is well-studied,
 it's less clear what to do for multiclass, where multiple definitions abound, differing in their strength. In the multiclass setting, $\mathcal{Y} = [K]$, where $[K] = \{1, \dots, K\}$ and $f : \mathcal{X} \to [0, 1]^K$ outputs a confidence measure for each class in $[K]$.
 
 \begin{definition}[Top-label calibration error]
-The $\ell_2^2$ top-label calibration error examines the difference between the model's probability for its top prediction and the true probability of that prediction given the model's output:
+The $\lsquared$ top-label calibration error examines the difference between the model's probability for its top prediction and the true probability of that prediction given the model's output:
 \begin{align}
 \topsquaredce(f) = \expect\Big[ \Big( \prob\big(Y = \argmax_{j \in [K]} f(X)_j \mid \max_{j \in [K]} f(X)_j\big) - \max_{j \in [K]} f(X)_j \Big)^2 \Big]
 \end{align}
@@ -49,7 +50,7 @@ We would often like the model to be calibrated on less likely predictions as wel
 
 \begin{definition}[Marginal calibration error]
 \label{dfn:marginal-ce}
-Let $w_k \in [0, 1]$ denote how important calibrating class $k$ is, where $w_k = \prob(Y = k)$ if all classes are equally important. The $\ell_2^2$ marginal calibration error is:
+Let $w_k \in [0, 1]$ denote how important calibrating class $k$ is, where $w_k = \prob(Y = k)$ if all classes are equally important. The $\lsquared$ marginal calibration error is:
 \begin{align}
 \margsquaredce(f) = \sum_{k = 1}^K w_k \mathbb{E}\big[ (f(X)_k - \prob(Y = k \mid f(X)_k))^2 \big]
 \end{align}
@@ -69,13 +70,14 @@ For notational simplicity, our theory focuses on the binary classification setti
 
 Since most machine learning models do not output calibrated probabilities out of the box~\cite{guo2017calibration, zadrozny2001calibrated} recalibration methods take the output of an uncalibrated model, and transform it into a calibrated probability. That is, given a trained model $f: \mathcal{X} \to \mathcal{Z}$, let $Z = f(X)$. We are given recalibration data $T = \{ (z_i, y_i) \}_{i=1}^n$ independently sampled from $P(Z, Y)$, and we wish to learn a recalibrator $g : \mathcal{Z} \to [0, 1]$ such that $g \circ f$ is well-calibrated.
 
-\emph{Scaling methods}, for example Platt scaling~\cite{platt1999probabilistic}, output a function $\hat{g} = \argmin_{g \in \mathcal{G}} \sum_{(z, y) \in T} \ell(g(z), y)$, where $\mathcal{G}$ is a model family, $g \in \mathcal{G}$ is continuous, and $l$ is a loss function, for example the log loss or mean-squared error. The advantage of such methods is that they converge very quickly since they only fit a single parameter.
+\emph{Scaling methods}, for example Platt scaling~\cite{platt1999probabilistic}, output a function $g = \argmin_{g \in \mathcal{G}} \sum_{(z, y) \in T} \ell(g(z), y)$, where $\mathcal{G}$ is a model family, $g \in \mathcal{G}$ is continuous, and $l$ is a loss function, for example the log loss or mean-squared error. The advantage of such methods is that they converge very quickly since they only fit a single parameter.
 
 \emph{Histogram binning} first constructs a set of bins (intervals) that partitions $[0, 1]$, formalized below.
 
 \begin{definition}[Binning schemes]
 A binning scheme $\mathcal{B}$ of size $B$ is a set of $B$ intervals $I_1, \dots, I_B$ that partitions $[0, 1]$. Given an input $z \in [0, 1]$ if $z \in I_j$ let $\beta(z) = j$ be the interval z lands in.
   \pl{rewrite: given a function $g$, define its binned version as $\hat g(z) = \text{center of $I_j$}$ for $z \in I_j$.}
+  \ak{I don't think we should define binning a function when we introduce histogram binning?}
 % into $B$ disjoint intervals or bins, defined by bin boundaries $0 = b_0 < b_1 < ... < b_B = 1$. For $1 \leq j \leq B$, the $j$-th bin is the interval $I_j$ where $I_1 = [b_0, b_1]$ and $I_j = (b_{j-1}, b_j]$ for $j > 1$. 
 \end{definition}
 
