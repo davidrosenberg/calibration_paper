@@ -7,15 +7,15 @@
 Our analysis of the sample complexity of \ourcal{} requires some assumptions on the function family $\G{}$:
 
 \begin{enumerate}
-\item (Finite parameters). Let $\G{} = \{ g_{\theta} : \mathcal{Z} \to [0, 1] \; | \; \theta \in A \}$ where $A \subseteq \mathbb{R}^{d'}$ and $A$ is open.
+\item (Finite parameters). Let $\G{} = \{ g_{\theta} : \mathcal{Z} \to [0, 1] \; | \; \theta \in A \}$ where $A \subseteq \mathbb{R}^{d}$ and $A$ is open.
 \item (Injective). For all $g_{\theta} \in \G{}$ we assume $g_{\theta}$ is injective.
 \item (Consistency) Intuitively, consistency means that given infinite data, the estimated parameters should converge to the unique optimal parameters in $A$.
-More formally, suppose $\theta_0 = \argmin_{\theta \in A} \mbox{MSE}(g_{\theta})$.
-Then the parameters $\hat{\theta}_n$ estimated by minimizing the empirical MSE with $n$ samples in step 1 of the algorithm, converges in distribution to $\theta_0$, that is, $\hat{\theta}_n \to_D \theta_0$ as $n \to \infty$. Note that consistency inherently assumes identifiability, that there is a unique minimizer $\theta_0$ in the open set $A$.
+More formally, suppose $\theta^* = \argmin_{\theta \in A} \mbox{MSE}(g_{\theta})$.
+Then the parameters $\hat{\theta}_n$ estimated by minimizing the empirical MSE with $n$ samples in step 1 of the algorithm, converges in distribution to $\theta^*$, that is, $\hat{\theta}_n \to_D \theta_0$ as $n \to \infty$. Note that consistency inherently assumes identifiability, that there is a unique minimizer $\theta^*$ in the open set $A$.
 \item (Regularity). We assume that regularity conditions in Theorem 5.23 of~\cite{vaart98asymptotic} hold, which require the loss to be twice differentiable with continuous and non-singular Hessian, and that $g_{\theta}(x)$ is Lipschitz in $\theta$ for all $x$.
 \end{enumerate}
 
-We assume that $\G{}$ satisfies these assumptions in the rest of this section.
+We assume that $\G{}$ satisfies these assumptions in the rest of this section. Note that aside from injectivity, the remaining conditions are only required for the (fairly standard) analysis of step 1 of the algorithm, which says that a parametric scaling method with a small number of parameters will quickly converge to its optimal error.
 
 % We first need to introduce the Bayes optimal recalibrator $\omega^*$, which we compare all other recalibrators to. $\omega^* \circ f$ has calibration error $0$, and also has the minimum mean-squared error among all recalibrators.
 
@@ -34,7 +34,7 @@ We will analyze each step of our algorithm and then combine the pieces to get Th
 As we mention in the main text, step 3 is the main variance-reduction step, so Lemma~\ref{thm:empirical-binning} is one of the core parts of our proof.
 Step 2 is where we construct a binning scheme so that each bin has an equal number of points---we show that this property holds approximately in the population (Lemma~\ref{lem:well-balanced}).
 This is important as well, particularly to ensure we can estimate the calibration error.
-Step 1 is a simple adaptation of a standard result from learning theory.
+Step 1 is a simple adaptation of a standard result from asymptotic statistics.
 
 \textbf{Step 3}: Our proofs will require showing convergence in $\ell_2$ and $\ell_1$ norm in function space, which we define below:
 
@@ -131,20 +131,56 @@ We show that if $\G{}$ contains $g^* \in \G{}$ with low calibration error, then 
 Intuitively, methods like Platt scaling fit a single parameter to the data so standard results in asymptotic statistics tell us they will converge quickly to their optimal error, at least in mean-squared error.
 We can combine this with a decomposition of the mean-squared error into calibration and refinement, and the injectivity of $g \in \mathcal{G}$, to show they also converge quickly in calibration error.
 
-\begin{lemma}[Convergence of Platt scaling]
+\begin{lemma}[Convergence of scaling]
 \label{lem:platt_scaling_bound}
 Given $\delta$, there exists a constant $c$, such that for all $n$, $\squaredce(g) \leq \min_{g' \in \G{}}\squaredce(g') + \frac{c}{n}$, with probability at least $1 - \delta$.
-% independent of $d', L, n$ such that with high probability over the recalibration samples $\squaredce(g) \leq \min_{g' \in \G{}}\squaredce(g') + \frac{cLd' \log{R}}{\sqrt{n}}$, where recall that $g \in \G{}$ was selected as the empirical risk minimizer of the mean-squared error loss.
+% independent of $d, L, n$ such that with high probability over the recalibration samples $\squaredce(g) \leq \min_{g' \in \G{}}\squaredce(g') + \frac{cLd \log{R}}{\sqrt{n}}$, where recall that $g \in \G{}$ was selected as the empirical risk minimizer of the mean-squared error loss.
 \end{lemma}
 
 \begin{proof}
-We use the classic decomposition of the mean-squared error into calibration error (also known as reliability) and refinement\footnote{Note that the refinement term can be further decomposed into resolution (also known as sharpness) and irreducible uncertainty.}. For any $g \in \G{}$ we have:
+
+\textbf{From calibration error to mean-squared error}: We use the classic decomposition of the mean-squared error into calibration error (also known as reliability) and refinement\footnote{Note that the refinement term can be further decomposed into resolution (also known as sharpness) and irreducible uncertainty.}. For any $g \in \G{}$ we have:
 \[ \mbox{MSE}(g) = \underbrace{\squaredce(g)}_{\mbox{calibration}} + \underbrace{\expect[(\expect[Y \mid g(Z)] - Y)^2]}_{\mbox{refinement}} \]
 Note that the refinement term is constant for all injective $g \in \G{}$, since for injective $g$:
 \[ \expect[(\expect[Y \mid g(Z)] - Y)^2] = \expect[(\expect[Y \mid Z] - Y)^2] \]
-This means that the difference in $\mbox{MSE}$ between any $g$ and $g'$ is precisely the difference in the mean-squared error. From a standard $\epsilon$-cover in the parameter space, or PAC-Bayes argument, we can get a high probability generalization bound on the mean-squared error:
-\[ \mbox{MSE}(g) \leq \mbox{MSE}(g^*) + \frac{cLd' \log{R}}{\sqrt{n}} \]
-This gives us the desired result.
+This means that the difference in calibration error between any $g$ and $g'$ is precisely the difference in the mean-squared error. So it suffices to upper bound the generalization gap $\mbox{MSE}(g) - \mbox{MSE}(g^*)$ for the mean-squared error. Our analysis is fairly standard: we will show asymptotic convergence in the parameter space, and then use a Taylor expansion to show convergence in the MSE loss.
+
+\textbf{Parameter convergence}: Recall that $\hat{\theta}$ denotes the parameters estimated by optimizing the empirical mean-squared error objective on $n$ samples in step 1 of our algorithm, and $\theta^*$ denotes the optimal parameters that minimize the mean-squared error objective on the population. From Theorem 5.23 of~\cite{vaart98asymptotic}, on the asymptotic parameter convergence of M-estimators, we have as $n \to \infty$:
+\[ \sqrt{n}(\hat{\theta} - \theta^*) \to_D N(0, \Sigma) \]
+Then for each $1 \leq i \leq d$, we have:
+\[ \sqrt{n}(\hat{\theta}_i - \theta^*_i) \to_D N(0, \sigma_i^2) \]
+We will show that there exists $c_i$ such that for each $i$ and for all $n$, with probability at least $1 - \frac{\delta}{d}$:
+\[ \lvert \hat{\theta}_i - \theta^*_i \rvert \leq \frac{c_i}{n} \]
+To see this, we begin with the definition of convergence in distribution, which says that the CDFs converge pointwise at every point where the CDF is continuous, which for a Gaussian is every point. That is, letting $z_i$ be a sample from $N(0, \sigma_i^2)$, we have for all $c$:
+\[ \lim_{n \to \infty} \prob( \sqrt{n}(\hat{\theta}_i - \theta^*_i) \geq c) = \prob(z_i \geq c) \]
+By considering the CDF at each point and its negative, we can show the same result for the absolute value:
+\[ \lim_{n \to \infty} \prob( \sqrt{n} \lvert \hat{\theta}_i - \theta^*_i \rvert \geq c) = \prob(\lvert z_i \rvert \geq c) \]
+The tails of a normal distribution are bounded, so we can choose $c_i'$ such that:
+\[ \prob(\lvert z_i \rvert \geq c_i') \leq \frac{\delta}{2d} \]
+By definition of limit, this means that we can choose $N_i$ such that for all $n \geq N_i$, we have:
+\[ \prob( \sqrt{n} \lvert \hat{\theta}_i - \theta^*_i \rvert \geq c_i') \leq \frac{\delta}{d} \]
+In other words, for all $n \geq N_i$, with probability at least $1 - \delta$:
+\[ \lvert \hat{\theta}_i - \theta^*_i \rvert \leq \frac{c_i'}{\sqrt{n}} \]
+Since this only does not hold for finitely many values $1, \cdots, N_i - 1$, we can `absorb' these cases into the constant. That is, for each $n \in \{1, \cdots, N_i - 1 \}$, there exists $r_n$ such that if we use $n$ samples, then except with probability $\frac{\delta}{d}$, $\lvert \hat{\theta}_i - \theta^*_i \rvert \leq r_n$. So then we can choose $c_i$ such that for all $n$:
+\[ \lvert \hat{\theta}_i - \theta^*_i \rvert \leq \frac{c_i' + \max_{1 \leq m < N_i}{r_m \sqrt{m}}}{\sqrt{n}} \leq \frac{c_i}{\sqrt{n}} \]
+We apply union bound over the indices $i$, and can then bound the $\ell_2$-norm of the difference between the estimated and optimal parameters, so that we can choose $k$ such that for all $n$, with probability at least $1 - \delta$:
+\[ ||\hat{\theta} - \theta^*||_2^2 \leq \frac{k}{n} \]
+
+\textbf{Loss convergence}: We denote the loss by $L$, defined as:
+\[ L(\theta) = \mbox{MSE}(g_{\theta}) = \expect[ (Y - g_{\theta}(X))^2 ] \]
+We approximate the loss $L$ by the first few terms of its Taylor expansion, which we denote by $\widetilde{L}$:
+\[ \widetilde{L}(\theta) = L(\theta^*) + \nabla L(\theta^*)^T (\hat{\theta} - \theta^*) + (\hat{\theta} - \theta^*)^T \nabla^2 L(\theta^*) (\hat{\theta} - \theta^*) \]
+We assumed that $L$ was twice differentiable with continuous second derivative, and that $\theta^*$ minimized the loss in an open set, so $\nabla L(\theta^*) = 0$, and we also have:
+\[ \lim_{||\hat{\theta} - \theta^*||_2 \to 0} \frac{L(\hat{\theta}) - \widetilde{L}(\hat{\theta})}{||\hat{\theta} - \theta^*||_2^2} = 0 \]
+By the definition of a limit if we fix $\epsilon > 0$, there exists $R > 0$ such that if $||\hat{\theta} - \theta^*||_2 \leq R$ then $L(\hat{\theta}) - \widetilde{L}(\hat{\theta}) \leq \epsilon ||\hat{\theta} - \theta^*||_2^2$. For some large enough $N_0$, if $n \geq N_0$, then with probability at least $1 - \delta$, $||\hat{\theta} - \theta^*||_2 \leq R$. As before, since this only does not hold for finitely many $N$, we can fold these cases into the constant so that there exists $\epsilon'$ such that for all $n$, $L(\hat{\theta}) - \widetilde{L}(\hat{\theta}) \leq \epsilon' ||\hat{\theta} - \theta^*||_2^2$ with probability at least $1 - \delta$. Plugging in $\widetilde{L}(\hat{\theta})$, we have:
+\[ L(\hat{\theta}) - L(\theta^*) \leq (\hat{\theta} - \theta^*)^T \nabla^2 L(\theta^*) (\hat{\theta} - \theta^*) + \epsilon' ||\hat{\theta} - \theta^*||_2^2 \]
+We can bound this by the operator norm of the Hessian, and then use the parameter convergence result:
+\[ L(\hat{\theta}) - L(\theta^*) \leq (|| \nabla^2 L(\theta^*) ||_{op} + \epsilon') ||\hat{\theta} - \theta^*||_2^2 \leq \frac{c}{n} \]
+which holds with probability at least $1 - \delta$, as desired.
+
+% From a standard $\epsilon$-cover in the parameter space, or PAC-Bayes argument, we can get a high probability generalization bound on the mean-squared error:
+% \[ \mbox{MSE}(g) \leq \mbox{MSE}(g^*) + \frac{cLd \log{R}}{\sqrt{n}} \]
+% This gives us the desired result.
 \end{proof}
 
 Finally, we have the tools to prove the main theorem:
