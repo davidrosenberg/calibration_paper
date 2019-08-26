@@ -7,7 +7,7 @@
 Our analysis of the sample complexity of \ourcal{} requires some assumptions on the function family $\G{}$ that hold for standard methods like Platt scaling, beta calibration, and vector scaling (since vector scaling calibrates each class separately):
 
 \begin{enumerate}
-\item (Finite bounded parameters). Let $\G{} = \{ g_{\theta} : \mathcal{Z} \to [0, 1] \; | \; \theta \in \mathbb{R}^{d'} \wedge ||\theta||_{\infty} \leq R \}$.
+\item (Finite bounded parameters). Let $\G{} = \{ g_{\theta} : \mathcal{Z} \to [0, 1] \; | \; \theta \in \mathbb{R}^{d'} \wedge ||\theta||_{\infty} \leq R \}$
 \item (Injective). For all $g_{\theta} \in \G{}$ we assume $g_{\theta}$ is injective.
 \item (Lipschitz). Suppose that for all $z \in \mbox{supp}(Z)$, $|g_{\theta_1}(z) - g_{\theta_2}(z)| \leq L|\theta_1 - \theta_2|_2$.
 \end{enumerate}
@@ -48,7 +48,7 @@ We use the classic decomposition of the mean-squared error into calibration erro
 \[ \mbox{MSE}(g) = \underbrace{\squaredce(g)}_{\mbox{calibration}} + \underbrace{\expect[(\expect[Y \mid g(Z)] - Y)^2]}_{\mbox{refinement}} \]
 Note that the refinement term is constant for all injective $g \in \G{}$, since for injective $g$:
 \[ \expect[(\expect[Y \mid g(Z)] - Y)^2] = \expect[(\expect[Y \mid Z] - Y)^2] \]
-This means that the difference in calibration errors between any $g$ and $g'$ is precisely the difference in the mean-squared error. From a standard $\epsilon$-cover in the parameter space, or PAC-Bayes argument, we can get a high probability generalization bound on the mean-squared error:
+This means that the difference in $\mbox{MSE}$ between any $g$ and $g'$ is precisely the difference in the mean-squared error. From a standard $\epsilon$-cover in the parameter space, or PAC-Bayes argument, we can get a high probability generalization bound on the mean-squared error:
 \[ \mbox{MSE}(g) \leq \mbox{MSE}(g^*) + \frac{cLd' \log{R}}{\sqrt{n}} \]
 This gives us the desired result.
 \end{proof}
@@ -110,9 +110,12 @@ Similarly, we can also bound the $\ell_1$-error. Here we also use the fact that 
 By union bound, these hold with probability at least $1 - \delta$, which completes the proof.
 \end{proof}
 
-In our proofs we also required that the binning scheme we constructed was 2-well-balanced. The lemma below shows that this property does in fact hold with high probability.
+In our proofs we also required that the binning scheme we constructed was 2-well-balanced.
 
-\wellBalanced*{}
+\begin{lemma}[Well-balanced on population]
+\label{lem:well-balanced}
+If $n \geq \Omega(B \log{\frac{B}{\delta}})$ then the binning scheme $\bins{}$ we construct in step 2 of our algorithm is 2-well-balanced.
+\end{lemma}
 
 \begin{proof}
 Suppose we are given a bin construction set of size $n$, $T_n = \{(z_1, y_1), \dots, (z_n, y_n)\}$.
@@ -122,7 +125,7 @@ For any interval $I$, let $\hat{P}(I)$ be the empirical estimate of $P(I) = \pro
 
 We constructed the bins so that each interval $I_j$ contains $\frac{n}{B}$ points, or in other words, $\hat{P}(I_j) = \frac{1}{B}$. We want to show that $\frac{1}{2B} \leq \prob(g(Z) \in I_j) \leq \frac{2}{B}$. Since the intervals are chosen from data, we want a uniform concentration result that holds for all such intervals $I_j$.
 
-We will use a discretization argument. The idea is that we will cover $[0, 1]$ with $10B$ disjoint small intervals such that for each of these intervals $I_j'$, $P(g(Z) \in I_j') = \frac{1}{10B}$. We will then use Bernstein and union bound to get that with probability at least $1 - \delta$, for all $I_j'$, $|P(I_j') - \hat{P}(I_j')| \leq \frac{1}{100B}$ . Given an arbitrary interval $I$, we can write it as an approximate union of these small intervals $I_j'$, which will allow us to concentrate $|P(I) - \hat{P}(I)|$ for every $I$ simultaneously.
+We will use a discretization argument. The idea is that we will cover $[0, 1]$ with $10B$ disjoint small intervals such that for each of these intervals $I_j'$, $P(g(Z) \in I_j') = \frac{1}{10B}$. We will then use Bernstein and union bound to get that with probability at least $1 - \delta$, for all $I_j'$, $|P(I_j') - \hat{P_j}(I_j')| \leq \frac{1}{100B}$ . Given an arbitrary interval $I$, we can write it as an approximate union of these small intervals, which will allow us to concentrate $|P(I) - \hat{P}(I)|$.
 
 \textbf{Concentrating the small intervals:} Fix some interval $I_j'$. Let $w_i = \mathbb{I}(g(z_i) \in I_j')$ for $i = 1,\dots,n$. Then $w_i \sim \mbox{Bernoulli}(\frac{1}{10B})$. $\hat{P}(I_j')$ is simply the empirical average of $n$ such values and as such with probability at least $1 - \frac{\delta}{10B}$:
 \[ |P(I_j') - \hat{P_j}(I_j')| \leq \sqrt{\frac{2}{10Bn} \log{\frac{10B}{\delta}}} + \frac{2}{3n} \log{\frac{10B}{\delta}} \]
