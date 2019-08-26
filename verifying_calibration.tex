@@ -74,7 +74,7 @@ These bounds suggest that estimating calibration error can be the bottleneck, un
   \centering
      \begin{subfigure}[b]{0.48\textwidth}
          \centering
-         \includegraphics[width=\textwidth]{images/mse_estimators_10_bins.png}
+         \includegraphics[width=\textwidth]{images/mse_estimator_10_bins.png}
          \caption{$B = 10$
          \pl{s/ours/canceling}
          \pl{Number of samples of what - relate to notation in text}
@@ -92,7 +92,7 @@ These bounds suggest that estimating calibration error can be the bottleneck, un
          \label{fig:ce_vs_bins_verifying}
      \end{subfigure}
   \caption{
-    Mean-squared errors of debiased (labeled as `ours') and plugin estimators on a recalibrated VGG16 model on CIFAR-10 with $90\%$ confidence intervals (lower values better). The debiased estimator is closer to the ground truth, which corresponds to $0$ on the y-axis, especially when $B$ is large and/or the number of samples $n$ is small.
+    Mean-squared errors of debiased (labeled as `ours') and plugin estimators on a recalibrated VGG16 model on CIFAR-10 with $90\%$ confidence intervals (lower values better). The debiased estimator is closer to the ground truth, which corresponds to $0$ on the y-axis, especially when $B$ is large and/or the number of samples used by the estimator, $n$, is small.
 }
   \label{fig:mse_estimators_bins}
 \end{figure}
