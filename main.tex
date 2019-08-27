@@ -73,8 +73,12 @@
 % authors names on the first line, and the last on the second line, try using
 % \AND instead of \And before the third author name.
 
+\setcounter{footnote}{0}
+\renewcommand*{\thefootnote}{\fnsymbol{footnote}}
+
 \author{%
-  Ananya Kumar, Percy Liang, Tengyu Ma \\
+  Ananya Kumar, Percy Liang\footnote[1]{Equal contribution.} , Tengyu Ma\footnotemark[1] \\
+  * Alphabetical Order \\
   Department of Computer Science\\
   Stanford University\\
   \texttt{\{ananya, pliang, tengyuma\}@cs.stanford.edu} \\
