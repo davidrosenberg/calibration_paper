@@ -7,9 +7,18 @@ Recalibration is related to (conditional) density estimation~\cite{wasserman2019
 
 Bias is a common issue with statistical estimators, for example for the sample standard deviation. It has also long been known that the mean-squared error, measured on samples, gives a biased estimate---the seminal work by Stein~\cite{stein81sure} investigates and fixes this bias. However, debiasing an estimator does not typically lead to \emph{an improved sample complexity}, as it does in our case.
 
-\section{Conclusion}
+\section{Conclusion and future work}
 
 In this paper we had three contributions: 1. We showed that the calibration error of popular continuous methods is underestimated; 2. We introduced the first method, to our knowledge, that has better sample complexity than histogram binning but has a \emph{measurable calibration error}, giving us the best of both worlds of scaling and binning; and 3. We showed that an alternative estimator has better sample complexity than the commonly used plugin estimator. Our method gives us 35\% lower calibration error on CIFAR-10, and up to 5x lower calibration error on ImageNet, with $B = 100$ bins.
+
+We believe there are many exciting avenues for future work:
+\begin{enumerate}
+\item \textbf{Measuring calibration}: Many papers use calibration error metrics such as the $\lsquared$, $\ell_2$, $\ell_1$ calibration error. Can we come up with alternative metrics that still capture a notion of calibration, but are measurable for scaling/continuous methods?
+\item \textbf{Multiclass calibration}: How can we achieve stronger notions of calibration, such as joint calibration, efficiently? Many papers on calibration focus on top-label calibration---a more systematic study on how calibration methods perform for multiclass calibration metrics like the marginal calibration error, could be very useful.
+\item \textbf{Better binning}: Can we devise better ways of binning? While binning makes the calibration error measurable, it leads to an increase in the mean-squared error. In Proposition~\ref{prop:mse-finite-binning} we bound the increase in MSE for the well-balanced binning scheme. However, in Section~\ref{sec:alt_binning_schemes} we give intuition for why other binning schemes may have a smaller increase in MSE---we think this could be an interesting direction to pursue. A different way of binning may also give us a better sample complexity for measuring the calibration error.
+\item \textbf{Finite sample guarantees}: We give asymptotic rates for the variance-reduced calibrator. Can we prove finite sample guarantees which show the dependency on the dimension and probability of failure? We believe this is technically fairly challenging but interesting, because standard finite sample error bounds scale as $\frac{1}{\sqrt{n}}$ instead of $\frac{1}{n}$. However, can we leverage some properties of the calibration family to get better rates?
+\item \textbf{Estimating calibration}: Can we devise an even better estimator to measure the calibration error? If not, can we prove minimax lower bounds on this?
+\end{enumerate}
 
 \section{Acknowledgements}
 

@@ -27,8 +27,8 @@ We begin by noting that $\hat{p_i}$ is close to $p_i$ for all $i$. This is a sta
 
 \begin{lemma}
 \label{lem:pi_bound}
-Suppose $p_i > \piSmallBound{}$ for all $i$. Then we have $c(n) < 0.5$ and except with probability $\delta$ for all $i$ we have:
-\[ |\hat{p_i} - p_i| < c(n)p_i = \sqrt{\frac{3}{n \min p_i} \log{\frac{2B}{\delta}}} p_i \]
+Suppose $p_i > \piSmallBound{}$ for all $i$. Then we can define $c(n) < 0.5$ such that except with probability $\delta$ for all $i$ we have:
+\[ |\hat{p_i} - p_i| < c(n)p_i := \sqrt{\frac{3}{n \min p_i} \log{\frac{2B}{\delta}}} p_i \]
 \end{lemma}
 
 \subsection{Analysis of plugin estimator (proof of Theorem~\ref{thm:final-plugin})}
@@ -53,8 +53,9 @@ The proof is by algebra:
 We now bound each of these three terms with the following three lemmas. We condition on $|\hat{p_i} - p_i| < c(n)p_i < 0.5p_i$ for all $i$, which holds with high probability from Lemma~\ref{lem:pi_bound}.
 
 \tm{In general, writing proofs is like writing code. lemmas and theorems have type checked inputs and outputs. Inputs are conditiond and definitions, outputs ar conclusions. }
-\begin{lemma}[P1]\tm{a better way to write this is probably: Let P1 be defined in equation~\ref{...}}
+\begin{lemma}
 \label{lem:p1_bound}
+Let $(P1)$ be as defined in Lemma~\ref{lem:plugin_decomp}.
 Suppose $|\hat{p_i} - p_i| < c(n) p_i$ for all $i$. Then
 \[ |(P1) - {E^*}^2| \leq c(n) {E^*}^2 \]
 \end{lemma}
@@ -71,8 +72,9 @@ The proof is by algebra.
 \end{align*}
 \end{proof}
 
-\begin{lemma}[P2]\tm{ah maybe I wasn't clear before --- it's not necessary to have this shorthand for all the lemmas and theorems. }
+\begin{lemma}
 \label{lem:p2_bound}
+Let $(P2)$ be as defined in Lemma~\ref{lem:plugin_decomp}.
 Suppose $|\hat{p_i} - p_i| < c(n)p_i < 0.5p_i$ for all $i$. Then with probability $\geq 1 - \delta$:
 \[ |(P2)| \leq \sqrt{\frac{2(1+c(n)){E^*}^2}{n} \log{\frac{2}{\delta}}} \]
 \end{lemma}
@@ -95,8 +97,9 @@ By applying the sub-Gaussian tail inequality, we get that with probability at le
 Since this was true for all $Z$, this is true if we marginalize over $Z$ as well, which completes the proof.
 \end{proof}
 
-\begin{lemma}[P3]
+\begin{lemma}
 \label{lem:p3_bound}
+Let $(P3)$ be as defined in Lemma~\ref{lem:plugin_decomp}.
 Suppose $|\hat{p_i} - p_i| < c(n)p_i < 0.5p_i$ for all $i$. Then with probability $\geq 1 - \delta$:
 \[ |(P3)| \leq \frac{B}{2n} \log{\frac{2B}{\delta}} \]
 \end{lemma}
@@ -124,13 +127,14 @@ Then for the plugin estimator, with probability at least $1 - 3\delta$,
 \end{restatable}
 
 \tm{if you recall a theorem, then need to mark that it's a recall of a previous theorem. e.g., "Restatement of Theorem 5.4"}
+\ak{Ah do you have a nice way to add the text "Restatement of ..."? It's a bit difficult to change the text in my current approach.}
 \begin{proof}
 We have:
 \[ |\pluginEst{} - {E^*}^2| \leq |P1 - {E^*}^2| + |P2| + |P3| \]
 From Lemma~\ref{lem:pi_bound} we have $|\hat{p_i} - p_i| < c(n)p_i < 0.5p_i$ with probability $\geq 1 - \delta$. Conditioning on this, we combine Lemmas~\ref{lem:p1_bound},~\ref{lem:p2_bound},~\ref{lem:p3_bound} with union bound to get the desired result.
 \end{proof}
 
-We then prove the final bound for the plugin estimator.
+We then prove the final bound for the plugin estimator, which we recall below.
 
 \finalPlugin*
 
@@ -179,8 +183,9 @@ The debiased estimator satisfies the following decomposition:
 
 As with the plugin estimator, we bound each of the three terms. Notice that $C1$ and $C2$ are the same as terms $P1$ and $P2$ in the plugin estimator decomposition, so the bounds for those carry over. The next lemma bounds the error in $C3$.
 
-\begin{lemma}[C3]
+\begin{lemma}
 \label{lem:c3_bound}
+Let $(C3)$ be as defined in Lemma~\ref{lem:canceling_decomp}.
 Suppose $|\hat{p_i} - p_i| < c(n) p_i < 0.5 p_i$ for all $i$. Then with probability $\geq 1 - \delta$:
 \[ |(C3)| \leq \frac{3\sqrt{B}}{n} \log{\frac{n}{\delta}} + \frac{\delta}{n} \]
 \end{lemma}
@@ -228,16 +233,16 @@ Summing over $t_i$s, we get:
 
 \tm{where the theorem above is used. It sounds atypical to have a theorem in appendix..}
 \tm{it's almost always better to write theorem first and then lemmas.. }
+\ak{The main theorem is the main text, should I restate it at the start of this section? In some sense what I presented in the main text is a corollary of the theorem below, but it sounds weird to give a corollary without a theorem in the main text. And this theorem is a bit too unwieldy to put in the main text.}
 We combine the bounds for $(C1)$, $(C2)$, $(C3)$, as in Theorem~\ref{thm:plugin-bound}, to bound the estimation error of the debiased estimator.
 
 \begin{restatable}{theorem}{cancelingBound}
 \label{thm:our-bound}
-Let $p_i = P(f(X) = s_i)$ and suppose $p_i > \piSmallBound{}$ for all $i$. Let $c(n)$ be as defined in Theorem~\ref{thm:plugin-bound}. \tm{maybe an easier way to do it is: In the same setting of Theorem ??. Then you don't have to redefine some of these quantities.}
-Then for the debiased estimator, with probability at least $1 - 4\delta$,
+% Let $p_i = P(f(X) = s_i)$ and suppose $p_i > \piSmallBound{}$ for all $i$. Let $c(n)$ be as defined in Theorem~\ref{thm:plugin-bound}.
+In the same setting as Theorem~\ref{thm:plugin-bound}, for the debiased estimator, with probability at least $1 - 4\delta$,
 \[ | \hat{E}^2 - {E^*}^2 | \leq c(n){E^*}^2 + \sqrt{\frac{2(1+c(n)){E^*}^2}{n} \log{\frac{2}{\delta}}} + \frac{3\sqrt{B}}{n} \log{\frac{n}{\delta}} + \frac{\delta}{n}\]
 \end{restatable}
-\tm{may be good to explain what's the dominating term. How to interpret the bound ---}\tm{I guess it's kind of okay if you have a corollary that directly follows}
 
-The proof of the final bound closely parallels that of Theorem~\ref{thm:final-plugin}.
+We interpret the bound in Theorem~\ref{thm:our-bound} in two regimes. In the first regime, we fix the problem parameters $p_i, {E^*}^2$, and look at what happens as we send $n$ to infinity. In that case, the second term dominates, and we see that the error is approximately proportional to $\frac{1}{\sqrt{n}}$, which is the same as for the plugin estimator. However, in general we do not need to estimate the calibration error extremely finely, and may be satisfied as long as we estimate the calibration error within a constant multiplicative factor. That is, we might only need $n$ to be large enough so that our estimate $\hat{E}^2$ is on the right order, e.g. between $0.5 {E^*}^2$ and $1.5 {E^*}^2$ (where $0.5$ and $1.5$ can be replaced by other constants). In that regime, the third term dominates and the error is approximately proportional to $\frac{\sqrt{B}}{n}$, which is better than for the plugin estimator where it is proportional to $\frac{B}{n}$ (see Theorem~\ref{thm:plugin-bound}). This is captured in the final bound, where the proof closely parallels that of Theorem~\ref{thm:final-plugin}.
 
 \finalCanceling*
