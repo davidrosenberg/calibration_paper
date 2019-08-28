@@ -12,7 +12,7 @@ Our analysis of the sample complexity of \ourcal{} requires some assumptions on 
 \item (Consistency) Intuitively, consistency means that given infinite data, the estimated parameters should converge to the unique optimal parameters in $A$.
 More formally, suppose $\theta^* = \argmin_{\theta \in A} \mbox{MSE}(g_{\theta})$.
 Then the parameters $\hat{\theta}_n$ estimated by minimizing the empirical MSE with $n$ samples in step 1 of the algorithm, converges in distribution to $\theta^*$, that is, $\hat{\theta}_n \to_D \theta_0$ as $n \to \infty$. Note that consistency inherently assumes identifiability, that there is a unique minimizer $\theta^*$ in the open set $A$.
-\item (Regularity). We assume that regularity conditions in Theorem 5.23 of~\cite{vaart98asymptotic} hold, which require the loss to be twice differentiable with continuous and non-singular Hessian, and that $g_{\theta}(x)$ is Lipschitz in $\theta$ for all $x$.
+\item (Regularity). We assume that regularity conditions in Theorem 5.23 of~\cite{vaart98asymptotic} hold, which require the loss to be twice differentiable with symmetric, non-singular Hessian, and that $g_{\theta}(x)$ is Lipschitz in $\theta$ for all $x$. We will also require the second derivative to be continuous.
 \end{enumerate}
 
 We assume that $\G{}$ satisfies these assumptions in the rest of this section. Note that aside from injectivity, the remaining conditions are only required for the (fairly standard) analysis of step 1 of the algorithm, which says that a parametric scaling method with a small number of parameters will quickly converge to its optimal error.
@@ -34,7 +34,7 @@ We will analyze each step of our algorithm and then combine the pieces to get Th
 As we mention in the main text, step 3 is the main variance-reduction step, so Lemma~\ref{thm:empirical-binning} is one of the core parts of our proof.
 Step 2 is where we construct a binning scheme so that each bin has an equal number of points---we show that this property holds approximately in the population (Lemma~\ref{lem:well-balanced}).
 This is important as well, particularly to ensure we can estimate the calibration error.
-Step 1 is a simple adaptation of a standard result from asymptotic statistics.
+Step 1 is basically Platt scaling, and the asymptotic analysis is fairly standard.
 
 \textbf{Step 3}: Our proofs will require showing convergence in $\ell_2$ and $\ell_1$ norm in function space, which we define below:
 
@@ -159,7 +159,7 @@ The tails of a normal distribution are bounded, so we can choose $c_i'$ such tha
 \[ \prob(\lvert z_i \rvert \geq c_i') \leq \frac{\delta}{2d} \]
 By definition of limit, this means that we can choose $N_i$ such that for all $n \geq N_i$, we have:
 \[ \prob( \sqrt{n} \lvert \hat{\theta}_i - \theta^*_i \rvert \geq c_i') \leq \frac{\delta}{d} \]
-In other words, for all $n \geq N_i$, with probability at least $1 - \delta$:
+In other words, for all $n \geq N_i$, with probability at least $1 - \frac{\delta}{d}$:
 \[ \lvert \hat{\theta}_i - \theta^*_i \rvert \leq \frac{c_i'}{\sqrt{n}} \]
 Since this only does not hold for finitely many values $1, \cdots, N_i - 1$, we can `absorb' these cases into the constant. That is, for each $n \in \{1, \cdots, N_i - 1 \}$, there exists $r_n$ such that if we use $n$ samples, then except with probability $\frac{\delta}{d}$, $\lvert \hat{\theta}_i - \theta^*_i \rvert \leq r_n$. So then we can choose $c_i$ such that for all $n$:
 \[ \lvert \hat{\theta}_i - \theta^*_i \rvert \leq \frac{c_i' + \max_{1 \leq m < N_i}{r_m \sqrt{m}}}{\sqrt{n}} \leq \frac{c_i}{\sqrt{n}} \]
