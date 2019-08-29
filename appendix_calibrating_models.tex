@@ -11,7 +11,7 @@ Our analysis of the sample complexity of \ourcal{} requires some assumptions on 
 \item (Injective). For all $g_{\theta} \in \G{}$ we assume $g_{\theta}$ is injective.
 \item (Consistency) Intuitively, consistency means that given infinite data, the estimated parameters should converge to the unique optimal parameters in $A$.
 More formally, suppose $\theta^* = \argmin_{\theta \in A} \mbox{MSE}(g_{\theta})$.
-Then the parameters $\hat{\theta}_n$ estimated by minimizing the empirical MSE with $n$ samples in step 1 of the algorithm, converges in distribution to $\theta^*$, that is, $\hat{\theta}_n \to_D \theta_0$ as $n \to \infty$. Note that consistency inherently assumes identifiability, that there is a unique minimizer $\theta^*$ in the open set $A$.
+Then the parameters $\hat{\theta}_n$ estimated by minimizing the empirical MSE with $n$ samples in step 1 of the algorithm, converges in distribution to $\theta^*$, that is, $\hat{\theta}_n \to_D \theta^*$ as $n \to \infty$. Note that consistency inherently assumes identifiability, that there is a unique minimizer $\theta^*$ in the open set $A$.
 \item (Regularity). We assume that regularity conditions in Theorem 5.23 of~\cite{vaart98asymptotic} hold, which require the loss to be twice differentiable with symmetric, non-singular Hessian, and that $g_{\theta}(x)$ is Lipschitz in $\theta$ for all $x$. We will also require the second derivative to be continuous.
 \end{enumerate}
 
@@ -170,7 +170,7 @@ We apply union bound over the indices $i$, and can then bound the $\ell_2$-norm 
 \[ L(\theta) = \mbox{MSE}(g_{\theta}) = \expect[ (Y - g_{\theta}(X))^2 ] \]
 We approximate the loss $L$ by the first few terms of its Taylor expansion, which we denote by $\widetilde{L}$:
 \[ \widetilde{L}(\theta) = L(\theta^*) + \nabla L(\theta^*)^T (\hat{\theta} - \theta^*) + (\hat{\theta} - \theta^*)^T \nabla^2 L(\theta^*) (\hat{\theta} - \theta^*) \]
-We assumed that $L$ was twice differentiable with continuous second derivative, and that $\theta^*$ minimized the loss in an open set, so $\nabla L(\theta^*) = 0$, and we also have:
+We assumed that $L$ was twice differentiable with continuous second derivative, and that $\theta^*$ minimized the loss in an open set, so $\nabla L(\theta^*) = 0$, and we also have (see e.g. Theorem 3.3.18 in~\cite{hubbard1998vector}):
 \[ \lim_{||\hat{\theta} - \theta^*||_2 \to 0} \frac{L(\hat{\theta}) - \widetilde{L}(\hat{\theta})}{||\hat{\theta} - \theta^*||_2^2} = 0 \]
 By the definition of a limit if we fix $\epsilon > 0$, there exists $R > 0$ such that if $||\hat{\theta} - \theta^*||_2 \leq R$ then $L(\hat{\theta}) - \widetilde{L}(\hat{\theta}) \leq \epsilon ||\hat{\theta} - \theta^*||_2^2$. For some large enough $N_0$, if $n \geq N_0$, then with probability at least $1 - \delta$, $||\hat{\theta} - \theta^*||_2 \leq R$. As before, since this only does not hold for finitely many $N$, we can fold these cases into the constant so that there exists $\epsilon'$ such that for all $n$, $L(\hat{\theta}) - \widetilde{L}(\hat{\theta}) \leq \epsilon' ||\hat{\theta} - \theta^*||_2^2$ with probability at least $1 - \delta$. Plugging in $\widetilde{L}(\hat{\theta})$, we have:
 \[ L(\hat{\theta}) - L(\theta^*) \leq (\hat{\theta} - \theta^*)^T \nabla^2 L(\theta^*) (\hat{\theta} - \theta^*) + \epsilon' ||\hat{\theta} - \theta^*||_2^2 \]
