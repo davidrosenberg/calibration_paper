@@ -25,18 +25,18 @@
 \newtheorem{corollary}[theorem]{Corollary}
 
 
-% \newcommand{\pl}[1]{}
-% \newcommand{\tm}[1]{}
-% \newcommand{\ak}[1]{}
+\newcommand{\pl}[1]{}
+\newcommand{\tm}[1]{}
+\newcommand{\ak}[1]{}
 
-\newcommand{\pl}[1]{\textcolor{red}{[PL: #1]}}
-\newcommand{\tm}[1]{\textcolor{blue}{[TM: #1]}}
-\newcommand{\ak}[1]{\textcolor{brown}{[AK: #1]}}
+% \newcommand{\pl}[1]{\textcolor{red}{[PL: #1]}}
+% \newcommand{\tm}[1]{\textcolor{blue}{[TM: #1]}}
+% \newcommand{\ak}[1]{\textcolor{brown}{[AK: #1]}}
 
 \newcommand{\expect}[0]{\ensuremath{\mathbb{E}}}
 \newcommand{\prob}[0]{\ensuremath{\mathbb{P}}}
-\newcommand{\ourcal}[0]{the variance-reduced calibrator}
-\newcommand{\Ourcal}[0]{The variance-reduced calibrator}
+\newcommand{\ourcal}[0]{the scaling-binning calibrator}
+\newcommand{\Ourcal}[0]{The scaling-binning calibrator}
 
 \graphicspath{ {images/} }
 
@@ -100,7 +100,7 @@
 \maketitle
 
 \begin{abstract}
-Applications such as weather forecasting and personalized medicine demand models that output calibrated probability estimates---those representative of the true likelihood of a prediction. Most models are not calibrated out of the box but are recalibrated by post-processing model outputs. We find in this work that popular recalibration methods like Platt scaling and temperature scaling, are (i) less calibrated than reported and (ii) current techniques cannot estimate how miscalibrated they are. An alternative method, histogram binning, has measurable calibration error but is sample inefficient---it requires $O(B/\epsilon^2)$ samples, compared to $O(1/\epsilon^2)$ for scaling methods, where $B$ is the number of distinct probabilities the model can output. To get the best of both worlds, we introduce a variance-reduced calibrator, which first fits a parametric function that acts like a baseline for variance reduction and then bins the function values to actually ensure calibration. This requires only $O(1/\epsilon^2 + B)$ samples. We then show that methods used to estimate calibration error are suboptimal---we prove that an alternative estimator introduced in the meteorological community requires fewer samples---samples proportional to $\sqrt{B}$ instead of $B$. We validate our approach with multiclass calibration experiments on CIFAR-10 and ImageNet, where we obtain a 35\% lower calibration error than histogram binning and, unlike scaling methods, guarantees on true calibration.
+Applications such as weather forecasting and personalized medicine demand models that output calibrated probability estimates---those representative of the true likelihood of a prediction. Most models are not calibrated out of the box but are recalibrated by post-processing model outputs. We find in this work that popular recalibration methods like Platt scaling and temperature scaling, are (i) less calibrated than reported and (ii) current techniques cannot estimate how miscalibrated they are. An alternative method, histogram binning, has measurable calibration error but is sample inefficient---it requires $O(B/\epsilon^2)$ samples, compared to $O(1/\epsilon^2)$ for scaling methods, where $B$ is the number of distinct probabilities the model can output. To get the best of both worlds, we introduce \ourcal{}, which first fits a parametric function that acts like a baseline for variance reduction and then bins the function values to actually ensure calibration. This requires only $O(1/\epsilon^2 + B)$ samples. We then show that methods used to estimate calibration error are suboptimal---we prove that an alternative estimator introduced in the meteorological community requires fewer samples---samples proportional to $\sqrt{B}$ instead of $B$. We validate our approach with multiclass calibration experiments on CIFAR-10 and ImageNet, where we obtain a 35\% lower calibration error than histogram binning and, unlike scaling methods, guarantees on true calibration.
 
 % Applications such as weather forecasting and personalized medicine demand models that output calibrated probability estimates---those representative of the true likelihood of a prediction.
 % Scaling recalibration methods that fit a parametric model are great, because they require $O(1/\epsilon^2)$ samples to achieve calibration error $\epsilon$, but we find in this work that they are (i) less calibrated than reported and (ii) current techniques cannot estimate how miscalibrated they are.

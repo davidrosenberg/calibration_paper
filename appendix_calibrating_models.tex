@@ -31,7 +31,7 @@ The goal is to prove the following theorem from Section~\ref{sec:calibrating_mod
 
 
 We will analyze each step of our algorithm and then combine the pieces to get Theorem~\ref{thm:final-calib}.
-As we mention in the main text, step 3 is the main variance-reduction step, so Lemma~\ref{thm:empirical-binning} is one of the core parts of our proof.
+As we mention in the main text, step 3 is the main step, so Lemma~\ref{thm:empirical-binning} is one of the core parts of our proof.
 Step 2 is where we construct a binning scheme so that each bin has an equal number of points---we show that this property holds approximately in the population (Lemma~\ref{lem:well-balanced}).
 This is important as well, particularly to ensure we can estimate the calibration error.
 Step 1 is basically Platt scaling, and the asymptotic analysis is fairly standard.
@@ -188,7 +188,7 @@ Finally, we have the tools to prove the main theorem:
 \begin{proof}[Proof of Theorem~\ref{thm:final-calib}]
 The proof pieces together Lemmas~\ref{lem:platt_scaling_bound},~\ref{thm:empirical-binning},~\ref{lem:well-balanced} and Proposition~\ref{prop:bin_low_bound}.
 
-For any fixed $c_1 > 0$, there exists $c_1'$ such that if $n \geq c_1'\big(\frac{1}{\epsilon^2}\big)$, from Lemma~\ref{lem:platt_scaling_bound}, step 1 of the variance-reduced calibration algorithm gives us $g$ with $\squaredce(g) \leq \min_{g' \in \G{}}\squaredce(g') + c_1 \epsilon^2$, with probability at least $1 - \frac{\delta}{3}$.
+For any fixed $c_1 > 0$, there exists $c_1'$ such that if $n \geq c_1'\big(\frac{1}{\epsilon^2}\big)$, from Lemma~\ref{lem:platt_scaling_bound}, step 1 of our algorithm gives us $g$ with $\squaredce(g) \leq \min_{g' \in \G{}}\squaredce(g') + c_1 \epsilon^2$, with probability at least $1 - \frac{\delta}{3}$.
 
 Next, for universal constant $c_2$, if $n \geq c_2(B \log{\frac{B}{\delta}})$, from Lemma~\ref{lem:well-balanced}, step 2 chooses a 2-well-balanced binning scheme $\bins{}$ with probability at least $1 - \frac{\delta}{3}$.
 

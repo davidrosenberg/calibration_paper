@@ -61,7 +61,7 @@ We are interested in analyzing the number of samples required to estimate the ca
 
 The proof of both theorems is in Appendix~\ref{sec:verifying_calibration_appendix}. The idea is that for the plugin estimator each term in the sum has bias $1/n$. These biases accumulate, giving total bias $B/n$. The debiased estimator has much lower bias and the estimation variance cancels across bins---this intuition is captured in Lemma~\ref{lem:c3_bound} which requires careful conditioning to make the argument go through.
 
-These bounds suggest that estimating calibration error can be the bottleneck, underscoring the importance of the estimation problem, since under suitable conditions, the variance-reduced calibrator can calibrate with $\widetilde{O}(B + \frac{1}{\epsilon^2})$ samples but we need $\widetilde{O}(B + \frac{\sqrt{B}}{\epsilon^2})$ samples to check if the error is $\leq \epsilon$.
+These bounds suggest that estimating calibration error can be the bottleneck, underscoring the importance of the estimation problem, since under suitable conditions, \ourcal{} can calibrate with $\widetilde{O}(B + \frac{1}{\epsilon^2})$ samples but we need $\widetilde{O}(B + \frac{\sqrt{B}}{\epsilon^2})$ samples to check if the error is $\leq \epsilon$.
 
 \newcommand{\calset}[0]{\ensuremath{S_C}}
 \newcommand{\verifset}[0]{\ensuremath{S_E}}

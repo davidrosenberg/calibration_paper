@@ -13,7 +13,7 @@ Histogram binning can produce a model that is calibrated, and unlike scaling met
 In particular, the number of samples required to calibrate scales linearly with the number of distinct probabilities the model can output, $B$~\cite{naeini2014binary}, which can be large particularly in the multiclass setting where $B$ typically scales with the number of classes.
 Recalibration sample efficiency is crucial---we often want to recalibrate our models in the presence of domain shift~\cite{hendrycks2019anomaly} or recalibrate a model trained on simulated data, and may have access to only a small labeled dataset from the target domain.
 
-To get the sample efficiency of Platt scaling and the verification guarantees of histogram binning, \emph{we propose the variance-reduced calibrator} (Figure~\ref{fig:var_red_binning}).
+To get the sample efficiency of Platt scaling and the verification guarantees of histogram binning, \emph{we propose \ourcal{}} (Figure~\ref{fig:var_red_binning}).
 Like scaling methods, we fit a simple function $g \in \mathcal{G}$ to the recalibration dataset.
 We then bin the input space so that an equal number of inputs land in each bin.
 In each bin, we output the average of the $g$ values in that bin---these are the gray circles in Figure~\ref{fig:var_red_binning}.
@@ -40,7 +40,7 @@ If $\mathcal{G}$ is well chosen, our method requires $O(\frac{1}{\epsilon^2} + B
      \begin{subfigure}[b]{0.32\textwidth}
          \centering
          \includegraphics[width=\textwidth]{variance_reduced_binning_with_deltas}
-         \caption{Variance-reduced calibrator.}
+         \caption{\Ourcal{}.}
          \label{fig:var_red_binning}
      \end{subfigure}
         \caption{
@@ -48,7 +48,7 @@ If $\mathcal{G}$ is well chosen, our method requires $O(\frac{1}{\epsilon^2} + B
         The black crosses are the ground truth labels, and the red lines are the output of the recalibration methods.
         Platt Scaling (Figure~\ref{fig:platt_scaling}) fits a function to the recalibration data, but its calibration error is not measurable.
         Histogram binning (Figure~\ref{fig:hist_binning}) outputs the average label in each bin.
-        Our variance-reduced calibrator (Figure~\ref{fig:var_red_binning}) fits a function $g \in \mathcal{G}$ to the recalibration data and then \emph{takes the average of the function values (the gray circles)} in each bin.
+        \Ourcal{} (Figure~\ref{fig:var_red_binning}) fits a function $g \in \mathcal{G}$ to the recalibration data and then \emph{takes the average of the function values (the gray circles)} in each bin.
         The function values have lower variance than the labels, as visualized by the blue dotted lines, which is why our approach has lower variance. 
         }
         \label{fig:variance_reduced_illustration}
@@ -58,18 +58,18 @@ Next, we turn to the question of estimating the calibration error. Prior work in
 
 We run multiclass calibration experiments on CIFAR-10~\cite{krizhevsky2009learningmultiple} and ImageNet~\cite{deng2009imagenet}.
 The objective is to minimize the mean-squared error, also known as the Brier score~\cite{brier1950verification}, subject to a calibration error budget~\cite{gneiting2005weather}.
-We show that the variance-reduced calibrator achieves a better calibration error than histogram binning, while allowing us to measure the true calibration error.
+We show that \ourcal{} achieves a better calibration error than histogram binning, while allowing us to measure the true calibration error.
 For example, we get a \emph{35\% lower calibration error on CIFAR-10} and a \emph{5x lower calibration error on ImageNet} than histogram binning if $B = 100$.
 
-In summary, our contributions are:
-\begin{enumerate}
-\item We show that scaling methods for recalibration are less calibrated than reported.
-\item We introduce the first method, to our knowledge, that has better sample complexity than histogram binning but has a \emph{measurable calibration error}, giving us the best of both worlds of scaling and binning. Our method achieves significantly (up to 5x) lower calibration errors on top-label and per-class calibration on CIFAR-10 and ImageNet.
-\item We show that the method typically used to estimate calibration error is suboptimal, and an alternative estimator from the meteorological community requires fewer samples to measure the calibration error.
-\end{enumerate}
+% In summary, our contributions are:
+% \begin{enumerate}
+% \item We show that scaling methods for recalibration are less calibrated than reported.
+% \item We introduce the first method, to our knowledge, that has better sample complexity than histogram binning but has a \emph{measurable calibration error}, giving us the best of both worlds of scaling and binning. Our method achieves significantly (up to 5x) lower calibration errors on top-label and per-class calibration on CIFAR-10 and ImageNet.
+% \item We show that the method typically used to estimate calibration error is suboptimal, and an alternative estimator from the meteorological community requires fewer samples to measure the calibration error.
+% \end{enumerate}
 
-\tm{Sometimes I do a summary of contribution paragraph for the reviewers to easily see the contribution. doesn't add anything to the quality of the paper, but sometimes useful for paper acceptance .. (As a rushed reviewer sometimes I wanted the authors to have a simple para with a bit more technical term than abstract....)}
+% \tm{Sometimes I do a summary of contribution paragraph for the reviewers to easily see the contribution. doesn't add anything to the quality of the paper, but sometimes useful for paper acceptance .. (As a rushed reviewer sometimes I wanted the authors to have a simple para with a bit more technical term than abstract....)}
 
-\pl{it's a nice to have if we have space; the use of italics throughout the intro is actually pretty effective}
+% \pl{it's a nice to have if we have space; the use of italics throughout the intro is actually pretty effective}
 
-\ak{Is this better?}
+% \ak{Is this better?}
