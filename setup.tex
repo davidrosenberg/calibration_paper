@@ -32,7 +32,7 @@ We often also wish to minimize the mean-squared error---also known as the Brier 
 The mean-squared error of $f : \mathcal{X} \to [0, 1]$ is given by $\mbox{MSE}(f) = \mathbb{E}[(f(X) - Y)^2]$.
 \end{definition}
 
-We often want to minimize the MSE subject to a calibration constraint~\cite{gneiting2005weather, gneiting2007probabilistic}. Of course, these are not orthogonal because $\mbox{MSE} = 0$ implies perfect calibration---in fact the MSE is the sum of the $\lsquared$ calibration error and a ``sharpness'' term~\cite{murphy1973vector,degroot1983forecasters, kuleshov2015calibrated}.
+We often want to minimize the MSE subject to a calibration budget~\cite{gneiting2005weather, gneiting2007probabilistic}. Of course, these are not orthogonal because $\mbox{MSE} = 0$ implies perfect calibration---in fact the MSE is the sum of the $\lsquared$ calibration error and a ``sharpness'' term~\cite{murphy1973vector,degroot1983forecasters, kuleshov2015calibrated}.
 
 \subsection{Multiclass classification}
 
@@ -63,8 +63,9 @@ Note that prior works~\cite{guo2017calibration, hendrycks2019anomaly, hendrycks2
 
 \ak{There isn't a standard terminology here that I am aware of. Nixon et al (came out a few weeks before neurips deadline) have a similar metric called static calibration error. Seems fairly concurrent to ours, and I prefer marginal.}
 
-For notational simplicity, our theory focuses on the binary classification setting. We can transform top-label calibration into a binary calibration problem---the model outputs a probability corresponding to its top prediction, and the label represents whether the model gets it correct or not. Marginal calibration can be transformed into $K$ one-vs-all binary calibration problems where for each $k \in [K]$ the model outputs the probability associated with the $k$-th class, and the label represents whether the input belongs to the $k$-th class or not~\cite{zadrozny2002transforming}---this is analogous to how vector scaling~\cite{guo2017calibration} extends Platt scaling. We look at both top-label calibration and marginal calibration in our experiments.
-There are other notions of multiclass calibration, such as joint calibration (which requires the entire probability \emph{vector} to be calibrated)~\cite{murphy1973vector, brocker2009decomposition} and event-pooled calibration~\cite{kuleshov2015calibrated}. Achieving joint calibration efficiently is an important direction for future research.
+For notational simplicity, our theory focuses on the binary classification setting. We can transform top-label calibration into a binary calibration problem---the model outputs a probability corresponding to its top prediction, and the label represents whether the model gets it correct or not. Marginal calibration can be transformed into $K$ one-vs-all binary calibration problems where for each $k \in [K]$ the model outputs the probability associated with the $k$-th class, and the label represents whether the input belongs to the $k$-th class or not~\cite{zadrozny2002transforming}. We look at both top-label calibration and marginal calibration in our experiments.
+Other notions of multiclass calibration include joint calibration (which requires the entire probability \emph{vector} to be calibrated)~\cite{murphy1973vector, brocker2009decomposition} and event-pooled calibration~\cite{kuleshov2015calibrated}.
+% Achieving joint calibration efficiently is an important direction for future research.
 
 
 \subsection{Recalibration}

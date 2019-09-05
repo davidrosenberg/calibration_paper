@@ -1,7 +1,8 @@
 \section{Is Platt scaling calibrated?}
 \label{sec:challenges-measuring}
 
-In this section, we show why methods like Platt scaling and temperature scaling are (i) less calibrated than reported and (ii) it is difficult to tell how miscalibrated they are. The issue is that it is very difficult to measure the calibration error of models that output a continuous range of values. We show, both theoretically and with experiments on CIFAR-10 and ImageNet, why the calibration error of such models is \emph{underestimated}. We defer proofs to Appendix~\ref{sec:appendix-platt-not-calibrated}.
+In this section, we show why methods like Platt scaling and temperature scaling are (i) less calibrated than reported and (ii) it is difficult to tell how miscalibrated they are. The issue is that it is very difficult to measure the calibration error of models that output a continuous range of values. We show, both theoretically and with experiments on CIFAR-10 and ImageNet, why the calibration error of such models is \emph{underestimated}.
+We defer proofs to Appendix~\ref{sec:appendix-platt-not-calibrated}.
 
 The key to estimating the calibration error is estimating the conditional expectation $\expect[Y \mid f(X)]$ where $f(X)$ is a continuous value; without smoothness assumptions on $\expect[Y \mid f(X)]$ (that cannot be verified in practice), this is impossible. This is analogous to the difficulty of measuring the mutual information between two continuous signals~\cite{paninski2003entropy}.
 
