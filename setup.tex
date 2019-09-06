@@ -1,13 +1,14 @@
 \section{Setup and background}
 \label{sec:formulation}
 
-\newcommand{\lpce}[0]{\ensuremath{\ell_p\mbox{-CE}}}
-\newcommand{\ltwoce}[0]{\ensuremath{\ell_2\mbox{-CE}}}
+\newcommand{\lpce}[0]{\ensuremath{\ell_p\textup{-CE}}}
+\newcommand{\ltwoce}[0]{\ensuremath{\ell_2\textup{-CE}}}
 \newcommand{\lsquared}[0]{\ensuremath{L^2}}
-\newcommand{\squaredce}[0]{\ensuremath{L^2\mbox{-CE}}}
-\newcommand{\topsquaredce}[0]{\ensuremath{L^2\mbox{-TCE}}}
-\newcommand{\margsquaredce}[0]{\ensuremath{L^2\mbox{-MCE}}}
+\newcommand{\squaredce}[0]{\ensuremath{L^2\textup{-CE}}}
+\newcommand{\topsquaredce}[0]{\ensuremath{L^2\textup{-TCE}}}
+\newcommand{\margsquaredce}[0]{\ensuremath{L^2\textup{-MCE}}}
 
+\tnote{changed mbox to textup in the macro, because mbox does different things in theorem environments from texts. I think there are still mbox\{MSE\} as well somewhere not in a macro}
 \subsection{Binary classification}
 
 Let $\mathcal{X}$ be the input space and $\mathcal{Y}$ be the label space where $\mathcal{Y} = \{0, 1\}$ in the binary classification setting.
@@ -29,7 +30,7 @@ If $f$ outputs $0.5$ on all inputs, $f$ is calibrated but not very useful.
 We often also wish to minimize the mean-squared error---also known as the Brier score---as defined below.
 
 \begin{definition}
-The mean-squared error of $f : \mathcal{X} \to [0, 1]$ is given by $\mbox{MSE}(f) = \mathbb{E}[(f(X) - Y)^2]$.
+The mean-squared error of $f : \mathcal{X} \to [0, 1]$ is given by $\textup{MSE}(f) = \mathbb{E}[(f(X) - Y)^2]$.
 \end{definition}
 
 We often want to minimize the MSE subject to a calibration budget~\cite{gneiting2005weather, gneiting2007probabilistic}. Of course, these are not orthogonal because $\mbox{MSE} = 0$ implies perfect calibration---in fact the MSE is the sum of the $\lsquared$ calibration error and a ``sharpness'' term~\cite{murphy1973vector,degroot1983forecasters, kuleshov2015calibrated}.

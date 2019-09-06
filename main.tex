@@ -24,6 +24,14 @@
 \newtheorem{proposition}[theorem]{Proposition}
 \newtheorem{corollary}[theorem]{Corollary}
 
+\def\shownotes{1}  \ifnum\shownotes=1
+\newcommand{\authnote}[2]{$\ll$\textsf{\footnotesize #1 notes: #2}$\gg$}
+\else
+\newcommand{\authnote}[2]{}
+\fi
+\newcommand{\tnote}[1]{{\color{blue}\authnote{Tengyu}{#1}}}
+
+
 
 \newcommand{\pl}[1]{}
 \newcommand{\tm}[1]{}

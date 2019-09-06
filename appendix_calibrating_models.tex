@@ -67,16 +67,16 @@ Consider each bin $j$. Let $\mu_j$ be the expected output of $g$ in bin $j$, giv
 \[ \sigma^2 = \frac{(b_j - b_{j-1})^2}{4|R_j|} \leq \frac{(b_j - b_{j-1})^2}{2p_jn} \]
 
 Then by the sub-Gaussian tail bound, for any $1 \leq j \leq B$, with probability at least $1 - \frac{\delta}{2B}$, we have:
-\[ (\mu_j - \hat{\mu}(R_j))^2 \leq \frac{(b_j - b_{j-1})^2}{p_jn} \log{\frac{4B}{\delta}} \] 
+\begin{align} (\mu_j - \hat{\mu}(R_j))^2 \leq \frac{(b_j - b_{j-1})^2}{p_jn} \log{\frac{4B}{\delta}}\label{eqn:1} \end{align}
 
 So by union bound with probability at least $1 - \frac{\delta}{2}$ the above holds for all $1 \leq j \leq B$ simultaneously.
 
 We then bound the $\ell_2$-error.
 \begin{align*}
 ||\hat{g_{\mathcal{B}}} - g_{\mathcal{B}}||_2 &= \sqrt{\sum_{j =1}^B p_j (\mu_j - \hat{\mu}(R_j))^2} \\
-&\leq \sqrt{\sum_{j =1}^B p_j \frac{(b_j - b_{j-1})^2}{p_jn} \log{\frac{4B}{\delta}}} \\
-&\leq \sqrt{\frac{1}{n} \log{\frac{4B}{\delta}} \sum_{j =1}^B (b_j - b_{j-1})^2 } \\
-&\leq \sqrt{\frac{1}{n} \log{\frac{4B}{\delta}} \sum_{j =1}^B (b_j - b_{j-1}) } \\
+&\leq \sqrt{\sum_{j =1}^B p_j \frac{(b_j - b_{j-1})^2}{p_jn} \log{\frac{4B}{\delta}}} \tag{by equation~\eqref{eqn:1}}\\
+&= \sqrt{\frac{1}{n} \log{\frac{4B}{\delta}} \sum_{j =1}^B (b_j - b_{j-1})^2 } \tag{\tnote{this is an equality?}} \\
+&\leq \sqrt{\frac{1}{n} \log{\frac{4B}{\delta}} \sum_{j =1}^B (b_j - b_{j-1}) } \tag{because $0\le b_j - b_{j-1}\le 1$}\\
 &\leq \sqrt{\frac{1}{n} \log{\frac{4B}{\delta}} } \\
 &\leq c_2 \frac{1}{\sqrt{n}} \sqrt{\log{\frac{B}{\delta}}}
 \end{align*}
@@ -85,7 +85,7 @@ Similarly, we can also bound the $\ell_1$-error. Here we also use the fact that 
 \begin{align*}
 ||\hat{g_{\mathcal{B}}} - g_{\mathcal{B}}||_1 &= \sum_{j =1}^B p_j |\mu_j - \hat{\mu}(R_j)| \\
 &\leq \sum_{j =1}^B p_j \sqrt{\frac{(b_j - b_{j-1})^2}{p_jn} \log{\frac{4B}{\delta}}} \\
-&\leq \sum_{j =1}^B \sqrt{\frac{p_j(b_j - b_{j-1})^2}{n} \log{\frac{4B}{\delta}}} \\
+&=\sum_{j =1}^B \sqrt{\frac{p_j(b_j - b_{j-1})^2}{n} \log{\frac{4B}{\delta}}} \\
 &\leq \sum_{j =1}^B \sqrt{\frac{2(b_j - b_{j-1})^2}{Bn} \log{\frac{4B}{\delta}}} \\
 &\leq \sqrt{\frac{2}{Bn} \log{\frac{4B}{\delta}}} \sum_{j =1}^B (b_j - b_{j-1}) \\
 &\leq c_1 \frac{1}{\sqrt{Bn}} \sqrt{\log{\frac{B}{\delta}}}

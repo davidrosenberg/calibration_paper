@@ -1,5 +1,7 @@
-\newpage
+
 \section{Experimental details and ablations for section~\ref{sec:calibrating_models}}
+
+\tnote{this seemed to be a newpage command here before. I guess it was not intended?}
 \label{sec:calibrating_models_appendix_experiments}
 
 We give more experimental details for our CIFAR-10 experiment, show experimental results for top-label calibration in ImageNet and CIFAR-10, and give details and results for our synthetic experiments. Note that the code is available in the supplementary folder for completeness.
@@ -71,6 +73,7 @@ For each $n$ (number of recalibration samples) and $B$ (number of bins), we run 
      \end{subfigure}
   \caption{
     Plots of $1/\epsilon^2$ against $n$ (recall that $\epsilon^2$ is the $\lsquared$ calibration error). We see that for both methods $1/\epsilon^2$ increases approximately linearly with $n$, which match the theoretical bounds.
+    \tnote{does it make sense to make this two plots have the same y limit? Or we could even put the two curves one the same figure?}
 }
   \label{fig:well-spec-vary-n}
 \end{figure}
@@ -97,6 +100,7 @@ In the first sub-experiment we fix $B = 10$ and vary $n$, plotting $1/\epsilon^2
      \end{subfigure}
   \caption{
     Plots of $1/\epsilon^2$ against $b$ (recall that $\epsilon^2$ is the $\lsquared$ calibration error). Note that the $Y$ axis for \ourcal{} is clipped to 6600 and 7800 to show the relevant region. We see that for histogram binning $1/\epsilon^2$ scales close to $1/B$, in other words the calibration error increases with the number of bins (important note: the plot decreases because we plot the inverse $1/\epsilon^2$). For \ourcal{} $1/\epsilon^2$ is relatively constant, within the margin of estimation error, as predicted by the theory.
+    \tnote{similar comments to the those for the figure above}
 }
   \label{fig:well-spec-vary-b}
 \end{figure}
