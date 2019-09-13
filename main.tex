@@ -16,6 +16,15 @@
 \usepackage{xcolor}
 \usepackage[utf8]{inputenc}
 \usepackage{thmtools, thm-restate}
+% \usepackage{xpatch}
+% \usepackage{apptools}
+
+% \makeatletter
+% \xpatchcmd{\thmt@restatable}% Edit \thmt@restatable
+% {\csname #2\@xa\endcsname\ifx\@nx#1\@nx\else[{#1}]\fi}% Replace this code
+% {\IfAppendix{\csname #2\@xa\endcsname}{\csname #2\@xa\endcsname\ifx\@nx{Restatement}\@nx\else[{Restatement}]\fi}}% with this code
+% {}{} % execute code for success/failure instances
+% \makeatother
 
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{lemma}[theorem]{Lemma}

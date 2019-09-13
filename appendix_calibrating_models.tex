@@ -10,7 +10,7 @@ Our analysis of the sample complexity of \ourcal{} requires some assumptions on 
 \item (Finite parameters). Let $\G{} = \{ g_{\theta} : \mathcal{Z} \to [0, 1] \; | \; \theta \in A \}$ where $A \subseteq \mathbb{R}^{d}$ and $A$ is open.
 \item (Injective). For all $g_{\theta} \in \G{}$ we assume $g_{\theta}$ is injective.
 \item (Consistency) Intuitively, consistency means that given infinite data, the estimated parameters should converge to the unique optimal parameters in $A$.
-More formally, suppose $\theta^* = \argmin_{\theta \in A} \mbox{MSE}(g_{\theta})$.
+More formally, suppose $\theta^* = \argmin_{\theta \in A} \mse(g_{\theta})$.
 Then the parameters $\hat{\theta}_n$ estimated by minimizing the empirical MSE with $n$ samples in step 1 of the algorithm, converges in distribution to $\theta^*$, that is, $\hat{\theta}_n \to_D \theta^*$ as $n \to \infty$. Note that consistency inherently assumes identifiability, that there is a unique minimizer $\theta^*$ in the open set $A$.
 \item (Regularity). We assume that regularity conditions in Theorem 5.23 of~\cite{vaart98asymptotic} hold, which require the loss to be twice differentiable with symmetric, non-singular Hessian, and that $g_{\theta}(x)$ is Lipschitz in $\theta$ for all $x$. We will also require the second derivative to be continuous.
 \end{enumerate}
@@ -140,10 +140,10 @@ Given $\delta$, there exists a constant $c$, such that for all $n$, $\squaredce(
 \begin{proof}
 
 \textbf{From calibration error to mean-squared error}: We use the classic decomposition of the mean-squared error into calibration error (also known as reliability) and refinement\footnote{Note that the refinement term can be further decomposed into resolution (also known as sharpness) and irreducible uncertainty.}. For any $g \in \G{}$ we have:
-\[ \mbox{MSE}(g) = \underbrace{\squaredce(g)}_{\mbox{calibration}} + \underbrace{\expect[(\expect[Y \mid g(Z)] - Y)^2]}_{\mbox{refinement}} \]
+\[ \mse(g) = \underbrace{\squaredce(g)}_{\mbox{calibration}} + \underbrace{\expect[(\expect[Y \mid g(Z)] - Y)^2]}_{\mbox{refinement}} \]
 Note that the refinement term is constant for all injective $g \in \G{}$, since for injective $g$:
 \[ \expect[(\expect[Y \mid g(Z)] - Y)^2] = \expect[(\expect[Y \mid Z] - Y)^2] \]
-This means that the difference in calibration error between any $g$ and $g'$ is precisely the difference in the mean-squared error. So it suffices to upper bound the generalization gap $\mbox{MSE}(g) - \mbox{MSE}(g^*)$ for the mean-squared error. Our analysis is fairly standard: we will show asymptotic convergence in the parameter space, and then use a Taylor expansion to show convergence in the MSE loss.
+This means that the difference in calibration error between any $g$ and $g'$ is precisely the difference in the mean-squared error. So it suffices to upper bound the generalization gap $\mse(g) - \mse(g^*)$ for the mean-squared error. Our analysis is fairly standard: we will show asymptotic convergence in the parameter space, and then use a Taylor expansion to show convergence in the MSE loss.
 
 \textbf{Parameter convergence}: Recall that $\hat{\theta}$ denotes the parameters estimated by optimizing the empirical mean-squared error objective on $n$ samples in step 1 of our algorithm, and $\theta^*$ denotes the optimal parameters that minimize the mean-squared error objective on the population. From Theorem 5.23 of~\cite{vaart98asymptotic}, on the asymptotic parameter convergence of M-estimators, we have as $n \to \infty$:
 \[ \sqrt{n}(\hat{\theta} - \theta^*) \to_D N(0, \Sigma) \]
@@ -167,7 +167,7 @@ We apply union bound over the indices $i$, and can then bound the $\ell_2$-norm 
 \[ ||\hat{\theta} - \theta^*||_2^2 \leq \frac{k}{n} \]
 
 \textbf{Loss convergence}: We denote the loss by $L$, defined as:
-\[ L(\theta) = \mbox{MSE}(g_{\theta}) = \expect[ (Y - g_{\theta}(X))^2 ] \]
+\[ L(\theta) = \mse(g_{\theta}) = \expect[ (Y - g_{\theta}(X))^2 ] \]
 We approximate the loss $L$ by the first few terms of its Taylor expansion, which we denote by $\widetilde{L}$:
 \[ \widetilde{L}(\theta) = L(\theta^*) + \nabla L(\theta^*)^T (\hat{\theta} - \theta^*) + (\hat{\theta} - \theta^*)^T \nabla^2 L(\theta^*) (\hat{\theta} - \theta^*) \]
 We assumed that $L$ was twice differentiable with continuous second derivative, and that $\theta^*$ minimized the loss in an open set, so $\nabla L(\theta^*) = 0$, and we also have (see e.g. Theorem 3.3.18 in~\cite{hubbard1998vector}):
@@ -179,7 +179,7 @@ We can bound this by the operator norm of the Hessian, and then use the paramete
 which holds with probability at least $1 - \delta$, as desired.
 
 % From a standard $\epsilon$-cover in the parameter space, or PAC-Bayes argument, we can get a high probability generalization bound on the mean-squared error:
-% \[ \mbox{MSE}(g) \leq \mbox{MSE}(g^*) + \frac{cLd \log{R}}{\sqrt{n}} \]
+% \[ \mse(g) \leq \mse(g^*) + \frac{cLd \log{R}}{\sqrt{n}} \]
 % This gives us the desired result.
 \end{proof}
 
@@ -228,14 +228,14 @@ In other words, our method allows for the calibration error of the final model t
 
 \begin{restatable}[MSE Bound]{proposition}{mseFiniteBinning}
 \label{prop:mse-finite-binning}
-If $\mathcal{B}$ is a 2-well-balanced binning scheme of size $B$ and $B = \widetilde{\Omega}(n)$, where $\widetilde{\Omega}$ hides $\log$ factors, then $\mbox{MSE}(\hat{g}_{\mathcal{B}}) \leq \mbox{MSE}(g) + O(\frac{1}{B})$.
+If $\mathcal{B}$ is a 2-well-balanced binning scheme of size $B$ and $B = \widetilde{\Omega}(n)$, where $\widetilde{\Omega}$ hides $\log$ factors, then $\mse(\hat{g}_{\mathcal{B}}) \leq \mse(g) + O(\frac{1}{B})$.
 \end{restatable}
 
 To show this we begin with a lemma showing that if $f$ and $g$ are close in $\ell_1$ norm, then their mean-squared errors are close:
 
 \begin{lemma}
 \label{lem:mse-l1}
-For $f, g : \mathcal{Z} \to [0, 1]$, $\mbox{MSE}(f) \leq \mbox{MSE}(g) + 2||f - g||_1$.
+For $f, g : \mathcal{Z} \to [0, 1]$, $\mse(f) \leq \mse(g) + 2||f - g||_1$.
 \end{lemma}
 
 \begin{proof}
@@ -252,7 +252,7 @@ Next, we show that in the limit of infinite data, if we bin with a well-balanced
 
 \begin{lemma}
 \label{thm:bin-sharpness}
-Let $\mathcal{B}$ be an $\alpha$-well-balanced binning scheme of size $B$. Then $\mbox{MSE}(g_{\mathcal{B}}) \leq \mbox{MSE}(g) + \frac{2\alpha}{B}$.
+Let $\mathcal{B}$ be an $\alpha$-well-balanced binning scheme of size $B$. Then $\mse(g_{\mathcal{B}}) \leq \mse(g) + \frac{2\alpha}{B}$.
 \end{lemma}
 
 \begin{proof}
@@ -268,13 +268,13 @@ We now use the fact that $\mathcal{B}$ is $\alpha$-well-balanced.
 &\leq \sum_{i=1}^B \frac{\alpha}{B} (b_{\beta(g(Z))} - b_{\beta(g(Z))-1}) \\
 &\leq \frac{\alpha}{B}
 \end{align*}
-Finally, from Lemma~\ref{lem:mse-l1}, we get that $\mbox{MSE}(g_{\mathcal{B}}) \leq \mbox{MSE}(g) + \frac{2\alpha}{B}$.
+Finally, from Lemma~\ref{lem:mse-l1}, we get that $\mse(g_{\mathcal{B}}) \leq \mse(g) + \frac{2\alpha}{B}$.
 \end{proof}
 
 The above lemma bounds the increase in MSE due to binning in the infinite sample case -- next we deal with the finite sample case and prove proposition~\ref{prop:mse-finite-binning}:
 
 \begin{proof}[Proof of Proposition~\ref{prop:mse-finite-binning}:]
-Ignoring all $\log$ factors, from Theorem~\ref{thm:empirical-binning} if $n = \widetilde{\Omega}(B)$, we have $||\hat{g}_{\mathcal{B}} - g_{\mathcal{B}}||_1 = O(\frac{1}{\sqrt{nB}})$. Then from  Lemma~\ref{lem:mse-l1}, $\mbox{MSE}(\hat{g}_{\mathcal{B}}) \leq \mbox{MSE}(g_{\mathcal{B}}) + O(\frac{1}{\sqrt{Bn}}) \leq \mbox{MSE}(g_{\mathcal{B}}) + O(\frac{1}{B})$. From Theorem~\ref{thm:bin-sharpness}, since $\mathcal{B}$ is 2-well-balanced, we have  $\mbox{MSE}(g_{\mathcal{B}}) \leq \mbox{MSE}(g) + O(\frac{1}{B})$. This gives us $\mbox{MSE}(\hat{g}_{\mathcal{B}}) \leq \mbox{MSE}(g) + O(\frac{1}{B})$.
+Ignoring all $\log$ factors, from Theorem~\ref{thm:empirical-binning} if $n = \widetilde{\Omega}(B)$, we have $||\hat{g}_{\mathcal{B}} - g_{\mathcal{B}}||_1 = O(\frac{1}{\sqrt{nB}})$. Then from  Lemma~\ref{lem:mse-l1}, $\mse(\hat{g}_{\mathcal{B}}) \leq \mse(g_{\mathcal{B}}) + O(\frac{1}{\sqrt{Bn}}) \leq \mse(g_{\mathcal{B}}) + O(\frac{1}{B})$. From Theorem~\ref{thm:bin-sharpness}, since $\mathcal{B}$ is 2-well-balanced, we have  $\mse(g_{\mathcal{B}}) \leq \mse(g) + O(\frac{1}{B})$. This gives us $\mse(\hat{g}_{\mathcal{B}}) \leq \mse(g) + O(\frac{1}{B})$.
 \end{proof}
 
 \subsection{Alternative binning schemes}
