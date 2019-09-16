@@ -26,12 +26,16 @@ Then we set $\hat{g_{\mathcal{B}}}(z) = \hat{\mu}[\beta(g(z))]$---that is we sim
 
 We now show that \ourcal{} requires $O(B + 1/\epsilon^2)$ samples to calibrate, and in Section~\ref{sec:verifying_calibration} we show that we can efficiently measure its calibration error. For the main theorem, we make some standard regularity assumptions on $\mathcal{G}$ which we formalize in Appendix~\ref{sec:calibrating_models_appendix}. Our result is a generalization result---we show that if $\mathcal{G}$ contains some $g^*$ with low calibration error, then our method is \emph{at least} almost as well-calibrated as $g^*$ after a certain number of samples.
 
-\begin{restatable}[Calibration bound]{theorem}{finalCalib}
-\label{thm:final-calib}
+\newcommand{\finalCalibText}{
 Assume regularity conditions on $\mathcal{G}$ (finite parameters, injectivity, Lipschitz-continuity, consistency, twice differentiability). Given $\delta \in (0, 1)$, there is a constant $c$ such that \emph{for all} $B, \epsilon$, with $n \geq c \Big(B\log{B} + \frac{\log{B}}{\epsilon^2}\Big)$ samples, \ourcal{} finds $\hat{g}_{\mathcal{B}}$ with $\squaredce(\hat{g}_{\mathcal{B}}) \leq 2\min_{g \in \mathcal{G}}\squaredce(g) + \epsilon^2$, with probability $\geq 1 - \delta$.
-% Suppose that $\min_{g \in \mathcal{G}}\lsquared\mbox{-CE}(g) \leq \epsilon^2$.
-%   With $n = \widetilde{O}(B + \frac{d'}{\epsilon^2})$ samples, where $\widetilde{O}$ hides log factors, the variance-reduced calibration algorithm finds $\hat{g}_{\mathcal{B}}$ with $\lsquared\mbox{-CE}(\hat{g}_{\mathcal{B}}) \leq 2 \epsilon^2$. Note that $d'$ is the number of parameters which is $1$ for Platt scaling.
-\end{restatable}
+}
+
+\begin{theorem}[Calibration bound]
+\label{thm:final-calib}
+\finalCalibText{}
+\end{theorem}
+
+\newtheorem*{finalCalib}{Restatement of Theorem~\ref{thm:final-calib}}
 
 % and potentially worsen the downstream performance of the model. As such, practitioners should use \ourcal{} when it is important to ensure that their model is well-calibrated, but in other applications should also try directly using a scaling method.
 
@@ -50,10 +54,16 @@ Given a binning scheme $\mathcal{B}$ of size $B$, and $\alpha \geq 1$. We say $\
   \[ \frac{1}{\alpha B} \leq \prob(Z \in I_j) \leq \frac{\alpha}{B}\]
 \end{definition}
 
-\begin{restatable}{lemma}{wellBalanced}
+\newcommand{\wellBalancedText}{
+For universal constant $c$, if $n \geq c \big(B\log{\frac{B}{\delta}}\big)$, with probability at least $1 - \delta$, the binning scheme $\bins{}$ we chose is 2-well-balanced.
+}
+
+\begin{lemma}
 \label{lem:well-balanced}
-If $n \geq B\log{\frac{B}{\delta}}$, with probability at least $1 - \delta$, the binning scheme $\mathcal{B}$ we chose is 2-well-balanced.
-\end{restatable}
+\wellBalancedText{}
+\end{lemma}
+
+\newtheorem*{wellBalanced}{Restatement of Lemma~\ref{lem:well-balanced}}
 
 While the way we choose bins is not novel~\cite{zadrozny2001calibrated}, we believe the guarantees around it are---not all binning schemes in the literature allow us to efficiently estimate the calibration error, for example the binning scheme in~\cite{guo2017calibration} does not. Our proof of Lemma~\ref{lem:well-balanced} is in Appendix~\ref{sec:calibrating_models_appendix}. The core challenge is that applying Chernoff bounds or a standard VC dimension argument gives us a loose bound and tells us we need $O(B^2\log{\frac{B}{\delta}})$ samples. We use a discretization argument to prove the result.
 

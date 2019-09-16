@@ -27,7 +27,9 @@ We assume that $\G{}$ satisfies these assumptions in the rest of this section. N
 
 The goal is to prove the following theorem from Section~\ref{sec:calibrating_models}, which we restate:
 
-\finalCalib*{}
+\begin{finalCalib}
+\finalCalibText{}
+\end{finalCalib}
 
 
 We will analyze each step of our algorithm and then combine the pieces to get Theorem~\ref{thm:final-calib}.
@@ -75,7 +77,7 @@ We then bound the $\ell_2$-error.
 \begin{align*}
 ||\hat{g_{\mathcal{B}}} - g_{\mathcal{B}}||_2 &= \sqrt{\sum_{j =1}^B p_j (\mu_j - \hat{\mu}(R_j))^2} \\
 &\leq \sqrt{\sum_{j =1}^B p_j \frac{(b_j - b_{j-1})^2}{p_jn} \log{\frac{4B}{\delta}}} \tag{by equation~\eqref{eqn:1}}\\
-&= \sqrt{\frac{1}{n} \log{\frac{4B}{\delta}} \sum_{j =1}^B (b_j - b_{j-1})^2 } \tag{\tnote{this is an equality?}} \\
+&= \sqrt{\frac{1}{n} \log{\frac{4B}{\delta}} \sum_{j =1}^B (b_j - b_{j-1})^2 } \\
 &\leq \sqrt{\frac{1}{n} \log{\frac{4B}{\delta}} \sum_{j =1}^B (b_j - b_{j-1}) } \tag{because $0\le b_j - b_{j-1}\le 1$}\\
 &\leq \sqrt{\frac{1}{n} \log{\frac{4B}{\delta}} } \\
 &\leq c_2 \frac{1}{\sqrt{n}} \sqrt{\log{\frac{B}{\delta}}}
@@ -95,10 +97,9 @@ By union bound, these hold with probability at least $1 - \delta$, which complet
 
 \textbf{Step 2}: Recall that we chose our bins so that each bin had an equal proportion of points in the recalibration set. In our proofs we required that this property (approximately) holds in the population as well. The following lemma shows this.
 
-\begin{lemma}[Well-balanced on population]
-\label{lem:well-balanced}
-There exists a universal constant $c$ such that if $n \geq c \big( B \log{\frac{B}{\delta}} \big)$ then the binning scheme $\bins{}$ we construct in step 2 of our algorithm is 2-well-balanced with probability at least $1 - \delta$.
-\end{lemma}
+\begin{wellBalanced}
+\wellBalancedText{}
+\end{wellBalanced}
 
 \begin{proof}
 Suppose we are given a bin construction set of size $n$, $T_n = \{(z_1, y_1), \dots, (z_n, y_n)\}$.

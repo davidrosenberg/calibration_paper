@@ -27,21 +27,33 @@ f_{\mathcal{B}}(x) = E[f(X) \mid f(X) \in I_j] \quad\quad\quad \mbox{where }x \i
 Given $\bins{}$, the binned calibration error of $f$ is simply $\lpce(f_{\bins{}})$.
 A simple example shows that using binning to estimate the $\ell_p$ calibration error can severely underestimate the true $\ell_p$ calibration error, even for $p=1$, the average calibration error.
 
-\begin{restatable}{example}{continuousNotCalibrated}
-\label{ex:continuous-not-calibrated}
+\newcommand{\continuousNotCalibratedText}{
 For any binning scheme $\bins{}$, $p \in \mathbb{Z}^+$, and continuous bijective function $f : [0, 1] \to [0, 1]$, there exists a distribution $P$ over $X, Y$ s.t. $\lpce(f_{\bins{}}) = 0$ but $\lpce(f) \geq 0.49$.
 Note that for all $f$, $0 \leq \lpce(f) \leq 1$.
-\end{restatable}
+}
+
+\begin{example}
+\label{ex:continuous-not-calibrated}
+\continuousNotCalibratedText{}
+\end{example}
+
+\newtheorem*{continuousNotCalibrated}{Restatement of Example~\ref{ex:continuous-not-calibrated}}
 
 The intuition is that in each interval $I_j$ in $\bins{}$, the model could underestimate the true probability $\expect[Y \mid f(X)]$ half the time, and overestimate the probability half the time. So if we average over the entire bin the model appears to be calibrated, even though it is very uncalibrated. The formal construction is in Appendix~\ref{sec:appendix-platt-not-calibrated}.
 
 Next, we show that given a function $f$, its binned version always has lower calibration error.
 
-\begin{restatable}[Binning underestimates error]{proposition}{binningLowerBound}
-\label{prop:bin_low_bound}
-  Given binning scheme $\bins{}$ and model $f : \mathcal{X} \to [0, 1]$, we have:
+\newcommand{\binningLowerBoundText}{
+Given binning scheme $\bins{}$ and model $f : \mathcal{X} \to [0, 1]$, we have:
 \[  \lpce(f_{\bins{}}) \leq \lpce(f) \]
-\end{restatable}
+}
+
+\begin{proposition}[Binning underestimates error]
+\label{prop:bin_low_bound}
+\binningLowerBoundText{}
+\end{proposition}
+
+\newtheorem*{binningLowerBound}{Restatement of Proposition~\ref{prop:bin_low_bound}}
 
 The proof is by Jensen's inequality (Appendix~\ref{sec:appendix-platt-not-calibrated}). Intuitively, averaging a model's prediction within a bin allows errors at different parts of the bin to cancel out with each other. 
 

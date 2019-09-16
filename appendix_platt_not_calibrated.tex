@@ -8,9 +8,9 @@
 
 % The proofs for Section~\ref{sec:challenges-measuring} unlike for the other sections, from a technical standpoint, fairly standard and not a contribution of our paper. We give them only for completeness.
 
-\tnote{ideally this should be "restatement of example 3.2"}
-
-\continuousNotCalibrated*
+\begin{continuousNotCalibrated}
+\continuousNotCalibratedText{}
+\end{continuousNotCalibrated}
 
 \begin{proof}
 As stated in the main text, the intuition is that in each interval $I_j$ in $\bins{}$, the model could underestimate the true probability $\expect[Y \mid f(X)]$ half the time, and overestimate the probability half the time. So if we average over the entire bin the model appears to be calibrated, even though it is very uncalibrated. The proof simply formalizes this intuition.
@@ -32,7 +32,9 @@ That is, at every point the model is actually very miscalibrated at each $s$. By
 \end{proof}
 
 
-\binningLowerBound*
+\begin{binningLowerBound}
+\binningLowerBoundText{}
+\end{binningLowerBound}
 
 \begin{proof}
 It suffices to prove the claim for the $\ell_p^p$ error:

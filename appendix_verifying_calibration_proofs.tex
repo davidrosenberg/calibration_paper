@@ -126,8 +126,6 @@ Then for the plugin estimator, with probability at least $1 - 3\delta$,
 \[ | \hat{E_{pl}}^2 - {E^*}^2 | \leq c(n){E^*}^2 + \sqrt{\frac{2(1+c(n)){E^*}^2}{n} \log{\frac{2}{\delta}}} + \frac{B}{2n} \log{\frac{2B}{\delta}} \]
 \end{restatable}
 
-\tm{if you recall a theorem, then need to mark that it's a recall of a previous theorem. e.g., "Restatement of Theorem 5.4"}
-\ak{Ah do you have a nice way to add the text "Restatement of ..."? It's a bit difficult to change the text in my current approach.}
 \begin{proof}
 We have:
 \[ |\pluginEst{} - {E^*}^2| \leq |P1 - {E^*}^2| + |P2| + |P3| \]
@@ -136,7 +134,9 @@ From Lemma~\ref{lem:pi_bound} we have $|\hat{p_i} - p_i| < c(n)p_i < 0.5p_i$ wit
 
 We then prove the final bound for the plugin estimator, which we recall below.
 
-\finalPlugin*
+\begin{finalPlugin}
+\finalPluginText{}
+\end{finalPlugin}
 
 \begin{proof}
 This is now a simple corollary of Theorem~\ref{thm:plugin-bound}. For large enough constant $c$, where $c$ is a constant independent of all the other variables, we choose $n = c\frac{B}{\epsilon^2} \log{\frac{B}{\epsilon^2}}$. Plugging it into the bound of Theorem~\ref{thm:plugin-bound}, we get the desired result, that $\lvert \hat{E}^2 - {E^*}^2 \rvert \leq \frac{1}{2}{E^*}^2$. Notice that the dominating term is term $(P3)$ in Theorem~\ref{thm:plugin-bound}---we will see that the debiased estimator improves on this.
@@ -245,4 +245,6 @@ In the same setting as Theorem~\ref{thm:plugin-bound}, for the debiased estimato
 
 We interpret the bound in Theorem~\ref{thm:our-bound} in two regimes. In the first regime, we fix the problem parameters $p_i, {E^*}^2$, and look at what happens as we send $n$ to infinity. In that case, the second term dominates, and we see that the error is approximately proportional to $\frac{1}{\sqrt{n}}$, which is the same as for the plugin estimator. However, in general we do not need to estimate the calibration error extremely finely, and may be satisfied as long as we estimate the calibration error within a constant multiplicative factor. That is, we might only need $n$ to be large enough so that our estimate $\hat{E}^2$ is on the right order, e.g. between $0.5 {E^*}^2$ and $1.5 {E^*}^2$ (where $0.5$ and $1.5$ can be replaced by other constants). In that regime, the third term dominates and the error is approximately proportional to $\frac{\sqrt{B}}{n}$, which is better than for the plugin estimator where it is proportional to $\frac{B}{n}$ (see Theorem~\ref{thm:plugin-bound}). This is captured in the final bound, where the proof closely parallels that of Theorem~\ref{thm:final-plugin}.
 
-\finalCanceling*
+\begin{finalCanceling}
+\finalCancelingText{}
+\end{finalCanceling}

@@ -45,18 +45,29 @@ We are interested in analyzing the number of samples required to estimate the ca
 
 % Our main result is that to check if the $\lsquared{}$ calibration error is $\leq \epsilon^2$, the plugin estimator requires $\widetilde{O}(\frac{B}{\epsilon^2})$ samples (Theorem~\ref{thm:final-plugin}) while the debiased estimator requires $\widetilde{O}(\frac{\sqrt{B}}{\epsilon^2})$ samples (Theorem~\ref{thm:final-ours}):
 
-\begin{restatable}[Plugin bound]{theorem}{finalPlugin}
-\label{thm:final-plugin}
-  Suppose we have a binned model with $\lsquared{}$ calibration error ${E^*}^2 = \epsilon^2$, where the binning scheme is 2-well-balanced, that is for all $s \in S$, $\prob(f(X) = s) \geq \frac{1}{2B}$.
+\newcommand{\finalPluginText}{
+Suppose we have a binned model with $\lsquared{}$ calibration error ${E^*}^2 = \epsilon^2$, where the binning scheme is 2-well-balanced, that is for all $s \in S$, $\prob(f(X) = s) \geq \frac{1}{2B}$.
   \footnote{We do not need the upper bound of the 2-well-balanced property.}
   If $n \geq c\frac{B}{\epsilon^2}\log{\frac{B}{\delta}}$ for some universal constant $c$ then for the plugin estimator: $\frac{1}{2} {E^*}^2 \leq \pluginEst{} \leq \frac{3}{2} {E^*}^2$ with probability at least $1 - \delta$.
- % Suppose we have a binned model with $\lsquared{}$ calibration error ${E^*}^2 = \epsilon^2$, where the binning scheme is 2-well-balanced, that is $\forall i.\;p_i \geq \frac{1}{2B}$, and $n = \widetilde{O}(\frac{B}{\epsilon^2})$ where $\widetilde{O}$ hides $\log$ factors. Then for the plugin estimator: $\frac{1}{2} {E^*}^2 \leq \pluginEst{} \leq \frac{3}{2} {E^*}^2$ with high probability.
-\end{restatable}
+}
 
-\begin{restatable}[Debiased bound]{theorem}{finalCanceling}
+\begin{theorem}[Plugin bound]
+\label{thm:final-plugin}
+\finalPluginText{}
+\end{theorem}
+
+\newtheorem*{finalPlugin}{Restatement of Theorem~\ref{thm:final-plugin}}
+
+\newcommand{\finalCancelingText}{
+Suppose we have a binned model with $\lsquared{}$ calibration error ${E^*}^2 = \epsilon^2$ and for all $s \in S$, $\prob(f(X) = s) \geq \frac{1}{2B}$. If $n \geq c\frac{\sqrt{B}}{\epsilon^2}\log{\frac{B}{\delta}}$ for some universal constant $c$ then for the debiased estimator: $\frac{1}{2} {E^*}^2 \leq \cancelEst{} \leq \frac{3}{2}{E^*}^2$ with probability at least $1 - \delta$.
+}
+
+\begin{theorem}[Debiased bound]
 \label{thm:final-ours}
-  Suppose we have a binned model with $\lsquared{}$ calibration error ${E^*}^2 = \epsilon^2$ and for all $s \in S$, $\prob(f(X) = s) \geq \frac{1}{2B}$. If $n \geq c\frac{\sqrt{B}}{\epsilon^2}\log{\frac{B}{\delta}}$ for some universal constant $c$ then for the debiased estimator: $\frac{1}{2} {E^*}^2 \leq \cancelEst{} \leq \frac{3}{2}{E^*}^2$ with probability at least $1 - \delta$.
-\end{restatable}
+\finalCancelingText{}
+\end{theorem}
+
+\newtheorem*{finalCanceling}{Restatement of Theorem~\ref{thm:final-ours}}
 
 % Another way of thinking about the result is that the debiased estimator needs fewer samples to estimate the true calibration error: for the plugin estimator if $n = \widetilde{O}(\frac{B}{{E^*}^2})$ then $\frac{1}{2} {E^*}^2 \leq \pluginEst{} \leq \frac{3}{2} {E^*}^2$ but for the debiased estimator if $n = \widetilde{O}(\frac{\sqrt{B}}{{E^*}^2})$ then $\frac{1}{2} {E^*}^2 \leq \cancelEst{} \leq \frac{3}{2}{E^*}^2$.
 % Theorems~\ref{thm:plugin-bound} and~\ref{thm:our-bound} in Appendix~\ref{sec:verifying_calibration_appendix} also bound the estimation error as a function of $n$.
