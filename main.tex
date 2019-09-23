@@ -1,11 +1,12 @@
 \documentclass{article}
+\pdfoutput=1
 
 % if you need to pass options to natbib, use, e.g.:
 %     \PassOptionsToPackage{numbers, compress}{natbib}
 % before loading neurips_2019
 
 % ready for submission
-\usepackage[final]{neurips_2019}
+\usepackage[final, nonatbib]{neurips_2019}
 \usepackage{amsfonts}
 \usepackage{amsmath}
 \usepackage{amsthm}
@@ -33,7 +34,7 @@
 \newtheorem{proposition}[theorem]{Proposition}
 \newtheorem{corollary}[theorem]{Corollary}
 
-\def\shownotes{1}  \ifnum\shownotes=1
+\def\shownotes{1}  \ifnum\shownotes=0
 \newcommand{\authnote}[2]{$\ll$\textsf{\footnotesize #1 notes: #2}$\gg$}
 \else
 \newcommand{\authnote}[2]{}
@@ -42,13 +43,13 @@
 
 
 
-% \newcommand{\pl}[1]{}
-% \newcommand{\tm}[1]{}
-% \newcommand{\ak}[1]{}
+\newcommand{\pl}[1]{}
+\newcommand{\tm}[1]{}
+\newcommand{\ak}[1]{}
 
-\newcommand{\pl}[1]{\textcolor{red}{[PL: #1]}}
-\newcommand{\tm}[1]{\textcolor{blue}{[TM: #1]}}
-\newcommand{\ak}[1]{\textcolor{brown}{[AK: #1]}}
+% \newcommand{\pl}[1]{\textcolor{red}{[PL: #1]}}
+% \newcommand{\tm}[1]{\textcolor{blue}{[TM: #1]}}
+% \newcommand{\ak}[1]{\textcolor{brown}{[AK: #1]}}
 
 \newcommand{\expect}[0]{\ensuremath{\mathbb{E}}}
 \newcommand{\prob}[0]{\ensuremath{\mathbb{P}}}
@@ -67,6 +68,7 @@
 % to avoid loading the natbib package, add option nonatbib:
 %     \usepackage[nonatbib]{neurips_2019}
 
+\usepackage[numbers]{natbib}
 \usepackage[utf8]{inputenc} % allow utf-8 input
 \usepackage[T1]{fontenc}    % use 8-bit T1 fonts
 \usepackage{hyperref}       % hyperlinks
@@ -147,14 +149,11 @@ Applications such as weather forecasting and personalized medicine demand models
 
 \input{related_work}
 
-% \input{experiments}
-
-\bibliographystyle{unsrt}
+\bibliographystyle{unsrtnat}
 \bibliography{local,refdb/all}
 
 \appendix
 
-% \input{glossary}
 \newpage 
 \section{Model and code details}
 
