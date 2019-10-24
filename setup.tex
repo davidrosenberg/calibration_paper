@@ -57,7 +57,7 @@ Let $w_k \in [0, 1]$ denote how important calibrating class $k$ is, where $w_k =
 \end{align}
 \end{definition}
 
-Note that prior works~\cite{guo2017calibration, hendrycks2019anomaly, hendrycks2019pretraining} often claim to perform multiclass calibration but only measure top-label calibration---\cite{nixon2019calibration} shows that temperature scaling~\cite{guo2017calibration} scores worse than vector scaling on a marginal calibration metric, even though it has lower top-label calibration error.
+Prior works~\cite{guo2017calibration, hendrycks2019anomaly, hendrycks2019pretraining} often claim to perform multiclass calibration but only measure top-label calibration---\cite{nixon2019calibration} and concurrent work to ours~\cite{kull2019temperature} define similar per-class calibration metrics where temperature scaling~\cite{guo2017calibration} scores worse than vector scaling, though it has better top-label calibration.
 % In the Appendix we discuss other notions of multiclass calibration.
 
 \pl{is marginal calibration standard terminology? makes sense when compared with joint, but sounds a bit strange in relation to top-label}

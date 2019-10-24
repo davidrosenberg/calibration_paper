@@ -85,7 +85,7 @@ The proof of both theorems is in Appendix~\ref{sec:verifying_calibration_appendi
 \begin{figure}
   \centering
   \centering
-     \begin{subfigure}[b]{0.48\textwidth}
+     \begin{subfigure}[b]{0.45\textwidth}
          \centering
          \includegraphics[width=\textwidth]{images/mse_estimator_10_bins.png}
          \caption{$B = 10$
@@ -95,7 +95,7 @@ The proof of both theorems is in Appendix~\ref{sec:verifying_calibration_appendi
          \label{fig:mse_estimators}
      \end{subfigure}
      \hfill
-     \begin{subfigure}[b]{0.48\textwidth}
+     \begin{subfigure}[b]{0.45\textwidth}
          \centering
          \includegraphics[width=\textwidth]{images/mse_estimator_100_bins.png}
          \caption{$B = 100$
@@ -103,7 +103,7 @@ The proof of both theorems is in Appendix~\ref{sec:verifying_calibration_appendi
          \label{fig:ce_vs_bins_verifying}
      \end{subfigure}
   \caption{
-    Mean-squared errors of debiased and plugin estimators on a recalibrated VGG16 model on CIFAR-10 with $90\%$ confidence intervals (lower values better). The debiased estimator is closer to the ground truth, which corresponds to $0$ on the y-axis, especially when $B$ is large and/or the number of samples used by the estimator, $n$, is small.
+    Mean-squared errors of debiased and plugin estimators on a recalibrated VGG16 model on CIFAR-10 with $90\%$ confidence intervals (lower values better). The debiased estimator is closer to the ground truth, which corresponds to $0$ on the y-axis, especially when $B$ is large or $n$ is small.
 }
   \label{fig:mse_estimators_bins}
 \end{figure}
