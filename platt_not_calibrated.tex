@@ -41,7 +41,7 @@ Note that for all $f$, $0 \leq \lpce(f) \leq 1$.
 
 The intuition is that in each interval $I_j$ in $\bins{}$, the model could underestimate the true probability $\expect[Y \mid f(X)]$ half the time, and overestimate the probability half the time. So if we average over the entire bin the model appears to be calibrated, even though it is very uncalibrated. The formal construction is in Appendix~\ref{sec:appendix-platt-not-calibrated}.
 
-Next, we show that given a function $f$, its binned version always has lower calibration error.
+Next, we show that given a function $f$, its binned version always has lower calibration error. The proof, in Appendix~\ref{sec:appendix-platt-not-calibrated}, is by Jensen's inequality. Intuitively, averaging a model's prediction within a bin allows errors at different parts of the bin to cancel out with each other. This result is similar to Theorem 2 in recent work~\cite{vaicenavicius2019calibration}.
 
 \newcommand{\binningLowerBoundText}{
 Given binning scheme $\bins{}$ and model $f : \mathcal{X} \to [0, 1]$, we have:
@@ -54,8 +54,6 @@ Given binning scheme $\bins{}$ and model $f : \mathcal{X} \to [0, 1]$, we have:
 \end{proposition}
 
 \newtheorem*{binningLowerBound}{Restatement of Proposition~\ref{prop:bin_low_bound}}
-
-The proof is by Jensen's inequality (Appendix~\ref{sec:appendix-platt-not-calibrated}). Intuitively, averaging a model's prediction within a bin allows errors at different parts of the bin to cancel out with each other. 
 
 \subsection{Experiments}
 
