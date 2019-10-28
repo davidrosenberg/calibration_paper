@@ -7,7 +7,7 @@
 Our analysis of the sample complexity of \ourcal{} requires some assumptions on the function family $\G{}$:
 
 \begin{enumerate}
-  \item (Finite\pl{-dimensional} parameters). Let $\G{} = \{ g_{\theta} : \mathcal{Z} \to [0, 1] \; | \; \theta \in A \}$ where $A \subseteq \mathbb{R}^{d}$ and $A$ is open.
+  \item (Finite\pl{-dimensional} parameters). Let $\G{} = \{ g_{\theta} : [0, 1] \to [0, 1] \; | \; \theta \in A \}$ where $A \subseteq \mathbb{R}^{d}$ and $A$ is open.
 \item (Injective). For all $g_{\theta} \in \G{}$ we assume $g_{\theta}$ is injective.
 \item (Consistency). Intuitively, consistency means that given infinite data, the estimated parameters should converge to the unique optimal parameters in $A$.
 More formally, suppose $\theta^* = \argmin_{\theta \in A} \mse(g_{\theta})$.
@@ -20,7 +20,7 @@ We assume that $\G{}$ satisfies these assumptions in the rest of this section. N
 % We first need to introduce the Bayes optimal recalibrator $\omega^*$, which we compare all other recalibrators to. $\omega^* \circ f$ has calibration error $0$, and also has the minimum mean-squared error among all recalibrators.
 
 % \begin{definition}
-% $\omega^* : \mathcal{Z} \to [0, 1]$ is given by $\omega^*(x) = \expect[Y | Z = z]$.
+% $\omega^* : [0, 1] \to [0, 1]$ is given by $\omega^*(x) = \expect[Y | Z = z]$.
 % \end{definition}
 
 \subsection{Calibration bound (Proof of Theorem~\ref{thm:final-calib})}
@@ -41,14 +41,14 @@ Step 1 is basically Platt scaling, and the asymptotic analysis is fairly standar
 \textbf{Step 3}: Our proofs will require showing convergence in $\ell_2$ and $\ell_1$ norm in function space, which we define below:
 
 \begin{definition}[Distances between functions]
-Given $f, g : \mathcal{Z} \to [0, 1]$, for the $\ell_2$ norm we define $||f - g||_2^2 = \expect[(f(Z) - g(Z))^2]$ and $||f- g||_2 = \sqrt{||f - g||_2^2}$. For the $\ell_1$ norm we define $||f - g||_1 = \expect[\lvert f(Z) - g(Z)\rvert]$
+Given $f, g : [0, 1] \to [0, 1]$, for the $\ell_2$ norm we define $||f - g||_2^2 = \expect[(f(Z) - g(Z))^2]$ and $||f- g||_2 = \sqrt{||f - g||_2^2}$. For the $\ell_1$ norm we define $||f - g||_1 = \expect[\lvert f(Z) - g(Z)\rvert]$
 \end{definition}
 
 Recall that we showed that in the limit of infinite data the binned version of $g$, $g_{\bins{}}$, has lower calibration error than $g$ (Proposition~\ref{prop:bin_low_bound}). However our method uses $n$ data points to empirically bin $g$, giving us $\hat{g_{\bins{}}}$. We now show the key lemma that allows us to bound the calibration error and later the mean-squared error. That is, we show that the empirically binned function $\hat{g_{\bins{}}}$ quickly converges to $g_{\bins{}}$ in both $\ell_2$ and $\ell_1$ norms.
 
 \begin{lemma}[Empirical binning]
 \label{thm:empirical-binning}
-There exist constants $c_B, c_1, c_2$ such that the following is true. Given $g : \mathcal{Z} \to [0, 1]$, binning set $T_3 = \{(z_i, y_i)\}_{i=1}^n$ and a 2-well-balanced binning scheme $\bins{}$ of size $B$. Given $0 < \delta < 0.5$, suppose that $n \geq c_B B\log{\frac{B}{\delta}}$. Then with probability at least $1 - \delta$,  $||\hat{g_{\bins{}}} - g_{\bins{}}||_2 \leq \frac{c_2}{\sqrt{n}}\sqrt{\log{\frac{B}{\delta}}}$ and $||\hat{g_{\bins{}}} - g_{\bins{}}||_1 \leq \frac{c_1}{\sqrt{nB}}\sqrt{\log{\frac{B}{\delta}}}$
+There exist constants $c_B, c_1, c_2$ such that the following is true. Given $g : [0, 1] \to [0, 1]$, binning set $T_3 = \{(z_i, y_i)\}_{i=1}^n$ and a 2-well-balanced binning scheme $\bins{}$ of size $B$. Given $0 < \delta < 0.5$, suppose that $n \geq c_B B\log{\frac{B}{\delta}}$. Then with probability at least $1 - \delta$,  $||\hat{g_{\bins{}}} - g_{\bins{}}||_2 \leq \frac{c_2}{\sqrt{n}}\sqrt{\log{\frac{B}{\delta}}}$ and $||\hat{g_{\bins{}}} - g_{\bins{}}||_1 \leq \frac{c_1}{\sqrt{nB}}\sqrt{\log{\frac{B}{\delta}}}$
 \end{lemma}
 
 \begin{proof}
@@ -236,7 +236,7 @@ To show this we begin with a lemma showing that if $f$ and $g$ are close in $\el
 
 \begin{lemma}
 \label{lem:mse-l1}
-For $f, g : \mathcal{Z} \to [0, 1]$, $\mse(f) \leq \mse(g) + 2||f - g||_1$.
+For $f, g : [0, 1] \to [0, 1]$, $\mse(f) \leq \mse(g) + 2||f - g||_1$.
 \end{lemma}
 
 \begin{proof}

@@ -13,7 +13,7 @@ We give more experimental details for our CIFAR-10 experiment, show experimental
   	 \begin{subfigure}[b]{0.48\textwidth}
          \centering
          \includegraphics[width=\textwidth]{top_ces_imagenet.png}
-         \caption{Effect of number of bins $B$ on top calibration error $\topsquaredce$ on ImageNet.
+         \caption{Effect of number of bins $B$ on top calibration error on ImageNet.
          }
          \label{fig:imagenet_top_cal_var_red}
      \end{subfigure}
@@ -21,7 +21,7 @@ We give more experimental details for our CIFAR-10 experiment, show experimental
      \begin{subfigure}[b]{0.48\textwidth}
          \centering
          \includegraphics[width=\textwidth]{top_ces_cifar_1000.png}
-         \caption{Effect of number of bins $B$ on top calibration error $\topsquaredce$ on CIFAR-10.
+         \caption{Effect of number of bins $B$ on top calibration error on CIFAR-10.
          }
          \label{fig:cifar_top_cal_var_red}
      \end{subfigure}
@@ -41,11 +41,11 @@ Multiple runs of this experiment led to very different results.
 The point is that there are two sources of randomness---the randomness in the data the recalibration method operates on, and the randomness in the data used to evaluate and compare the recalibrators.
 In our protocol we account for both of these sources of randomness.
 
-\textbf{Top-label calibration experiments}: We also ran experiments on top-label calibration, for both ImageNet and CIFAR-10. The protocol is exactly as described above, except instead of calibrating each of the $K$ classes, we calibrated the top probability prediction of the model. More concretely, for each input $x_i$, the uncalibrated model outputs a probability $p_i$ corresponding to its top prediction $k_i$, where the true label is $y_i$. We create a new dataset $\{(p_1, \mathbb{I}(k_1 = y_1)), \dots, (p_n, \mathbb{I}(k_n = y_n))\}$ and run \ourcal{} (fitting a sigmoid in the function fitting step, as in Platt scaling) or histogram binning on this dataset, using $B$ bins. This calibrates the probability corresponding to the top prediction of the model. We evaluate the recalibrated models on the top-label calibration error metric ($\topsquaredce{}$) described in Section~\ref{sec:formulation}. For both CIFAR-10 and ImageNet we sampled, with replacement, a recalibration set of 1,000 points for the recalibration data, and we measured the calibration error on the entire set (10,000 points for CIFAR-10, and 50,000 points for ImageNet) as above. We show $90\%$ confidence intervals for all plots.
+\textbf{Top-label calibration experiments}: We also ran experiments on top-label calibration, for both ImageNet and CIFAR-10. The protocol is exactly as described above, except instead of calibrating each of the $K$ classes, we calibrated the top probability prediction of the model. More concretely, for each input $x_i$, the uncalibrated model outputs a probability $p_i$ corresponding to its top prediction $k_i$, where the true label is $y_i$. We create a new dataset $\{(p_1, \mathbb{I}(k_1 = y_1)), \dots, (p_n, \mathbb{I}(k_n = y_n))\}$ and run \ourcal{} (fitting a sigmoid in the function fitting step, as in Platt scaling) or histogram binning on this dataset, using $B$ bins. This calibrates the probability corresponding to the top prediction of the model. We evaluate the recalibrated models on the top-label calibration error metric described in Section~\ref{sec:formulation}. For both CIFAR-10 and ImageNet we sampled, with replacement, a recalibration set of 1,000 points for the recalibration data, and we measured the calibration error on the entire set (10,000 points for CIFAR-10, and 50,000 points for ImageNet) as above. We show $90\%$ confidence intervals for all plots.
 
 Figure~\ref{fig:imagenet_top_cal_var_red} shows that on ImageNet \ourcal{} gets significantly lower calibration errors than histogram binning when $B \geq 10$, and nearly a 5 times lower calibration error when $B = 100$. Both methods get similar calibration errors when $B = 1$ or $B = 5$. Figure~\ref{fig:cifar_top_cal_var_red} shows that on CIFAR-10 when $B$ is high, \ourcal{} gets lower calibration errors than histogram binning, but when $B$ is low histogram binning gets lower calibration errors. We believe that the difference might be because the CIFAR-10 model is highly accurate at top-label prediction to begin with, getting an accuracy of over $93\%$, so there is not much scope for re-calibration. In any case, this ablation tells us that practitioners should try multiple methods when recalibrating their models and evaluate their calibration error.
 
-\textbf{(A) Synthetic experiments to validate bounds}: Suppose the model, before recalibration, outputs values in $[0, 1]$, that is, $\mathcal{Z} = [0, 1]$. We first describe the scaling family we use, which is Platt scaling after applying a log-transform~\cite{platt1999probabilistic}, otherwise known as beta calibration~\cite{kull2017sigmoids}. Let $\sigma$ be the standard sigmoid function given by:
+\textbf{(A) Synthetic experiments to validate bounds}: We first describe the scaling family we use, which is Platt scaling after applying a log-transform~\cite{platt1999probabilistic}, otherwise known as beta calibration~\cite{kull2017sigmoids}. Let $\sigma$ be the standard sigmoid function given by:
 \[ \sigma(x) = \frac{1}{1 + \exp(-x)} \]
 Then, our recalibration family $\mathcal{G}$ consists of $g$ parameterized by $a, c$, given by:
 \[ g(z; a, c) = \sigma\Big( a\log{\frac{z}{1-z}} + c \Big) \]

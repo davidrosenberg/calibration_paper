@@ -44,14 +44,15 @@
 
 
 
-%\newcommand{\pl}[1]{}
-%\newcommand{\tm}[1]{}
-%\newcommand{\ak}[1]{}
+\newcommand{\pl}[1]{}
+\newcommand{\tm}[1]{}
+\newcommand{\ak}[1]{}
+\newcommand{\pldel}[1]{}
 
-\newcommand{\pl}[1]{\textcolor{red}{[PL: #1]}}
-\newcommand{\pldel}[1]{\sout{\textcolor{red}{#1}}}
-\newcommand{\tm}[1]{\textcolor{blue}{[TM: #1]}}
-\newcommand{\ak}[1]{\textcolor{brown}{[AK: #1]}}
+% \newcommand{\pl}[1]{\textcolor{red}{[PL: #1]}}
+% \newcommand{\pldel}[1]{\sout{\textcolor{red}{#1}}}
+% \newcommand{\tm}[1]{\textcolor{blue}{[TM: #1]}}
+% \newcommand{\ak}[1]{\textcolor{brown}{[AK: #1]}}
 
 \newcommand{\expect}[0]{\ensuremath{\mathbb{E}}}
 \newcommand{\prob}[0]{\ensuremath{\mathbb{P}}}
@@ -82,9 +83,9 @@
 \usepackage{nicefrac}       % compact symbols for 1/2, etc.
 \usepackage{microtype}      % microtypography
 
-\newcommand{\argmax}{\mathop{\mbox{argmax}}}
-\newcommand{\argmin}{\mathop{\mbox{argmin}}}
-\newcommand{\argsup}{\mathop{\mbox{argsup}}}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argsup}{arg\,sup}
 \newcommand{\bins}{\mathcal{B}}
 
 \title{Verified Uncertainty Calibration}

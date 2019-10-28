@@ -178,7 +178,7 @@ As with the plugin estimator, we have a decomposition for the debiased estimator
 \begin{lemma}[Debiased decomposition]
 \label{lem:canceling_decomp}
 The debiased estimator satisfies the following decomposition:
-\[ \cancelEst{} = \underbrace{\sum_{i=1}^b \hat{p_i}e_i^2}_{(C1)}  - \underbrace{2\sum_{i=1}^b \hat{p_i}e_i(\hat{y_i} - y_i^*)}_{(C2)} + \underbrace{\sum_{i=1}^b \hat{p_i}\Big[ (\hat{y_i} - y_i^*)^2 - \frac{\hat{y_i}(1 - \hat{y_i})}{\hat{p_i}n-1} \Big]}_{(C3)} \]
+\[ \debiasedEst{} = \underbrace{\sum_{i=1}^b \hat{p_i}e_i^2}_{(C1)}  - \underbrace{2\sum_{i=1}^b \hat{p_i}e_i(\hat{y_i} - y_i^*)}_{(C2)} + \underbrace{\sum_{i=1}^b \hat{p_i}\Big[ (\hat{y_i} - y_i^*)^2 - \frac{\hat{y_i}(1 - \hat{y_i})}{\hat{p_i}n-1} \Big]}_{(C3)} \]
 \end{lemma}
 
 As with the plugin estimator, we bound each of the three terms. Notice that $C1$ and $C2$ are the same as terms $P1$ and $P2$ in the plugin estimator decomposition, so the bounds for those carry over. The next lemma bounds the error in $C3$.

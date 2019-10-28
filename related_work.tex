@@ -1,21 +1,20 @@
 \section{Related work}
 
-Calibration, including the $\lsquared$ calibration error, has been studied in many fields besides machine learning including meteorology~\cite{murphy1973vector, murphy1977reliability, degroot1983forecasters,gneiting2005weather, brocker2009decomposition}, fairness~\cite{johnson2018multicalibration, liu2019implicit}, healthcare~\cite{jiang2012calibrating, crowson2017calibration, harrell1996prognostic, yadlowsky2019calibration}, reinforcement learning~\cite{malik2019calibrated}, natural language processing~\cite{nguyen2015posterior, card2018calibration}, speech recognition~\cite{dong2011calibration}, econometrics~\cite{gneiting2007probabilistic}, and psychology~\cite{lichtenstein1982calibration}.
+Calibration, including the squared calibration error, has been studied in many fields besides machine learning including meteorology~\cite{murphy1973vector, murphy1977reliability, degroot1983forecasters,gneiting2005weather, brocker2009decomposition}, fairness~\cite{johnson2018multicalibration, liu2019implicit}, healthcare~\cite{jiang2012calibrating, crowson2017calibration, harrell1996prognostic, yadlowsky2019calibration}, reinforcement learning~\cite{malik2019calibrated}, natural language processing~\cite{nguyen2015posterior, card2018calibration}, speech recognition~\cite{dong2011calibration}, econometrics~\cite{gneiting2007probabilistic}, and psychology~\cite{lichtenstein1982calibration}.
 % , and machine learning~\cite{guo2017calibration, zadrozny2001calibrated, kuleshov2018accurate, zadrozny2002transforming, naeini2014binary, hendrycks2019anomaly, hendrycks2019pretraining, kull2019temperature}.
 Besides the calibration error, prior work also uses the Hosmer-Lemeshov test~\cite{hosmer1980goodness} and reliability diagrams~\cite{degroot1983forecasters, brocker2007reliability} to evaluate calibration.
 Concurrent work to ours~\cite{widmann2019calibration} also notice that using the plugin calibration error estimator to test for calibration leads to rejecting well-calibrated models too often.
 Besides calibration, other ways of producing and quantifying uncertainties include Bayesian methods~\cite{gelman1995bayesian} and conformal prediction~\cite{shafer2008tutorial, lei2016distribution}.
 
 Recalibration is related to (conditional) density estimation~\cite{wasserman2019, parzen1962} as the goal is to estimate $\expect[Y \mid f(X)]$.
-% The $L_2$ loss function used in the density estimation literature is closely related to the $\lsquared$ calibration error.
 Algorithms and analysis in density estimation typically assume the true density is $L-$Lipschitz, while in calibration applications, the calibration error of the final model should be measurable from data, without making untestable assumptions on $L$.
 
 
-Bias is a common issue with statistical estimators, for example, the seminal work by Stein~\cite{stein81sure} fixes the bias of the mean-squared error \pl{huh? Stein estimator is the opposite - it makes estimator biased to reduce variance; here, we're debiasing}. However, debiasing an estimator does not typically lead to \emph{an improved sample complexity}, as it does in our case.
+Bias is a common issue with statistical estimators, for example, the seminal work by Stein~\cite{stein81sure} fixes the bias of the mean-squared error. However, debiasing an estimator does not typically lead to \emph{an improved sample complexity}, as it does in our case.
 
 \section{Conclusion}
 
-\pl{This paper makes three contributions:} In this paper we had three contributions: 1. We showed that the calibration error of continuous methods is underestimated; 2. We introduced the first method, to our knowledge, that has better sample complexity than histogram binning \pl{and} but has a \emph{measurable calibration error}, giving us the best of scaling and binning methods; and 3. We showed that an alternative estimator \pl{for calibration error} has better sample complexity than the plugin estimator.
+This paper makes three contributions: 1. We showed that the calibration error of continuous methods is underestimated; 2. We introduced the first method, to our knowledge, that has better sample complexity than histogram binning and has a \emph{measurable calibration error}, giving us the best of scaling and binning methods; and 3. We showed that an alternative estimator for calibration error has better sample complexity than the plugin estimator.
 % Our method gives us 35\% lower calibration error on CIFAR-10, and up to 5x lower calibration error on ImageNet, with $B = 100$ bins.
 % There are many exciting avenues for future work:
 % \begin{enumerate}
