@@ -15,7 +15,7 @@ Let $\mathcal{X}$ be the input space and $\mathcal{Y}$ be the label space where 
 Let $X \in \mathcal{X}$ and $Y \in \mathcal{Y}$ be random variables denoting the input and label, given by an unknown joint distribution \pl{use mathbb} $P(X, Y)$. Expectations are taken over all random variables unless otherwise specified.
 \pl{this sounds weird because this is the standard practice}
 
-Suppose we have a model $f : \mathcal{X} \to [0, 1]$ where the \pl{(possibly uncalibrated)} output of the model represents the model's confidence that the label is 1. \pldel{As $f$ may not be calibrated, we} define the calibration error, which examines the difference between the model's probability and the true probability given the model's output: \pl{move this sentence to after the definition} If the calibration error is $0$ then the model is perfectly calibrated.
+Suppose we have a model $f : \mathcal{X} \to [0, 1]$ where the (possibly uncalibrated) output of the model represents the model's confidence that the label is 1. The calibration error examines the difference between the model's probability and the true probability given the model's output:
 
 \begin{definition}[Calibration error]
 For $p \geq 1$, the $\ell_p$ calibration error of $f : \mathcal{X} \to [0, 1]$ is given by:
@@ -23,6 +23,9 @@ For $p \geq 1$, the $\ell_p$ calibration error of $f : \mathcal{X} \to [0, 1]$ i
 \lpce(f) = \Big(\expect\big[ \left|f(X) - \expect[Y \mid f(X)] \right|^p \big] \Big)^{1/p}
 \end{align}
 \end{definition}
+
+If the calibration error is $0$ then the model is perfectly calibrated.
+
 \pl{why do we need the general $\ell_p$ case? we only do $\ell_2$ in this paper, right?}
 
 \pl{IMPORTANT: we use $\ell_2$, $L^2$, and $L_2$ in this paper; take a careful pass over it to make it all the same}

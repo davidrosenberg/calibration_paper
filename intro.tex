@@ -4,11 +4,11 @@
 
 The probability that a system outputs for an event should reflect the true frequency of that event: if an automated diagnosis system says 1,000 patients have cancer with probability 0.1, approximately 100 of them should indeed have cancer.
 In this case, we say the model is uncertainty calibrated. The importance of this notion of calibration has been emphasized in personalized medicine~\cite{jiang2012calibrating}, meteorological forecasting~\cite{murphy1973vector, murphy1977reliability, degroot1983forecasters,gneiting2005weather, brocker2009decomposition} and natural language processing applications~\cite{nguyen2015posterior, card2018calibration}.
-As most modern machine learning models, such as neural networks, do not output calibrated probabilities out of the box~\cite{guo2017calibration, zadrozny2001calibrated, kuleshov2018accurate}, \pl{since you use 'As ...', here should say here that 'researchers } recalibration methods take the output of an uncalibrated model, and transform it into a calibrated probability.
+As most modern machine learning models, such as neural networks, do not output calibrated probabilities out of the box~\cite{guo2017calibration, zadrozny2001calibrated, kuleshov2018accurate}, reseachers use recalibration methods that take the output of an uncalibrated model, and transform it into a calibrated probability.
 \emph{Scaling} approaches for recalibration---Platt scaling~\cite{platt1999probabilistic}, isotonic regression~\cite{zadrozny2002transforming}, and temperature scaling~\cite{guo2017calibration}---are widely used and require very few samples, but do they actually produce calibrated probabilities?
 
-\emph{We discover that these methods are less calibrated than reported.} Past work approximates a model's calibration error using a finite set of bins. We show that by using more bins, we can uncover a higher calibration error \pldel{for models} on CIFAR-10 and ImageNet.
-We show that a fundamental limitation with approaches that output a continuous range of probabilities is that their true calibration error \pl{is actually \emph{unmeasurable}} may never be measurable with a finite number of bins (Example~\ref{ex:continuous-not-calibrated}).
+\emph{We discover that these methods are less calibrated than reported.} Past work approximates a model's calibration error using a finite set of bins. We show that by using more bins, we can uncover a higher calibration error for models on CIFAR-10 and ImageNet.
+We show that a fundamental limitation with approaches that output a continuous range of probabilities is that their true calibration error is unmeasurable with a finite number of bins (Example~\ref{ex:continuous-not-calibrated}).
 
 An alternative approach, histogram binning~\cite{zadrozny2001calibrated}, outputs probabilities from a finite set.
 Histogram binning can produce a model that is calibrated, and unlike scaling methods we can measure its calibration error, but it is sample inefficient.
@@ -20,8 +20,8 @@ Like scaling methods, we fit a simple function $g \in \mathcal{G}$ to the recali
 We then bin the input space so that an equal number of inputs land in each bin.
 In each bin, we output the average of the $g$ values in that bin---these are the gray circles in Figure~\ref{fig:var_red_binning}.
 In contrast, histogram binning outputs the average of the label values in each bin (Figure~\ref{fig:hist_binning}).
-The motivation behind our method is that the $g$ values in each bin are in a narrower range than the label values, so when we take the average we incur \pl{lower} \pldel{less of an} estimation error.
-If $\mathcal{G}$ is well chosen \pl{what does this mean?}, our method requires $O(\frac{1}{\epsilon^2} + B)$ samples to achieve calibration error $\epsilon$ instead of $O(\frac{B}{\epsilon^2})$ samples for histogram binning, where $B$ is the number of model outputs (Theorem~\ref{thm:final-calib}). Note that in prior work, binning the outputs of a function was used for evaluation and without any guarantees, whereas in our case it is used for the method itself, and we show improved sample complexity.
+The motivation behind our method is that the $g$ values in each bin are in a narrower range than the label values, so when we take the average we incur lower estimation error.
+If $\mathcal{G}$ is well chosen\pl{what does this mean?}, our method requires $O(\frac{1}{\epsilon^2} + B)$ samples to achieve calibration error $\epsilon$ instead of $O(\frac{B}{\epsilon^2})$ samples for histogram binning, where $B$ is the number of model outputs (Theorem~\ref{thm:final-calib}). Note that in prior work, binning the outputs of a function was used for evaluation and without any guarantees, whereas in our case it is used for the method itself, and we show improved sample complexity.
 
 \begin{figure}
      \centering
@@ -42,7 +42,7 @@ If $\mathcal{G}$ is well chosen \pl{what does this mean?}, our method requires $
      \begin{subfigure}[b]{0.32\textwidth}
          \centering
          \includegraphics[width=\textwidth]{variance_reduced_binning_with_deltas}
-         \caption{\Ourcal{} \pl{remove 'the'}}
+         \caption{\Ourcalnothe{}}
          \label{fig:var_red_binning}
      \end{subfigure}
         \caption{
@@ -60,8 +60,8 @@ Next, we turn to the question of estimating the calibration error. Prior work in
 
 We run multiclass calibration experiments on CIFAR-10~\cite{krizhevsky2009learningmultiple} and ImageNet~\cite{deng2009imagenet}.
 The objective is to minimize the mean-squared error, also known as the Brier score~\cite{brier1950verification}, subject to a calibration error budget~\cite{gneiting2005weather}.
-We show that \ourcal{} achieves a better \pl{lower} calibration error than histogram binning, while allowing us to measure the true calibration error.
-For example, we get a \emph{35\% lower calibration error on CIFAR-10} and a \emph{5x lower calibration error on ImageNet} than histogram binning if \pl{for} $B = 100$.
+We show that \ourcal{} achieves a lower calibration error than histogram binning, while allowing us to measure the true calibration error.
+For example, we get a \emph{35\% lower calibration error on CIFAR-10} and a \emph{5x lower calibration error on ImageNet} than histogram binning for $B = 100$.
 
 % In summary, our contributions are:
 % \begin{enumerate}
