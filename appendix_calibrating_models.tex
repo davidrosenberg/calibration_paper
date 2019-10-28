@@ -7,9 +7,9 @@
 Our analysis of the sample complexity of \ourcal{} requires some assumptions on the function family $\G{}$:
 
 \begin{enumerate}
-\item (Finite parameters). Let $\G{} = \{ g_{\theta} : \mathcal{Z} \to [0, 1] \; | \; \theta \in A \}$ where $A \subseteq \mathbb{R}^{d}$ and $A$ is open.
+  \item (Finite\pl{-dimensional} parameters). Let $\G{} = \{ g_{\theta} : \mathcal{Z} \to [0, 1] \; | \; \theta \in A \}$ where $A \subseteq \mathbb{R}^{d}$ and $A$ is open.
 \item (Injective). For all $g_{\theta} \in \G{}$ we assume $g_{\theta}$ is injective.
-\item (Consistency) Intuitively, consistency means that given infinite data, the estimated parameters should converge to the unique optimal parameters in $A$.
+\item (Consistency). Intuitively, consistency means that given infinite data, the estimated parameters should converge to the unique optimal parameters in $A$.
 More formally, suppose $\theta^* = \argmin_{\theta \in A} \mse(g_{\theta})$.
 Then the parameters $\hat{\theta}_n$ estimated by minimizing the empirical MSE with $n$ samples in step 1 of the algorithm, converges in distribution to $\theta^*$, that is, $\hat{\theta}_n \to_D \theta^*$ as $n \to \infty$. Note that consistency inherently assumes identifiability, that there is a unique minimizer $\theta^*$ in the open set $A$.
 \item (Regularity). We assume that regularity conditions in Theorem 5.23 of~\cite{vaart98asymptotic} hold, which require the loss to be twice differentiable with symmetric, non-singular Hessian, and that $g_{\theta}(x)$ is Lipschitz in $\theta$ for all $x$. We will also require the second derivative to be continuous.
