@@ -13,7 +13,7 @@
 \subsection{Binary classification}
 
 Let $\mathcal{X}$ be the input space and $\mathcal{Y}$ be the label space where $\mathcal{Y} = \{0, 1\}$ for binary classification.
-Let $X \in \mathcal{X}$ and $Y \in \mathcal{Y}$ be random variables denoting the input and label, given by an unknown joint distribution \pl{use mathbb} $P(X, Y)$. We follow the standard convention of assuming expectations are taken over all random variables.
+Let $X \in \mathcal{X}$ and $Y \in \mathcal{Y}$ be random variables denoting the input and label, given by an unknown joint distribution \pl{use mathbb}$P$. As usual, expectations are taken over all random variables.
 
 Suppose we have a model $f : \mathcal{X} \to [0, 1]$ where the (possibly uncalibrated) output of the model represents the model's confidence that the label is 1. The calibration error examines the difference between the model's probability and the true probability given the model's output:
 
@@ -38,12 +38,12 @@ We often also wish to minimize the mean-squared error---also known as the Brier 
 The mean-squared error of $f : \mathcal{X} \to [0, 1]$ is given by $\textup{MSE}(f) = \mathbb{E}[(f(X) - Y)^2]$.
 \end{definition}
 
-We often want to minimize the MSE subject to a calibration budget~\cite{gneiting2005weather, gneiting2007probabilistic}. Of course, these two measures are not orthogonal \pl{independent?} because $\mbox{MSE} = 0$ implies perfect calibration; in fact the MSE is the sum of the squared calibration error and a ``sharpness'' term~\cite{murphy1973vector,degroot1983forecasters, kuleshov2015calibrated}.
+We often want to minimize the MSE subject to a calibration budget~\cite{gneiting2005weather, gneiting2007probabilistic}. Of course, these two measures are not orthogonal\pl{independent?} because $\mbox{MSE} = 0$ implies perfect calibration; in fact the MSE is the sum of the squared calibration error and a ``sharpness'' term~\cite{murphy1973vector,degroot1983forecasters, kuleshov2015calibrated}.
 
 \subsection{Multiclass classification}
 
-While calibration in binary classification is \pl{well-defined?} well-studied,
-it's less clear what to do for multiclass \pl{make less casual}, where multiple definitions abound, differing in their strength. In the multiclass setting, $\mathcal{Y} = [K] = \{1, \dots, K\}$ and $f : \mathcal{X} \to [0, 1]^K$ outputs a confidence measure for each class in $[K]$ \pl{probability distribution over the $K$ classes [have to sum to 1, right?]}.
+While calibration in binary classification is \pl{well-defined?}well-studied,
+it's less clear what to do for multiclass\pl{make less casual}, where multiple definitions abound, differing in their strengths. In the multiclass setting, $\mathcal{Y} = [K] = \{1, \dots, K\}$ and $f : \mathcal{X} \to [0, 1]^K$ outputs a confidence measure for each class in $[K]$\pl{probability distribution over the $K$ classes [have to sum to 1, right?]}.
 
 \begin{definition}[Top-label calibration error]
 The top-label calibration error examines the difference between the model's probability for its top prediction and the true probability of that prediction given the model's output:
