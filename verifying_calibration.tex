@@ -7,31 +7,33 @@
 \newcommand{\piSmallBound}[0]{\ensuremath{\frac{12}{n}\log{\frac{2B}{\delta}}}}
 
 \tm{I wonder we should have subscript for $\cancelEst$. $\ensuremath{\hat{E}_{\textup{cxl}}^2}$? Sounds a bit verbose..} \ak{Ah are you suggesting we should, or should not, have these subscripts? I removed it for the debiased estimator, but kept it for plugin.}
-Before deploying our model we would like to check that it has calibration error below some desired threshold $\epsilon^2$. In this section we show that we can efficiently estimate the calibration error of binned models, if the binning scheme is 2-well-balanced. Recent work in machine learning typically estimates each term in the calibration error directly from samples~\cite{nguyen2015posterior, hendrycks2019anomaly, kuleshov2015calibrated, hendrycks2019pretraining}. Older work in meteorology~\cite{brocker2012empirical, ferro2012bias} notices that this leads to a biased estimate, and proposes a `debiased' estimator that subtracts off an approximate correction term to reduce the bias. Our contribution is to show that while the naive estimator requires samples proportional to $B$ to estimate the calibration error, the debiased estimator requires samples proportional to $\sqrt{B}$. To our knowledge we are the first to show an \emph{improved sample complexity}---prior work only showed that the naive estimator is biased.
+Before deploying our model we would like to check that it has calibration error below some desired threshold $\epsilon^2$ \pl{is this actually how we'd use our technique? I thought the measuring calibration error is just an offline thing we'd to do validate the calibration method; otherwise that's a lot of samples we need}. In this section we show that we can efficiently estimate the calibration error of binned models, if the binning scheme is 2-well-balanced. Recent work in machine learning typically estimates each term in the calibration error directly \pl{not sure what 'directly' means - all estimators do it from samples; say 'plugin' - in general, give good names to things and use them} from samples~\cite{nguyen2015posterior, hendrycks2019anomaly, kuleshov2015calibrated, hendrycks2019pretraining}. Older work in meteorology~\cite{brocker2012empirical, ferro2012bias} notices that this leads to a biased estimate, and proposes a `debiased' \pl{why quotes? I'd put emph around the name} estimator that subtracts off an approximate correction term to reduce the bias. Our contribution is to show that while the naive \pl{plugin} estimator requires samples proportional to $B$ to estimate the calibration error, the debiased estimator requires samples proportional to $\sqrt{B}$. To our knowledge we are the first to show an \emph{improved sample complexity}---prior work only showed that the naive estimator is biased \pl{and that the debiased estimator is unbiased, presumably}.
 
-Suppose we wish to measure the $\lsquared{}$ calibration error ${E^*}^2$ of a binned model $f : \mathcal{X} \to S$ where $S \subseteq [0, 1]$ and $|S| = B$. Suppose we get an evaluation set $T_n = \{(x_1, y_1), \dots, (x_n, y_n)\}$. Past work typically estimates the calibration error by directly estimating each term from samples:
+Suppose we wish to measure the $\lsquared{}$ calibration error ${E^*}^2$ \pl{ugly - fix this; is this even defined? I kind of want to just write $E$ everywhere without the square} of a binned model $f : \mathcal{X} \to S$ where $S \subseteq [0, 1]$ and $|S| = B$. Suppose we get an evaluation set $T_n = \{(x_1, y_1), \dots, (x_n, y_n)\}$. \pl{notation clashes with the $T_1,T_2,T_3$ from before, which I think we should change} Past work typically estimates the calibration error by directly \pl{again, not meaningful} estimating each term from samples:
 
 \begin{restatable}[Plugin estimator]{definition}{pluginDfn}
 \label{dfn:plugin-estimator}
   Let $L_s$ denote the $y_j$ values where the model outputs $s$: $L_s = \{ y_j \; | \; (x_j, y_j) \in T_n\wedge f(x_j) = s \}$. Let $\hat{p}_s$ be the estimated probability of $f$ outputting $s$:
 $\hat{p}_s = \frac{|L_s|}{n}$.
 
-Let $\hat y_s$ be the empirical average of $Y$ when the model outputs $s$: $\hat y_s = \sum_{y \in L_s} \frac{y}{|L_s|}$
+Let $\hat y_s$ be the empirical average of $Y$ when the model outputs $s$: $\hat y_s = \sum_{y \in L_s} \frac{y}{|L_s|}$.
 
   The plugin estimate for the $\lsquared{}$ calibration error is \tm{$\ell^2$ calibration error sounds clearer}the weighted squared difference between $\hat y_s$ and $s$:
 \[ \pluginEst{} = \sum_{s \in S} \hat{p}_s (s - \hat y_s)^2 \]
+  \pl{number all equations}
 \end{restatable}
-\pl{can we just use $L^2$ for this whole paper?} \ak{Should be fixed.}
+\pl{I feel like we should be sharing notation...when we talk about binning, it's the same stuff}
 
 Alternatively, \cite{brocker2012empirical, ferro2012bias} propose to subtract an approximation of the bias from the estimate:
 
 \begin{restatable}[Debiased estimator]{definition}{cancelingDfn}
   The debiased estimator for the $\lsquared$ error is:
 \[ \hat{E}^2 = \sum_{s \in S} \hat{p}_s \Big[ (s - \hat{y}_s)^2 - \frac{\hat{y}_s(1 - \hat{y}_s)}{\hat{p}_sn-1} \Big] \]
+  \pl{number equations}
+  \pl{give a name (put it behind a macro) $\hat E_\text{db}$}
 \end{restatable}
 
-We are interested in analyzing the number of samples required to estimate the calibration error within a constant multiplicative factor, that is to give an estimate $\hat{E}^2$ such that $\lvert \hat{E}^2 - {E^*}^2 \rvert \leq \frac{1}{2}{E^*}^2$ (where $\frac{1}{2}$ can be replaced by any constant $r$ with $0 < r < 1$). Our main result is that the plugin estimator requires $\widetilde{O}(\frac{B}{\epsilon^2})$ samples (Theorem~\ref{thm:final-plugin}) while the debiased estimator requires $\widetilde{O}(\frac{\sqrt{B}}{\epsilon^2})$ samples (Theorem~\ref{thm:final-ours}), where $\epsilon^2 = {E^*}^2$.
-
+We are interested in analyzing the number of samples required to estimate the calibration error within a constant multiplicative factor, that is to give an estimate $\hat{E}^2$ such that $\lvert \hat{E}^2 - {E^*}^2 \rvert \leq \frac{1}{2}{E^*}^2$ (where $\frac{1}{2}$ can be replaced by any constant $r$ with $0 < r < 1$). Our main result is that the plugin estimator requires $\widetilde{O}(\frac{B}{\epsilon^2})$ samples (Theorem~\ref{thm:final-plugin}) while the debiased estimator requires $\widetilde{O}(\frac{\sqrt{B}}{\epsilon^2})$ samples (Theorem~\ref{thm:final-ours}), where $\epsilon^2 = {E^*}^2$ \pl{huh?}.
 
 % Suppose we want to check if our model has calibration error $\leq \epsilon^2$. With high probability, if the calibration error is $> \epsilon^2$, we should output that the model is not calibrated, but if the calibration error is $\leq \frac{1}{2} \epsilon^2$, we should output that it is calibrated. They way we do this is we take $n$ samples and get an estimate, $\hat{E}^2$, of the calibration error---we output `calibrated' iff $\hat{E}^2 \leq \frac{3}{4} \epsilon^2$. We are interested in analyzing how large $n$ needs to be. Equivalently, we can examine the number of samples required to estimate the calibration error within a constant multiplicative factor, that is $\lvert \hat{E}^2 - {E^*}^2 \rvert \leq \frac{1}{2}{E^*}^2$.
 

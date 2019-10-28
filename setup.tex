@@ -11,17 +11,21 @@
 
 \subsection{Binary classification}
 
-Let $\mathcal{X}$ be the input space and $\mathcal{Y}$ be the label space where $\mathcal{Y} = \{0, 1\}$ in the binary classification setting.
-Let $X \in \mathcal{X}$ and $Y \in \mathcal{Y}$ be random variables denoting the input and label, given by an unknown joint distribution $P(X, Y)$. Expectations are taken over all random variables unless otherwise specified.
+Let $\mathcal{X}$ be the input space and $\mathcal{Y}$ be the label space where $\mathcal{Y} = \{0, 1\}$ for binary classification.
+Let $X \in \mathcal{X}$ and $Y \in \mathcal{Y}$ be random variables denoting the input and label, given by an unknown joint distribution \pl{use mathbb} $P(X, Y)$. Expectations are taken over all random variables unless otherwise specified.
+\pl{this sounds weird because this is the standard practice}
 
-Suppose we have a model $f : \mathcal{X} \to [0, 1]$ where the output of the model represents the model's confidence that the label is 1. As $f$ may not be calibrated, we define the calibration error, which examines the difference between the model's probability and the true probability given the model's output. If the calibration error is $0$ then the model is perfectly calibrated.
+Suppose we have a model $f : \mathcal{X} \to [0, 1]$ where the \pl{(possibly uncalibrated)} output of the model represents the model's confidence that the label is 1. \pldel{As $f$ may not be calibrated, we} define the calibration error, which examines the difference between the model's probability and the true probability given the model's output: \pl{move this sentence to after the definition} If the calibration error is $0$ then the model is perfectly calibrated.
 
 \begin{definition}[Calibration error]
 For $p \geq 1$, the $\ell_p$ calibration error of $f : \mathcal{X} \to [0, 1]$ is given by:
 \begin{align}
-\lpce(f) = \Big(\expect\big[ \mid f(X) - \expect[Y \; | \; f(X)] \mid^p \big] \Big)^{1/p}
+\lpce(f) = \Big(\expect\big[ \left|f(X) - \expect[Y \mid f(X)] \right|^p \big] \Big)^{1/p}
 \end{align}
 \end{definition}
+\pl{why do we need the general $\ell_p$ case? we only do $\ell_2$ in this paper, right?}
+
+\pl{IMPORTANT: we use $\ell_2$, $L^2$, and $L_2$ in this paper; take a careful pass over it to make it all the same}
 
 The $\lsquared$ calibration error, $(\ltwoce(f))^2$,~\cite{murphy1973vector,murphy1977reliability,degroot1983forecasters, nguyen2015posterior, hendrycks2019anomaly, kuleshov2015calibrated, hendrycks2019pretraining, brocker2012empirical} is most commonly used but the $\ell_1$ and $\ell_{\infty}$ calibration errors are also used in the literature~\cite{guo2017calibration, naeini2015obtaining, nixon2019calibration}.
 
@@ -33,12 +37,12 @@ We often also wish to minimize the mean-squared error---also known as the Brier 
 The mean-squared error of $f : \mathcal{X} \to [0, 1]$ is given by $\textup{MSE}(f) = \mathbb{E}[(f(X) - Y)^2]$.
 \end{definition}
 
-We often want to minimize the MSE subject to a calibration budget~\cite{gneiting2005weather, gneiting2007probabilistic}. Of course, these are not orthogonal because $\mbox{MSE} = 0$ implies perfect calibration---in fact the MSE is the sum of the $\lsquared$ calibration error and a ``sharpness'' term~\cite{murphy1973vector,degroot1983forecasters, kuleshov2015calibrated}.
+We often want to minimize the MSE subject to a calibration budget~\cite{gneiting2005weather, gneiting2007probabilistic}. Of course, these \pl{two measures} are not orthogonal \pl{independent?} because $\mbox{MSE} = 0$ implies perfect calibration; in fact the MSE is the sum of the $\lsquared$ calibration error and a ``sharpness'' term~\cite{murphy1973vector,degroot1983forecasters, kuleshov2015calibrated}.
 
 \subsection{Multiclass classification}
 
-While calibration in binary classification is well-studied,
-it's less clear what to do for multiclass, where multiple definitions abound, differing in their strength. In the multiclass setting, $\mathcal{Y} = [K]$, where $[K] = \{1, \dots, K\}$ and $f : \mathcal{X} \to [0, 1]^K$ outputs a confidence measure for each class in $[K]$.
+While calibration in binary classification is \pl{well-defined?} well-studied,
+it's less clear what to do for multiclass \pl{make less casual}, where multiple definitions abound, differing in their strength. In the multiclass setting, $\mathcal{Y} = [K] = \{1, \dots, K\}$ and $f : \mathcal{X} \to [0, 1]^K$ outputs a confidence measure for each class in $[K]$ \pl{probability distribution over the $K$ classes [have to sum to 1, right?]}.
 
 \begin{definition}[Top-label calibration error]
 The $\lsquared$ top-label calibration error examines the difference between the model's probability for its top prediction and the true probability of that prediction given the model's output:
@@ -47,41 +51,47 @@ The $\lsquared$ top-label calibration error examines the difference between the 
 \end{align}
 \end{definition}
 
+\pl{make argmax non-italics like max}
+
+\pl{if we default to $L_2$ everywhere, then we can just drop it everywhere for brevity}
+
 We would often like the model to be calibrated on less likely predictions as well---imagine that a medical diagnosis system says there is a $50\%$ chance a patient has a benign tumor, a $10\%$ chance she has an aggressive form of cancer, and a $40\%$ chance she has one of a long list of other conditions. We would like the model to be calibrated on all of these predictions so we define the marginal calibration error which examines, \emph{for each class}, the difference between the model's probability and the true probability of that class given the model's output.
 
 \begin{definition}[Marginal calibration error]
 \label{dfn:marginal-ce}
-Let $w_k \in [0, 1]$ denote how important calibrating class $k$ is, where $w_k = \prob(Y = k)$ if all classes are equally important. The $\lsquared$ marginal calibration error is:
+  Let $w_k \in [0, 1]$ denote how important calibrating class $k$ is, where $w_k = \prob(Y = k)$ if all classes are equally important \pl{this doesn't look like equally important because this is weighted by frequency}. The $\lsquared$ marginal calibration error is:
 \begin{align}
 \margsquaredce(f) = \sum_{k = 1}^K w_k \mathbb{E}\big[ (f(X)_k - \prob(Y = k \mid f(X)_k))^2 \big]
 \end{align}
 \end{definition}
+\pl{really would like to remove the $L^2$ everywhere}
 
-Prior works~\cite{guo2017calibration, hendrycks2019anomaly, hendrycks2019pretraining} often claim to perform multiclass calibration but only measure top-label calibration---\cite{nixon2019calibration} and concurrent work to ours~\cite{kull2019temperature} define similar per-class calibration metrics where temperature scaling~\cite{guo2017calibration} scores worse than vector scaling despite having better top-label calibration.
+Prior works~\cite{guo2017calibration, hendrycks2019anomaly, hendrycks2019pretraining} often claim \pl{sounds a bit accusatory} to perform multiclass calibration but only measure top-label calibration---\cite{nixon2019calibration} and concurrent work to ours~\cite{kull2019temperature} define similar per-class calibration metrics where temperature scaling~\cite{guo2017calibration} \pl{is} scores worse than vector scaling despite having better top-label calibration.
 % In the Appendix we discuss other notions of multiclass calibration.
 
-\pl{is marginal calibration standard terminology? makes sense when compared with joint, but sounds a bit strange in relation to top-label}
+%\pl{is marginal calibration standard terminology? makes sense when compared with joint, but sounds a bit strange in relation to top-label}
+%\ak{There isn't a standard terminology here that I am aware of. Nixon et al (came out a few weeks before neurips deadline) have a similar metric called static calibration error. Seems fairly concurrent to ours, and I prefer marginal.}
 
-\ak{There isn't a standard terminology here that I am aware of. Nixon et al (came out a few weeks before neurips deadline) have a similar metric called static calibration error. Seems fairly concurrent to ours, and I prefer marginal.}
-
-For notational simplicity, our theory focuses on the binary classification setting. We can transform top-label calibration into a binary calibration problem---the model outputs a probability corresponding to its top prediction, and the label represents whether the model gets it correct or not. Marginal calibration can be transformed into $K$ one-vs-all binary calibration problems where for each $k \in [K]$ the model outputs the probability associated with the $k$-th class, and the label represents whether the input belongs to the $k$-th class or not~\cite{zadrozny2002transforming}. We look at both top-label calibration and marginal calibration in our experiments.
+For notational simplicity, our theory focuses on the binary classification setting. We can transform top-label calibration into a binary calibration problem---the model outputs a probability corresponding to its top prediction, and the label represents whether the model gets it correct or not. Marginal calibration can be transformed into $K$ one-vs-all binary calibration problems where for each $k \in [K]$ the model outputs the probability associated with the $k$-th class, and the label represents whether \pl{the correct class is $k$} \pldel{the input belongs to the $k$-th class or not}~\cite{zadrozny2002transforming}. We \pl{consider} look at both top-label calibration and marginal calibration in our experiments.
 Other notions of multiclass calibration include joint calibration (which requires the entire probability \emph{vector} to be calibrated)~\cite{murphy1973vector, brocker2009decomposition} and event-pooled calibration~\cite{kuleshov2015calibrated}.
 % Achieving joint calibration efficiently is an important direction for future research.
 
-
 \subsection{Recalibration}
 
-Since most machine learning models do not output calibrated probabilities out of the box~\cite{guo2017calibration, zadrozny2001calibrated} recalibration methods take the output of an uncalibrated model, and transform it into a calibrated probability. That is, given a trained model $f: \mathcal{X} \to \mathcal{Z}$, let $Z = f(X)$. We are given recalibration data $T = \{ (z_i, y_i) \}_{i=1}^n$ independently sampled from $P(Z, Y)$, and we wish to learn a recalibrator $g : \mathcal{Z} \to [0, 1]$ such that $g \circ f$ is well-calibrated.
+Since most machine learning models do not output calibrated probabilities out of the box~\cite{guo2017calibration, zadrozny2001calibrated} recalibration methods take the output of an uncalibrated model, and transform it into a calibrated probability. That is, given a trained model $f: \mathcal{X} \to \mathcal{Z}$ \pl{why introduce $\mathcal Z$ now? isn't this just $[0, 1]$?}, let $Z = f(X)$. We are given recalibration data $T = \{ (z_i, y_i) \}_{i=1}^n$ independently sampled from \pl{mathbb} $P(Z, Y)$, and we wish to learn a recalibrator $g : \mathcal{Z} \to [0, 1]$ such that $g \circ f$ is well-calibrated.
 
-\emph{Scaling methods}, for example Platt scaling~\cite{platt1999probabilistic}, output a function $g = \argmin_{g \in \mathcal{G}} \sum_{(z, y) \in T} \ell(g(z), y)$, where $\mathcal{G}$ is a model family, $g \in \mathcal{G}$ is continuous, and $l$ is a loss function, for example the log loss or mean-squared error. The advantage of such methods is that they converge very quickly since they only fit a single parameter.
+\emph{Scaling methods}, for example Platt scaling~\cite{platt1999probabilistic}, output a function $g = \argmin_{g \in \mathcal{G}} \sum_{(z, y) \in T} \ell(g(z), y)$, where $\mathcal{G}$ is a model family, $g \in \mathcal{G}$ is continuous \pl{why continuous? in practice, it's actually differentiable if you want to optimize it}, and $\ell$ is a loss function, for example the log-loss or mean-squared error. The advantage of such methods is that they converge very quickly since they only fit a single parameter.
+\pl{not clear form this that there's a single parameter; maybe should do $g_\theta$ and $\theta \in \mathbb R$?}
 
 \emph{Histogram binning} first constructs a set of bins (intervals) that partitions $[0, 1]$, formalized below.
+\pl{so here we are effectively assuming $\mathcal Z = [0, 1]$, so should do that throughout}
 
 \begin{definition}[Binning schemes]
 A binning scheme $\mathcal{B}$ of size $B$ is a set of $B$ intervals $I_1, \dots, I_B$ that partitions $[0, 1]$. Given an input $z \in [0, 1]$ if $z \in I_j$ let $\beta(z) = j$ be the interval z lands in.
-  \pl{rewrite: given a function $g$, define its binned version as $\hat g(z) = \text{center of $I_j$}$ for $z \in I_j$.}
-  \ak{I don't think we should define binning a function when we introduce histogram binning?}
-% into $B$ disjoint intervals or bins, defined by bin boundaries $0 = b_0 < b_1 < ... < b_B = 1$. For $1 \leq j \leq B$, the $j$-th bin is the interval $I_j$ where $I_1 = [b_0, b_1]$ and $I_j = (b_{j-1}, b_j]$ for $j > 1$. 
+  \pl{$\beta$ comes from nowhere, should this be $\mathcal{B}$?}
+  \pl{rewrite: Given $z$, let $\beta(z) = j$, where $j$ is the interval that $z$ lands in ($z \in I_j$).}
+%\pl{rewrite: given a function $g$, define its binned version as $\hat g(z) = \text{center of $I_j$}$ for $z \in I_j$.}
+%\ak{I don't think we should define binning a function when we introduce histogram binning?}
 \end{definition}
 
-The bins are typically chosen such that either $I_1 = [0, \frac{1}{B}], I_2 = (\frac{1}{B}, \frac{2}{B}], \dots, I_B = (\frac{B-1}{B}, 1]$ or so that each bin contains an equal number of $z_i$ values in the recalibration data~\cite{zadrozny2001calibrated, guo2017calibration}. Histogram binning then outputs the average $y_i$ value in each bin.
+The bins are typically chosen such that either $I_1 = [0, \frac{1}{B}], I_2 = (\frac{1}{B}, \frac{2}{B}], \dots, I_B = (\frac{B-1}{B}, 1]$ \pl{who does this? cite?} or so that each bin contains an equal number of $z_i$ values in the recalibration data~\cite{zadrozny2001calibrated, guo2017calibration}. Histogram binning then outputs the average $y_i$ value in each bin.
