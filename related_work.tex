@@ -6,9 +6,10 @@ Besides the calibration error, prior work also uses the Hosmer-Lemeshov test~\ci
 Concurrent work to ours~\cite{widmann2019calibration} also notice that using the plugin calibration error estimator to test for calibration leads to rejecting well-calibrated models too often.
 Besides calibration, other ways of producing and quantifying uncertainties include Bayesian methods~\cite{gelman1995bayesian} and conformal prediction~\cite{shafer2008tutorial, lei2016distribution}.
 
+Algorithms and analysis in density estimation typically assume the true density is $L-$Lipschitz, while in calibration applications, the calibration error of the final model should be measurable from data, without making untestable assumptions on $L$.
+
 Bias is a common issue with statistical estimators, for example, the seminal work by Stein~\cite{stein81sure} fixes the bias of the mean-squared error. However, debiasing an estimator does not typically lead to \emph{an improved sample complexity}, as it does in our case.
 Recalibration is related to (conditional) density estimation~\cite{wasserman2019, parzen1962} as the goal is to estimate $\expect[Y \mid f(X)]$.
-Algorithms and analysis in density estimation typically assume the true density is $L-$Lipschitz, while in calibration applications, the calibration error of the final model should be measurable from data, without making untestable assumptions on $L$.
 
 \section{Conclusion}
 
@@ -29,7 +30,7 @@ There are many exciting avenues for future work:
 \begin{enumerate}
 \item \textbf{Dataset shifts}: Can we maintain calibration under dataset shifts (for example, train on MNIST, but evaluate on SVHN) without labeled examples from the target dataset?
 \item \textbf{Measuring calibration}: Can we come up with alternative metrics that still capture a notion of calibration, but are measurable for scaling methods?
-\item \textbf{Estimating calibration}: Can we come up with a more sample efficient estimator for the $\ell_1$ calibration error (ECE), which is also biased? Our preliminary experiments suggest that the Bootstrap~\cite{efron1979bootstrap} can be a generic way to debias the calibration error, can we show this?
+\item \textbf{Estimating calibration}: Can we come up with a more sample efficient estimator for the $\ell_1$ calibration error (ECE)? Our preliminary experiments suggest that the Bootstrap~\cite{efron1979bootstrap} can be a generic way to debias the $\ell_p$ calibration error, can we show this?
 
 % The plugin estimator for the $\ell_1$ calibration error (called the empirical calibration error in~\cite{guo2017calibration, nixon2019calibration}) is also biased---can we come up with a more sample efficient estimator for the $\ell_1$ calibration error?
 % Many papers use calibration error metrics such as the $\lsquared$, $\ell_2$, $\ell_1$ calibration error.
