@@ -128,6 +128,7 @@
   Next, we show that we can estimate a model's calibration error more accurately using an estimator from the meteorological community---or equivalently measure its calibration error with fewer samples ($O(\sqrt{B})$ instead of $O(B)$).
   % We then show that methods used to estimate calibration error are suboptimal---we prove that an alternative estimator introduced in the meteorological community requires fewer samples ($O(\sqrt{B})$ instead of $O(B)$).
   We validate our approach with multiclass calibration experiments on CIFAR-10 and ImageNet, where we obtain a 35\% lower calibration error than histogram binning and, unlike scaling methods, guarantees on true calibration.
+  In these experiments, we also estimate the calibration error and ECE more accurately than the commonly used plugin estimators.
   We implement all these methods in a Python library: \url{https://pypi.org/project/uncertainty-calibration}
 
 % Applications such as weather forecasting and personalized medicine demand models that output calibrated probability estimates---those representative of the true likelihood of a prediction.
