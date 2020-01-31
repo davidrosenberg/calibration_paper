@@ -54,7 +54,7 @@
 % \newcommand{\tm}[1]{\textcolor{blue}{[TM: #1]}}
 % \newcommand{\ak}[1]{\textcolor{brown}{[AK: #1]}}
 
-\newcommand{\expect}[0]{\ensuremath{\mathbb{E}}}
+\newcommand{\expect}[0]{\ensuremath{\mathop{\mathbb{E}}}}
 \newcommand{\prob}[0]{\ensuremath{\mathbb{P}}}
 \newcommand{\ourcal}[0]{the scaling-binning calibrator}
 \newcommand{\Ourcal}[0]{The scaling-binning calibrator}
@@ -124,7 +124,11 @@
 \maketitle
 
 \begin{abstract}
-  Applications such as weather forecasting and personalized medicine demand models that output calibrated probability estimates---those representative of the true likelihood of a prediction. Most models are not calibrated out of the box but are recalibrated by post-processing model outputs. We find in this work that popular recalibration methods like Platt scaling and temperature scaling are (i) less calibrated than reported, and (ii) current techniques cannot estimate how miscalibrated they are. An alternative method, histogram binning, has measurable calibration error but is sample inefficient---it requires $O(B/\epsilon^2)$ samples, compared to $O(1/\epsilon^2)$ for scaling methods, where $B$ is the number of distinct probabilities the model can output. To get the best of both worlds, we introduce \emph{\ourcal{}}, which first fits a parametric function that acts like a baseline for variance reduction and then bins the function values to actually ensure calibration. This requires only $O(1/\epsilon^2 + B)$ samples. We then show that methods used to estimate calibration error are suboptimal---we prove that an alternative estimator introduced in the meteorological community requires fewer samples ($O(\sqrt{B})$ instead of $O(B)$). We validate our approach with multiclass calibration experiments on CIFAR-10 and ImageNet, where we obtain a 35\% lower calibration error than histogram binning and, unlike scaling methods, guarantees on true calibration.
+  Applications such as weather forecasting and personalized medicine demand models that output calibrated probability estimates---those representative of the true likelihood of a prediction. Most models are not calibrated out of the box but are recalibrated by post-processing model outputs. We find in this work that popular recalibration methods like Platt scaling and temperature scaling are (i) less calibrated than reported, and (ii) current techniques cannot estimate how miscalibrated they are. An alternative method, histogram binning, has measurable calibration error but is sample inefficient---it requires $O(B/\epsilon^2)$ samples, compared to $O(1/\epsilon^2)$ for scaling methods, where $B$ is the number of distinct probabilities the model can output. To get the best of both worlds, we introduce \emph{\ourcal{}}, which first fits a parametric function to reduce variance and then bins the function values to actually ensure calibration. This requires only $O(1/\epsilon^2 + B)$ samples.
+  Next, we show that we can estimate a model's calibration error more accurately using an estimator from the meteorological community---or equivalently measure its calibration error with fewer samples ($O(\sqrt{B})$ instead of $O(B)$).
+  % We then show that methods used to estimate calibration error are suboptimal---we prove that an alternative estimator introduced in the meteorological community requires fewer samples ($O(\sqrt{B})$ instead of $O(B)$).
+  We validate our approach with multiclass calibration experiments on CIFAR-10 and ImageNet, where we obtain a 35\% lower calibration error than histogram binning and, unlike scaling methods, guarantees on true calibration.
+  We implement all these methods in a Python library: \url{https://pypi.org/project/uncertainty-calibration}
 
 % Applications such as weather forecasting and personalized medicine demand models that output calibrated probability estimates---those representative of the true likelihood of a prediction.
 % Scaling recalibration methods that fit a parametric model are great, because they require $O(1/\epsilon^2)$ samples to achieve calibration error $\epsilon$, but we find in this work that they are (i) less calibrated than reported and (ii) current techniques cannot estimate how miscalibrated they are.
@@ -164,11 +168,9 @@
 
 The VGG16 model we used for ImageNet experiments is from the Keras~\cite{chollet2015} module in the TensorFlow~\cite{tensorflow2015-whitepaper} library and we used pre-trained weights supplied by the library. The VGG16 model for CIFAR-10 was obtained from an open-source implementation on GitHub~\cite{geifman2017}, and we used the pre-trained weights there. We independently verified the accuracies of these models.
 
-\pldel{We include our code for the experiments in the supplementary material.}
+\input{appendix_platt_not_calibrated}
 
 \input{appendix_platt_not_calibrated_experiments}
-
-\input{appendix_platt_not_calibrated}
 
 \input{appendix_calibrating_models}
 

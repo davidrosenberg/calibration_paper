@@ -134,14 +134,14 @@ We can combine this with a decomposition of the mean-squared error into calibrat
 
 \begin{lemma}[Convergence of scaling]
 \label{lem:platt_scaling_bound}
-Given $\delta$, there exists a constant $c$, such that for all $n$, $\squaredce(g) \leq \min_{g' \in \G{}}\squaredce(g') + \frac{c}{n}$, with probability at least $1 - \delta$.
-% independent of $d, L, n$ such that with high probability over the recalibration samples $\squaredce(g) \leq \min_{g' \in \G{}}\squaredce(g') + \frac{cLd \log{R}}{\sqrt{n}}$, where recall that $g \in \G{}$ was selected as the empirical risk minimizer of the mean-squared error loss.
+Given $\delta$, there exists a constant $c$, such that for all $n$, $(\ce(g))^2 \leq \min_{g' \in \G{}}(\ce(g'))^2 + \frac{c}{n}$, with probability at least $1 - \delta$.
+% independent of $d, L, n$ such that with high probability over the recalibration samples $(\ce(g))^2 \leq \min_{g' \in \G{}}(\ce(g'))^2 + \frac{cLd \log{R}}{\sqrt{n}}$, where recall that $g \in \G{}$ was selected as the empirical risk minimizer of the mean-squared error loss.
 \end{lemma}
 
 \begin{proof}
 
 \textbf{From calibration error to mean-squared error}: We use the classic decomposition of the mean-squared error into calibration error (also known as reliability) and refinement\footnote{Note that the refinement term can be further decomposed into resolution (also known as sharpness) and irreducible uncertainty.}. For any $g \in \G{}$ we have:
-\[ \mse(g) = \underbrace{\squaredce(g)}_{\mbox{calibration}} + \underbrace{\expect[(\expect[Y \mid g(Z)] - Y)^2]}_{\mbox{refinement}} \]
+\[ \mse(g) = \underbrace{(\ce(g))^2}_{\mbox{calibration}} + \underbrace{\expect[(\expect[Y \mid g(Z)] - Y)^2]}_{\mbox{refinement}} \]
 Note that the refinement term is constant for all injective $g \in \G{}$, since for injective $g$:
 \[ \expect[(\expect[Y \mid g(Z)] - Y)^2] = \expect[(\expect[Y \mid Z] - Y)^2] \]
 This means that the difference in calibration error between any $g$ and $g'$ is precisely the difference in the mean-squared error. So it suffices to upper bound the generalization gap $\mse(g) - \mse(g^*)$ for the mean-squared error. Our analysis is fairly standard: we will show asymptotic convergence in the parameter space, and then use a Taylor expansion to show convergence in the MSE loss.
@@ -189,33 +189,32 @@ Finally, we have the tools to prove the main theorem:
 \begin{proof}[Proof of Theorem~\ref{thm:final-calib}]
 The proof pieces together Lemmas~\ref{lem:platt_scaling_bound},~\ref{thm:empirical-binning},~\ref{lem:well-balanced} and Proposition~\ref{prop:bin_low_bound}.
 
-For any fixed $c_1 > 0$, there exists $c_1'$ such that if $n \geq c_1'\big(\frac{1}{\epsilon^2}\big)$, from Lemma~\ref{lem:platt_scaling_bound}, step 1 of our algorithm gives us $g$ with $\squaredce(g) \leq \min_{g' \in \G{}}\squaredce(g') + c_1 \epsilon^2$, with probability at least $1 - \frac{\delta}{3}$.
+For any fixed $c_1 > 0$, there exists $c_1'$ such that if $n \geq c_1'\big(\frac{1}{\epsilon^2}\big)$, from Lemma~\ref{lem:platt_scaling_bound}, step 1 of our algorithm gives us $g$ with $(\ce(g))^2 \leq \min_{g' \in \G{}}(\ce(g'))^2 + c_1 \epsilon^2$, with probability at least $1 - \frac{\delta}{3}$.
 
 Next, for universal constant $c_2$, if $n \geq c_2(B \log{\frac{B}{\delta}})$, from Lemma~\ref{lem:well-balanced}, step 2 chooses a 2-well-balanced binning scheme $\bins{}$ with probability at least $1 - \frac{\delta}{3}$.
 
-From Proposition~\ref{prop:bin_low_bound}, $\squaredce(g_{\bins{}}) \leq \squaredce(g) \leq \min_{g' \in \G{}}\squaredce(g') + c_1 \epsilon^2$. Then from Lemma~\ref{thm:empirical-binning}, for any $c_3 > 0$, there exists $c_3'$ such that if $n \geq c_3'\big(\frac{1}{\epsilon^2} \log{\frac{B}{\delta}}\big)$, step 3 gives us $\hat{g_{\bins{}}}$ with $||\hat{g_{\bins{}}} - g_{\bins{}}||_2 \leq c_3 \epsilon$ with probability at least $1 - \frac{\delta}{3}$. We want to say that since $\hat{g_{\bins{}}}$ is close to $g_{\bins{}}$ and $g_{\bins{}}$ has low calibration error, this must mean that $\hat{g_{\bins{}}}$ has low calibration error.
+From Proposition~\ref{prop:bin_low_bound}, $(\ce(g_{\bins{}}))^2 \leq (\ce(g))^2 \leq \min_{g' \in \G{}}(\ce(g'))^2 + c_1 \epsilon^2$. Then from Lemma~\ref{thm:empirical-binning}, for any $c_3 > 0$, there exists $c_3'$ such that if $n \geq c_3'\big(\frac{1}{\epsilon^2} \log{\frac{B}{\delta}}\big)$, step 3 gives us $\hat{g_{\bins{}}}$ with $||\hat{g_{\bins{}}} - g_{\bins{}}||_2 \leq c_3 \epsilon$ with probability at least $1 - \frac{\delta}{3}$. We want to say that since $\hat{g_{\bins{}}}$ is close to $g_{\bins{}}$ and $g_{\bins{}}$ has low calibration error, this must mean that $\hat{g_{\bins{}}}$ has low calibration error.
 
-To do this we represent the $\ell_2$ calibration error of any $g$ as the distance between $g$ and a perfectly recalibrated version of $g$. That is, we define the perfectly recalibrated version of $g$ as:
+To do this we represent the ($\ell_2$) calibration error of any $g$ as the distance between $g$ and a perfectly recalibrated version of $g$. That is, we define the perfectly recalibrated version of $g$ as:
 \[ \omega(g)(z) = \expect[ Y \mid g(Z) = z ] \]
-Then for any $g$, we can write $\ltwoce(g) = ||g - \omega(g)||_2$. By triangle inequality on the $\ell_2$ norm on functions, we have:
-\[ ||\hat{g_{\bins{}}} - \omega(g_{\bins{}})||_2 \leq ||\hat{g_{\bins{}}} - g_{\bins{}}||_2 + ||g_{\bins{}} - \omega(g_{\bins{}})||_2 \leq c_3 \epsilon + \sqrt{\min_{g' \in \G{}}\squaredce(g') + c_1 \epsilon^2} \]
+Then for any $g$, we can write $\ce(g) = ||g - \omega(g)||_2$. By triangle inequality on the $\ell_2$ norm on functions, we have:
+\[ ||\hat{g_{\bins{}}} - \omega(g_{\bins{}})||_2 \leq ||\hat{g_{\bins{}}} - g_{\bins{}}||_2 + ||g_{\bins{}} - \omega(g_{\bins{}})||_2 \leq c_3 \epsilon + \sqrt{\min_{g' \in \G{}}(\ce(g'))^2 + c_1 \epsilon^2} \]
 
-Now the LHS is not quite the $\ell_2$ calibration error of $\hat{g_{\bins{}}}$, which is $||\hat{g_{\bins{}}} - \omega(\hat{g_{\bins{}}})||_2$~\footnote{This is a very technical point, so at a first pass the reader may skip the following discussion.}.
+Now the LHS is not quite the calibration error of $\hat{g_{\bins{}}}$, which is $||\hat{g_{\bins{}}} - \omega(\hat{g_{\bins{}}})||_2$~\footnote{This is a very technical point, so at a first pass the reader may skip the following discussion.}.
 However, since $g$ is injective, $g_{\bins{}}$ takes on a different value for each interval $I_j \in \bins{}$.
 If $\hat{g_{\bins{}}}$ also takes on a different value for each interval $I_j \in \bins{}$, then we can see that $\omega(g_{\bins{}}) = \omega(\hat{g_{\bins{}}})$.
 If not, $\omega(\hat{g_{\bins{}}})$ can only merge some of the intervals of $\omega(g_{\bins{}})$, and by Jensen's we can show:
-\[ ||\hat{g_{\bins{}}} - \omega(\hat{g_{\bins{}}})||_2 \leq ||\hat{g_{\bins{}}} - \omega(g_{\bins{}})||_2 \leq c_3 \epsilon + \sqrt{\min_{g' \in \G{}}\squaredce(g') + c_1 \epsilon^2} \]
+\[ ||\hat{g_{\bins{}}} - \omega(\hat{g_{\bins{}}})||_2 \leq ||\hat{g_{\bins{}}} - \omega(g_{\bins{}})||_2 \leq c_3 \epsilon + \sqrt{\min_{g' \in \G{}}(\ce(g'))^2 + c_1 \epsilon^2} \]
 An alternative way to see this is to add infinitesimal noise to $\hat{g_{\bins{}}}$ for each interval $I_j$, in which case we get $\omega(g_{\bins{}}) = \omega(\hat{g_{\bins{}}})$.
-Finally we convert back from the $\ltwoce$ to $\squaredce$:
-\[ \squaredce(\hat{g_{\bins{}}}) = ||\hat{g_{\bins{}}} - \omega(\hat{g_{\bins{}}})||_2^2 \leq \min_{g' \in \G{}}\squaredce(g') + (c_3^2 + c_1) \epsilon^2 + 2\sqrt{(c_3^2 \epsilon^2) \big(\min_{g' \in \G{}}\squaredce(g') + c_1 \epsilon^2\big)} \]
+Finally we convert back from $\ce{}$ to the squared calibration error:
+\[ (\ce(\hat{g_{\bins{}}}))^2 = ||\hat{g_{\bins{}}} - \omega(\hat{g_{\bins{}}})||_2^2 \leq \min_{g' \in \G{}}(\ce(g'))^2 + (c_3^2 + c_1) \epsilon^2 + 2\sqrt{(c_3^2 \epsilon^2) \big(\min_{g' \in \G{}}(\ce(g'))^2 + c_1 \epsilon^2\big)} \]
 By the AM-GM inequality, we have:
-\[ 2\sqrt{(c_3^2 \epsilon^2) \big(\min_{g' \in \G{}}\squaredce(g') + c_1 \epsilon^2\big)} \leq (c_3^2 + c_1) \epsilon^2 + \min_{g' \in \G{}}\squaredce(g') \]
+\[ 2\sqrt{(c_3^2 \epsilon^2) \big(\min_{g' \in \G{}}(\ce(g'))^2 + c_1 \epsilon^2\big)} \leq (c_3^2 + c_1) \epsilon^2 + \min_{g' \in \G{}}(\ce(g'))^2 \]
 Combining these, we get:
-\[ \squaredce(\hat{g_{\bins{}}}) \leq 2 \min_{g' \in \G{}}\squaredce(g') + 2(c_3^2 + c_1) \epsilon^2 \]
+\[ (\ce(\hat{g_{\bins{}}}))^2 \leq 2 \min_{g' \in \G{}}(\ce(g'))^2 + 2(c_3^2 + c_1) \epsilon^2 \]
 By e.g. choosing $c_1 = 0.1$ and $c_3 = 0.1$, we have $2(c_3^2 + c_1) \leq 1$, which gives us the desired result. By union bound over each step, we have this with probability at least $1 - \delta$.
 
 
-% From proposition Y, $\twoce(g_{\bins{}}) \leq \ltwoce(g)$
 \end{proof}
 
 \subsection{Bounding the mean-squared error}

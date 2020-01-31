@@ -19,7 +19,7 @@ The binned version of $f$ outputs the average value of $f$ in each bin $I_j$:
 \end{definition}
 
 Given $\bins{}$, the binned calibration error of $f$ is simply the calibration error of $f_{\bins{}}$.
-A simple example shows that using binning to estimate the calibration error can severely underestimate the true calibration error (the result in fact holds for arbitrary $\ell_p$ calibration errors).
+A simple example shows that using binning to estimate the calibration error can severely underestimate the true calibration error.
 
 \newcommand{\continuousNotCalibratedText}{
   For any binning scheme $\bins{}$, and continuous bijective function $f : [0, 1] \to [0, 1]$, there exists a distribution \pl{mathbb}$P$ over $\mathcal{X}, \mathcal{Y}$ s.t. $\ce(f_{\bins{}}) = 0$ but $\ce(f) \geq 0.49$.
@@ -33,9 +33,9 @@ Note that for all $f$, $0 \leq \ce(f) \leq 1$.
 
 \newtheorem*{continuousNotCalibrated}{Restatement of Example~\ref{ex:continuous-not-calibrated}}
 
-The intuition of the construction is that in each interval $I_j$ in $\bins{}$, the model could underestimate the true probability $\expect[Y \mid f(X)]$ half the time, and overestimate the probability half the time. So if we average over the entire bin the model appears to be calibrated, even though it is very uncalibrated. The formal construction is in Appendix~\ref{sec:appendix-platt-not-calibrated}.
+The intuition of the construction is that in each interval $I_j$ in $\bins{}$, the model could underestimate the true probability $\expect[Y \mid f(X)]$ half the time, and overestimate the probability half the time. So if we average over the entire bin the model appears to be calibrated, even though it is very uncalibrated. The formal proof is in Appendix~\ref{sec:appendix-platt-not-calibrated}, and holds for arbitrary $\ell_p$ calibration errors including the ECE.
 
-Next, we show that given a function $f$, its binned version always has lower calibration error. The proof, in Appendix~\ref{sec:appendix-platt-not-calibrated}, is by Jensen's inequality. Intuitively, averaging a model's prediction within a bin allows errors at different parts of the bin to cancel out with each other. This result is similar to Theorem 2 in recent work~\cite{vaicenavicius2019calibration}.
+Next, we show that given a function $f$, its binned version always has lower calibration error. The proof, in Appendix~\ref{sec:appendix-platt-not-calibrated}, is by Jensen's inequality. Intuitively, averaging a model's prediction within a bin allows errors at different parts of the bin to cancel out with each other. This result is similar to Theorem 2 in recent work~\cite{vaicenavicius2019calibration}, and holds for arbitrary $\ell_p$ calibration errors including the ECE.
 
 \newcommand{\binningLowerBoundText}{
   Given any binning scheme $\bins{}$ and model $f : \mathcal{X} \to [0, 1]$, we have:
@@ -57,7 +57,7 @@ Our experiments on ImageNet and CIFAR-10 suggest that previous work reports numb
 As in~\cite{guo2017calibration}, our model's objective was to output the top predicted class and a confidence score associated with the prediction. For ImageNet, we started with a trained VGG16 model with an accuracy of 64.3\%. We split the validation set into 3 sets of sizes $(20000, 5000, 25000)$. We used the first set of data to recalibrate the model using Platt scaling, the second to select the binning scheme $\mathcal{B}$ so that each bin contains an equal number of points, and the third to measure the binned calibration error \pl{that's a huge number of samples! maybe have a remark that says you normally wouldn't do this if you trust your calibrator}. We calculated $90\%$ confidence intervals for the binned calibration error using 1,000 bootstrap resamples and performed the same experiment with varying numbers of bins.
 % from the TensorFlow Keras library
 
-Figure~\ref{fig:imagenet_lower_bound} shows that as we increase the number of bins on ImageNet, the measured calibration error is higher and this is statistically significant\pl{make this sound less simplistic}. For example, if we use 15 bins as in~\cite{guo2017calibration}, we would think the calibration error is around 0.02 when in reality the calibration error is at least twice as high. Figure~\ref{fig:cifar_10_lower_bound} shows similar findings for CIFAR-10, and in Appendix~\ref{sec:appendix_platt_experiments} we show that our findings hold even if we use the $\ell_1$ calibration error and alternative binning strategies.
+Figure~\ref{fig:imagenet_lower_bound} shows that as we increase the number of bins on ImageNet, the measured calibration error is higher and this is statistically significant\pl{make this sound less simplistic}. For example, if we use 15 bins as in~\cite{guo2017calibration}, we would think the calibration error is around 0.02 when in reality the calibration error is at least twice as high. Figure~\ref{fig:cifar_10_lower_bound} shows similar findings for CIFAR-10, and in Appendix~\ref{sec:appendix_platt_experiments} we show that our findings hold even if we use the $\ell_1$ calibration error (ECE) and alternative binning strategies.
 
 \begin{figure}
      \centering

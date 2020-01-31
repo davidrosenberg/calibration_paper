@@ -56,22 +56,18 @@ If $\mathcal{G}$ is well chosen\pl{what does this mean?}, our method requires $O
         \label{fig:variance_reduced_illustration}
 \end{figure}
 
-Next, we turn to the question of estimating the calibration error. Prior work in machine learning~\cite{nguyen2015posterior, guo2017calibration, hendrycks2019anomaly, kuleshov2015calibrated, hendrycks2019pretraining} directly estimates each term\pl{haven't introduced term, so doesn't make sense; choose another way to explain} in the calibration error from samples (Definition~\ref{dfn:plugin-estimator}). The sample complexity of this plugin estimator scales linearly with $B$. An alternative estimator introduced in the meteorological literature~\cite{brocker2012empirical, ferro2012bias} reduces the bias of the plugin estimator; \emph{we prove that it achieves sample complexity that scales with $\sqrt{B}$} by leveraging error cancellations across bins.
-
 We run multiclass calibration experiments on CIFAR-10~\cite{krizhevsky2009learningmultiple} and ImageNet~\cite{deng2009imagenet}.
-The objective is to minimize the mean-squared error, also known as the Brier score~\cite{brier1950verification}, subject to a calibration error budget~\cite{gneiting2005weather}.
-We show that \ourcal{} achieves a lower calibration error than histogram binning, while allowing us to measure the true calibration error.
-For example, we get a \emph{35\% lower calibration error on CIFAR-10} and a \emph{5x lower calibration error on ImageNet} than histogram binning for $B = 100$.
+% The objective is to minimize the mean-squared error, also known as the Brier score~\cite{brier1950verification}, subject to a calibration error budget~\cite{gneiting2005weather}.
+\Ourcal{} achieves a lower calibration error than histogram binning, while allowing us to measure the true calibration error unlike for scaling methods.
+We get a \emph{35\% lower calibration error on CIFAR-10} and a \emph{5x lower calibration error on ImageNet} than histogram binning for $B = 100$.
+
+Finally, we show how to estimate the calibration error of models more accurately. Prior work in machine learning~\cite{nguyen2015posterior, guo2017calibration, hendrycks2019anomaly, kuleshov2015calibrated, hendrycks2019pretraining} directly estimates each term\pl{haven't introduced term, so doesn't make sense; choose another way to explain} in the calibration error from samples (Definition~\ref{dfn:plugin-estimator}). The sample complexity of this plugin estimator scales linearly with $B$. A debiased estimator introduced in the meteorological literature~\cite{brocker2012empirical, ferro2012bias} reduces the bias of the plugin estimator; \emph{we prove that it achieves sample complexity that scales with $\sqrt{B}$} by leveraging error cancellations across bins. Experiments on CIFAR-10 and ImageNet confirm that the debiased estimator measures the calibration error more accurately.
+
+
 
 % In summary, our contributions are:
 % \begin{enumerate}
 % \item We show that scaling methods for recalibration are less calibrated than reported.
 % \item We introduce the first method, to our knowledge, that has better sample complexity than histogram binning but has a \emph{measurable calibration error}, giving us the best of both worlds of scaling and binning. Our method achieves significantly (up to 5x) lower calibration errors on top-label and per-class calibration on CIFAR-10 and ImageNet.
-% \item We show that the method typically used to estimate calibration error is suboptimal, and an alternative estimator from the meteorological community requires fewer samples to measure the calibration error.
+% \item We show that we can estimate a model's calibration error more accurately than prior work using an estimator from the meteorological community. Anyone measuring their model's calibration error or ECE can use our method to estimate the calibration error more accurately. To facilitate this we have developed a Python library for calibrating models and measuring calibration (\url{https://pypi.org/project/uncertainty-calibration}).
 % \end{enumerate}
-
-% \tm{Sometimes I do a summary of contribution paragraph for the reviewers to easily see the contribution. doesn't add anything to the quality of the paper, but sometimes useful for paper acceptance .. (As a rushed reviewer sometimes I wanted the authors to have a simple para with a bit more technical term than abstract....)}
-
-% \pl{it's a nice to have if we have space; the use of italics throughout the intro is actually pretty effective}
-
-% \ak{Is this better?}

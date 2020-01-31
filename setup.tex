@@ -24,7 +24,7 @@ The calibration error of $f : \mathcal{X} \to [0, 1]$ is given by:
 \end{align}
 \end{definition}
 
-If the calibration error is $0$ then the model is perfectly calibrated. This notion of calibration error is most commonly used~\cite{murphy1973vector,murphy1977reliability,degroot1983forecasters, nguyen2015posterior, hendrycks2019anomaly, kuleshov2015calibrated, hendrycks2019pretraining, brocker2012empirical}. Replacing the $2$ in the above definition by $p \geq 1$ we get the $\ell_p$ calibration error---the $\ell_1$ and $\ell_{\infty}$ calibration errors are also used in the literature~\cite{guo2017calibration, naeini2015obtaining, nixon2019calibration}. 
+If $\ce(f) = 0$ then $f$ is perfectly calibrated. This notion of calibration error is most commonly used~\cite{murphy1973vector,murphy1977reliability,degroot1983forecasters, nguyen2015posterior, hendrycks2019anomaly, kuleshov2015calibrated, hendrycks2019pretraining, brocker2012empirical}. Replacing the $2$s in the above definition by $p \geq 1$ we get the $\ell_p$ calibration error---the $\ell_1$ and $\ell_{\infty}$ calibration errors are also used in the literature~\cite{guo2017calibration, naeini2015obtaining, nixon2019calibration}. In addition to $\ce{}$, we also deal with the $\ell_1$ calibration error (known as ECE) in Sections~\ref{sec:challenges-measuring} and~\ref{sec:verifying_calibration}.
 
 % \pl{why do we need the general $\ell_p$ case? we only do $\ell_2$ in this paper, right?}
 
@@ -32,13 +32,13 @@ If the calibration error is $0$ then the model is perfectly calibrated. This not
 
 Calibration alone is not sufficient: consider an image dataset containing $50\%$ dogs and $50\%$ cats.
 If $f$ outputs $0.5$ on all inputs, $f$ is calibrated but not very useful.
-We often also wish to minimize the mean-squared error---also known as the Brier score---as defined below.
+We often also wish to minimize the mean-squared error---also known as the Brier score---subject to a calibration budget~\cite{gneiting2005weather, gneiting2007probabilistic}.
 
 \begin{definition}
 The mean-squared error of $f : \mathcal{X} \to [0, 1]$ is given by $\textup{MSE}(f) = \mathbb{E}[(f(X) - Y)^2]$.
 \end{definition}
 
-We often want to minimize the MSE subject to a calibration budget~\cite{gneiting2005weather, gneiting2007probabilistic}. Of course, these two measures are not orthogonal\pl{independent?} because $\mbox{MSE} = 0$ implies perfect calibration; in fact the MSE is the sum of the squared calibration error and a ``sharpness'' term~\cite{murphy1973vector,degroot1983forecasters, kuleshov2015calibrated}.
+Note that $\textup{MSE}$ and $\ce{}$ are not orthogonal\pl{independent?} and $\mbox{MSE} = 0$ implies perfect calibration; in fact the MSE is the sum of the squared calibration error and a ``sharpness'' term~\cite{murphy1973vector,degroot1983forecasters, kuleshov2015calibrated}.
 
 \subsection{Multiclass classification}
 

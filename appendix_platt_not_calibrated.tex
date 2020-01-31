@@ -8,8 +8,20 @@
 
 % The proofs for Section~\ref{sec:challenges-measuring} unlike for the other sections, from a technical standpoint, fairly standard and not a contribution of our paper. We give them only for completeness.
 
+The results in Section~\ref{sec:challenges-measuring} hold more generally for $\lpce{}$ and not just $\ce{}$. We recall the definition of $\lpce{}$:
+\begin{definition}
+For $p \geq 1$, the $\ell_p$ calibration error of $f : \mathcal{X} \to [0, 1]$ is given by:
+\begin{align}
+\lpce(f) = \Big(\expect\big[ \left|f(X) - \expect[Y \mid f(X)] \right|^p \big] \Big)^{1/p}
+\end{align}
+\end{definition}
+
+We now restate and prove the results in terms of $\lpce{}$ which implies the result for $\ce{}$ in the paper as a special case, but also for other commonly used metrics such as the $\ell_1$ calibration error (ECE).
+
 \begin{continuousNotCalibrated}
-\continuousNotCalibratedText{}
+% \continuousNotCalibratedText{}
+For any binning scheme $\bins{}$, $p \geq 1$, and continuous bijective function $f : [0, 1] \to [0, 1]$, there exists a distribution \pl{mathbb}$P$ over $\mathcal{X}, \mathcal{Y}$ s.t. $\lpce(f_{\bins{}}) = 0$ but $\lpce(f) \geq 0.49$.
+Note that for all $f$, $0 \leq \lpce(f) \leq 1$.
 \end{continuousNotCalibrated}
 
 \begin{proof}
@@ -33,7 +45,9 @@ That is, at every point the model is actually very miscalibrated at each $s$. By
 
 
 \begin{binningLowerBound}
-\binningLowerBoundText{}
+% \binningLowerBoundText{}
+Given any binning scheme $\bins{}$ and model $f : \mathcal{X} \to [0, 1]$, we have:
+\[  \lpce(f_{\bins{}}) \leq \lpce(f). \]
 \end{binningLowerBound}
 
 \begin{proof}

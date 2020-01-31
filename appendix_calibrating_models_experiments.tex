@@ -26,7 +26,7 @@ We give more experimental details for our CIFAR-10 experiment, show experimental
          \label{fig:cifar_top_cal_var_red}
      \end{subfigure}
   \caption{
-    Recalibrating using 1,000 data points on ImageNet and CIFAR-10, \ourcal{} typically achieves lower $\lsquared$ calibration error than histogram binning, especially when the number of bins $B$ is large. The difference is very significant on ImageNet, where our method does better when $B \geq 10$, and gets a nearly 5 times lower calibration error when $B = 100$. For CIFAR-10 our method does better when $B > 30$, which supports the theory, which predicts that our method does better when $B$ is large. However, when $B$ is small, practitioners should try both histogram binning and \ourcal{}.
+    Recalibrating using 1,000 data points on ImageNet and CIFAR-10, \ourcal{} typically achieves lower squared calibration error than histogram binning, especially when the number of bins $B$ is large. The difference is very significant on ImageNet, where our method does better when $B \geq 10$, and gets a nearly 5 times lower calibration error when $B = 100$. For CIFAR-10 our method does better when $B > 30$, which supports the theory, which predicts that our method does better when $B$ is large. However, when $B$ is small, practitioners should try both histogram binning and \ourcal{}.
     \pl{still need to update the legend to scaling-binning}
 }
   \label{fig:mse_estimators_bins}
@@ -49,8 +49,8 @@ Figure~\ref{fig:imagenet_top_cal_var_red} shows that on ImageNet \ourcal{} gets 
 \[ \sigma(x) = \frac{1}{1 + \exp(-x)} \]
 Then, our recalibration family $\mathcal{G}$ consists of $g$ parameterized by $a, c$, given by:
 \[ g(z; a, c) = \sigma\Big( a\log{\frac{z}{1-z}} + c \Big) \]
-In this set of synthetic experiments, we assume well-specification, that is $P(Y = 1 \mid Z=z) = g(z; a, c)$ for some $a, c$. We set $P(Z) = \mbox{Uniform}[0, 1]$. Since we know $P(Y = 1 \mid Z)$, we can approximate the true $\squaredce$ in this case, even for scaling methods. To do this, we sample $m=10000$ points $z_1, \dots, z_m$ independently from $P(Z)$. An \emph{unbiased} estimate of the $\squaredce$ then is:
-\[ \squaredce(g) \approx \frac{1}{m} \sum_{i=1}^m \big[P(Y \mid Z = z_i) - g(z_i)\big]^2 \]
+In this set of synthetic experiments, we assume well-specification, that is $P(Y = 1 \mid Z=z) = g(z; a, c)$ for some $a, c$. We set $P(Z) = \mbox{Uniform}[0, 1]$. Since we know $P(Y = 1 \mid Z)$, we can approximate the true squared calibration error in this case, even for scaling methods. To do this, we sample $m=10000$ points $z_1, \dots, z_m$ independently from $P(Z)$. An \emph{unbiased} estimate of the squared calibration error then is:
+\[ (\ce(g))^2 \approx \frac{1}{m} \sum_{i=1}^m \big[P(Y \mid Z = z_i) - g(z_i)\big]^2 \]
 For each $n$ (number of recalibration samples) and $B$ (number of bins), we run either histogram binning or \ourcal{} with scaling family $\mathcal{G}$ and evaluate its calibration error as described above. We repeat this 1000 times, and compute 90\% confidence intervals. We fix $a = 2$ and $c = 1$.
 
 \begin{figure}
@@ -72,13 +72,13 @@ For each $n$ (number of recalibration samples) and $B$ (number of bins), we run 
          \label{fig:well-spec-vary-n-var-red}
      \end{subfigure}
   \caption{
-    Plots of $1/\epsilon^2$ against $n$ (recall that $\epsilon^2$ is the $\lsquared$ calibration error). We see that for both methods $1/\epsilon^2$ increases approximately linearly with $n$, which match the theoretical bounds.
+    Plots of $1/\epsilon^2$ against $n$ (recall that $\epsilon^2$ is the squared calibration error). We see that for both methods $1/\epsilon^2$ increases approximately linearly with $n$, which match the theoretical bounds.
     \tnote{does it make sense to make this two plots have the same y limit? Or we could even put the two curves one the same figure?}
 }
   \label{fig:well-spec-vary-n}
 \end{figure}
 
-In the first sub-experiment we fix $B = 10$ and vary $n$, plotting $1/\epsilon^2$ in Figure~\ref{fig:well-spec-vary-n} (recall that $\epsilon^2$ is the $\lsquared$ calibration error). We plot the calibration errors for each method in a different plot because of the difference in scales, \ourcal{} achieves a much lower calibration error than histogram binning. As the theory predicts, we see that $1/\epsilon^2$ is approximately linear in $n$ for both calibrators. For example, when $B=10$ if we increase from $n=1000$ to $n=2000$ the $\lsquared$ calibration error of histogram binning decreases by $2.00 \pm 0.06$ times, and the $\lsquared$ calibration error of our method decreases by $1.98 \pm 0.09$ times.
+In the first sub-experiment we fix $B = 10$ and vary $n$, plotting $1/\epsilon^2$ in Figure~\ref{fig:well-spec-vary-n} (recall that $\epsilon^2$ is the squared calibration error). We plot the calibration errors for each method in a different plot because of the difference in scales, \ourcal{} achieves a much lower calibration error than histogram binning. As the theory predicts, we see that $1/\epsilon^2$ is approximately linear in $n$ for both calibrators. For example, when $B=10$ if we increase from $n=1000$ to $n=2000$ the squared calibration error of histogram binning decreases by $2.00 \pm 0.06$ times, and the squared calibration error of our method decreases by $1.98 \pm 0.09$ times.
 
 \begin{figure}
   \centering
@@ -99,13 +99,13 @@ In the first sub-experiment we fix $B = 10$ and vary $n$, plotting $1/\epsilon^2
          \label{fig:well-spec-vary-b-var-red}
      \end{subfigure}
   \caption{
-    Plots of $1/\epsilon^2$ against $b$ (recall that $\epsilon^2$ is the $\lsquared$ calibration error). Note that the $Y$ axis for \ourcal{} is clipped to 6600 and 7800 to show the relevant region. We see that for histogram binning $1/\epsilon^2$ scales close to $1/B$, in other words the calibration error increases with the number of bins (important note: the plot decreases because we plot the inverse $1/\epsilon^2$). For \ourcal{} $1/\epsilon^2$ is relatively constant, within the margin of estimation error, as predicted by the theory.
+    Plots of $1/\epsilon^2$ against $b$ (recall that $\epsilon^2$ is the squared calibration error). Note that the $Y$ axis for \ourcal{} is clipped to 6600 and 7800 to show the relevant region. We see that for histogram binning $1/\epsilon^2$ scales close to $1/B$, in other words the calibration error increases with the number of bins (important note: the plot decreases because we plot the inverse $1/\epsilon^2$). For \ourcal{} $1/\epsilon^2$ is relatively constant, within the margin of estimation error, as predicted by the theory.
     \tnote{similar comments to the those for the figure above}
 }
   \label{fig:well-spec-vary-b}
 \end{figure}
 
-In the second sub-experiment we fix $n = 2000$ and vary $B$, plotting $1/\epsilon^2$ in Figure~\ref{fig:well-spec-vary-b}. For \ourcal{} $1/\epsilon^2$ is nearly constant (within the margin of error), but for histogram binning $1/\epsilon^2$ scales close to $1/B$. When $n = 2000$ and we increase from $5$ to $20$ bins, our method's $\squaredce$ decreases by $2\% \pm 7\%$ but for histogram binning it increases by $3.71 \pm 0.15$ \emph{times}. For reference, we plot $P(Y \mid Z = z)$ in Figure~\ref{fig:well-spec-curve}.
+In the second sub-experiment we fix $n = 2000$ and vary $B$, plotting $1/\epsilon^2$ in Figure~\ref{fig:well-spec-vary-b}. For \ourcal{} $1/\epsilon^2$ is nearly constant (within the margin of error), but for histogram binning $1/\epsilon^2$ scales close to $1/B$. When $n = 2000$ and we increase from $5$ to $20$ bins, our method's squared calibration error decreases by $2\% \pm 7\%$ but for histogram binning it increases by $3.71 \pm 0.15$ \emph{times}. For reference, we plot $P(Y \mid Z = z)$ in Figure~\ref{fig:well-spec-curve}.
 
 \begin{figure}
   \centering
@@ -134,12 +134,12 @@ In the second sub-experiment we fix $n = 2000$ and vary $B$, plotting $1/\epsilo
 
 \textbf{(B) Synthetic experiments to compare \ourcal{} and the scaling method}: We run an illustrative toy experiment to show that there are some cases where \ourcal{} does better than the underlying scaling method---there are other cases where the underlying scaling method does better. \ourcal{} can do better because if we have infinite data, Proposition~\ref{prop:bin_low_bound} showed that the binned version $g_{\bins{}}$ has lower calibration error than $g$. On the other hand, in step 3 of \ourcal{} algorithm we empirically bin the outputs of the scaling method which incurs an estimation error, and could mean \ourcal{} has higher calibration error than the underlying scaling method. Our key advantage is that unlike scaling methods our method has measurable calibration error so if we are not calibrated we can get more data or use a different scaling family.
 
-Building on the previous synthetic experiments, in this experiment, we set the ground truth $P(Y = 1 \mid Z=z) = g(z; a, c) + h(z)$ where for each $z$, $h(z) \in \{-0.02, 0.02\}$ with equal probability. In this case we set $P(Z) = \mbox{Uniform}[0.25, 0.75]$ so that $P(Y = 1 \mid Z=z) \in [0, 1]$. We fix $B=10$ and vary $n$, plotting the $\lsquared$ calibration error $\epsilon^2$ in Figure~\ref{fig:well-spec-vary-b}. With $B=10$ bins, $n = 3000$ the $\lsquared$ calibration error is $5.2 \pm 1.1$ times lower for \ourcal{} than the underlying scaling method using a sigmoid recalibrator. For reference, we plot $P(Y \mid Z = z)$ in Figure~\ref{fig:noisy-spec-curve}.
+Building on the previous synthetic experiments, in this experiment, we set the ground truth $P(Y = 1 \mid Z=z) = g(z; a, c) + h(z)$ where for each $z$, $h(z) \in \{-0.02, 0.02\}$ with equal probability. In this case we set $P(Z) = \mbox{Uniform}[0.25, 0.75]$ so that $P(Y = 1 \mid Z=z) \in [0, 1]$. We fix $B=10$ and vary $n$, plotting the squared calibration error $\epsilon^2$ in Figure~\ref{fig:well-spec-vary-b}. With $B=10$ bins, $n = 3000$ the squared calibration error is $5.2 \pm 1.1$ times lower for \ourcal{} than the underlying scaling method using a sigmoid recalibrator. For reference, we plot $P(Y \mid Z = z)$ in Figure~\ref{fig:noisy-spec-curve}.
 
 \begin{figure}
   \centering
   \includegraphics[width=0.6\textwidth]{noise_vary_n_a2_b1.png}
-  \caption{Plot of $\epsilon^2$ ($\lsquared$ calibration error) against number of samples $n$ used to recalibrate. We can see in this case \ourcal{} consistently gets lower calibration error.
+  \caption{Plot of $\epsilon^2$ (squared calibration error) against number of samples $n$ used to recalibrate. We can see in this case \ourcal{} consistently gets lower calibration error.
   }
   \label{fig:well-spec-vary-b}
 \end{figure}

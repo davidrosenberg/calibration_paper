@@ -3,7 +3,7 @@
 \label{sec:appendix_platt_experiments}
 
 Here we present additional experiments for Section~\ref{sec:challenges-measuring}.
-Recall that the experiments in section~\ref{sec:challenges-measuring} showed that binning underestimates the calibration error of a model---we focused on the $\ell_2\mbox{-CE}$ and selected bins so that each bin has an equal number of data points. Figure~\ref{fig:imagenet_lower_bound_l1} shows that binning is also unreliable at measuring the $\ell_1\mbox{-CE}$ on ImageNet---using more bins uncovers a higher calibration error than we would otherwise detect with fewer bins. Figure~\ref{fig:imagenet_lower_bound_l1_prob} shows that the same conclusion holds on ImageNet if we look at the $\ell_1\mbox{-CE}$ \emph{and} use an alternative approach to selecting bins used in~\cite{guo2017calibration} that we call \emph{equal-probability binning}. Here, the $B$ bins are selected to be $I_1 = [0, \frac{1}{B}], I_2 = (\frac{1}{B}, \frac{2}{B}], \dots, I_B = (\frac{B-1}{B}, 1]$. The experimental protocol is the same as in section~\ref{sec:challenges-measuring}.
+Recall that the experiments in section~\ref{sec:challenges-measuring} showed that binning underestimates the calibration error of a model---we focused on the $\ell_2\mbox{-CE}$ and selected bins so that each bin has an equal number of data points. Figure~\ref{fig:imagenet_lower_bound_l1} shows that binning is also unreliable at measuring the $\ell_1\mbox{-CE}$ (ECE) on ImageNet---using more bins uncovers a higher calibration error than we would otherwise detect with fewer bins. Figure~\ref{fig:imagenet_lower_bound_l1_prob} shows that the same conclusion holds on ImageNet if we look at the $\ell_1\mbox{-CE}$ \emph{and} use an alternative approach to selecting bins used in~\cite{guo2017calibration} that we call \emph{equal-width binning}. Here, the $B$ bins are selected to be $I_1 = [0, \frac{1}{B}], I_2 = (\frac{1}{B}, \frac{2}{B}], \dots, I_B = (\frac{B-1}{B}, 1]$. The experimental protocol is the same as in section~\ref{sec:challenges-measuring}.
 
 \begin{figure}
      \centering
@@ -17,7 +17,7 @@ Recall that the experiments in section~\ref{sec:challenges-measuring} showed tha
      \begin{subfigure}[b]{0.45\textwidth}
          \centering
          \includegraphics[width=\textwidth]{l1_lower_bound_imagenet_plot_prob_bin}
-         \caption{ImageNet, $\ell_1\mbox{-CE}$, equal-probability binning}
+         \caption{ImageNet, $\ell_1\mbox{-CE}$, equal-width binning}
          \label{fig:imagenet_lower_bound_l1_prob}
      \end{subfigure}
         \caption{
@@ -40,7 +40,7 @@ We repeated both of these experiments on CIFAR-10 as well, and plot the results 
      \begin{subfigure}[b]{0.45\textwidth}
          \centering
          \includegraphics[width=\textwidth]{l1_lower_bound_cifar_plot_prob_bin}
-         \caption{CIFAR-10, $\ell_1\mbox{-CE}$, equal-probability binning}
+         \caption{CIFAR-10, $\ell_1\mbox{-CE}$, equal-width binning}
          \label{fig:cifar_lower_bound_l1_prob}
      \end{subfigure}
         \caption{
